@@ -2,6 +2,7 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -58,6 +59,11 @@
         body.dark-mode .official-box h4 { color: #f8d7da; border-color: #664d03; }
         body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
         body.dark-mode .input-field { background-color: #333; color: #fff; border-color: #555; }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .dark-mode-btn { position: static; display: block; width: 100%; margin-bottom: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -183,17 +189,20 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.body.classList.toggle('dark-mode');
     }
 
+    // फुल स्क्रीन कोड को 100% सुरक्षित बनाया गया है
     function requestFullScreen() {
         try {
-            let elem = document.documentElement;
-            if (elem.requestFullscreen) { 
-                // Error catching for mobile browsers
-                elem.requestFullscreen().catch(err => console.log("Fullscreen blocked by browser")); 
+            var elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                var promise = elem.requestFullscreen();
+                if(promise && promise.catch) { promise.catch(function(e){}); }
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
             }
-            else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
-            else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } 
         } catch(e) {
-            console.log("Fullscreen error:", e);
+            console.log("Fullscreen not supported by this browser.");
         }
     }
 
@@ -209,10 +218,9 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 
         requestFullScreen();
 
-        // बॉक्स को ढूंढने और चेक करने का सुरक्षित तरीका
         let masterTextElem = document.getElementById('masterText_' + speed);
         if(!masterTextElem) {
-            alert("तकनीकी त्रुटि: " + speed + " WPM का मास्टर टेक्स्ट बॉक्स नहीं मिला। कृपया एडमिन सेटिंग चेक करें।");
+            alert("तकनीकी त्रुटि: " + speed + " WPM का मास्टर टेक्स्ट बॉक्स नहीं मिला।");
             return;
         }
 
@@ -300,9 +308,12 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         isTestRunning = false; 
         clearInterval(timerInterval);
         
-        if (document.exitFullscreen) { 
-            document.exitFullscreen().catch(e => console.log(e)); 
-        }
+        try {
+            if (document.exitFullscreen) { 
+                var promise = document.exitFullscreen(); 
+                if(promise && promise.catch) { promise.catch(function(e){}); }
+            }
+        } catch(e) {}
         
         let timeTakenSeconds = totalDuration - timeLeft;
         let tMinutes = Math.floor(timeTakenSeconds / 60);
@@ -343,14 +354,4 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                 }
                 
                 let diag = dp[i-1][j-1] + cost;
-                let del = dp[i-1][j] + 1;
-                let ins = dp[i][j-1] + 1;
-                
-                if (diag <= del && diag <= ins) {
-                    dp[i][j] = diag; path[i][j] = 1;
-                } else if (del <= ins) {
-                    dp[i][j] = del; path[i][j] = 2;
-                } else {
-                    dp[i][j] = ins; path[i][j] = 3;
-                }
-            }
+                le
