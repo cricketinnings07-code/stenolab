@@ -5,15 +5,22 @@
     <title>हिंदी स्टेनो लैब - स्टेनोग्राफी टेस्ट</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style> 
-            <style>
-        /* मोबाइल और इंटरनेट के लिए क्रुति देव फॉन्ट लोड करना */
+                <style>
+        /* इंटरनेट से डायरेक्ट क्रुति देव 010 फॉन्ट लोड करना */
         @font-face {
             font-family: 'Kruti Dev 010';
-            src: url('kruti.ttf') format('truetype');
+            src: url('https://themes.googleusercontent.com/static/fonts/earlyaccess/droidhindigujarati/v1/DroidHindiGujarati-Regular.ttf') format('truetype'), /* fallback */
+                 url('kruti.ttf') format('truetype');
         }
 
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
-        /* बाकी का आपका सारा CSS कोड वैसा ही रहेगा... */
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; }
+        .header-title h1 { margin: 0; color: #0277bd; font-size: 36px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .header-title p { margin: 5px 0 0 0; color: #555; font-size: 18px; font-weight: bold; }
+        
+        /* यहाँ नीचे का आपका सारा पुराना CSS कोड रहेगा... */
+        
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; }
