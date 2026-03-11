@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>हिंदी स्टेनो लैब - स्टेनोग्राफी टेस्ट</title>
+    <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         /* मोबाइल और इंटरनेट के लिए क्रुति देव फॉन्ट लोड करना */
@@ -11,36 +11,64 @@
             src: url('kruti.ttf') format('truetype');
         }
 
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        /* लाइट थीम (डिफ़ॉल्ट) */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; transition: 0.3s; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; transition: 0.3s; }
         .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; }
         .header-title h1 { margin: 0; color: #0277bd; font-size: 36px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
         .header-title p { margin: 5px 0 0 0; color: #555; font-size: 18px; font-weight: bold; }
-        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px; resize: vertical; background-color: #fff; line-height: 1.8; }
+        
+        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px; resize: vertical; background-color: #fff; line-height: 1.8; transition: 0.3s; }
         textarea.kruti-text { height: 150px; }
         .kruti-readonly { background-color: #f8f9fa; border: 2px dashed #6c757d; cursor: default; min-height: 150px; height: auto; margin-bottom: 15px; }
+        
         .timer { font-size: 24px; color: #d9534f; font-weight: bold; text-align: center; margin: 15px 0; }
         .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 4px; margin-top: 15px; width: 100%; font-weight: bold; }
         .btn:hover { background: #4cae4c; }
         .btn-info { background: #17a2b8; margin-top: 15px; }
         .btn-info:hover { background: #138496; }
-        .setup-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
+        
+        .setup-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; transition: 0.3s; }
         .input-field { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        select.input-field { cursor: pointer; }
+        
         .result-box { margin-top: 20px; padding: 20px; background: #fff; border: 2px solid #28a745; border-radius: 8px; display: none; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-item { padding: 10px; background: #e9ecef; border-radius: 4px; font-size: 16px; font-weight: bold; }
+        .stat-item { padding: 10px; background: #e9ecef; border-radius: 4px; font-size: 16px; font-weight: bold; transition: 0.3s; }
         .stat-item span { float: right; color: #d9534f; }
         .stat-item.positive span { color: #28a745; }
-        .official-box { background: #fff3cd; padding: 15px; border: 2px solid #ffc107; border-radius: 4px; margin-bottom: 20px; }
+        
+        .official-box { background: #fff3cd; padding: 15px; border: 2px solid #ffc107; border-radius: 4px; margin-bottom: 20px; transition: 0.3s; }
         .official-box h4 { margin-top: 0; color: #856404; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ffeeba; padding-bottom: 5px; }
+        
         label { font-weight: bold; display: block; margin-top: 20px; margin-bottom: 10px; color: #333; font-size: 18px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
-        .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; }
+        
+        .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; transition: 0.3s; }
         .legend-item { display: inline-block; margin-right: 20px; margin-bottom: 5px; }
+
+        /* डार्क मोड (Dark Mode) बटन */
+        .dark-mode-btn { position: absolute; top: 20px; right: 20px; background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .dark-mode-btn:hover { background: #000; }
+
+        /* डार्क थीम की स्टाइलिंग */
+        body.dark-mode { background-color: #121212; color: #e0e0e0; }
+        body.dark-mode .container { background: #1e1e1e; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
+        body.dark-mode .setup-box, body.dark-mode .result-box { background: #2c2c2c; border-color: #444; }
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode label, body.dark-mode p { color: #e0e0e0; }
+        body.dark-mode .kruti-text { background-color: #333; color: #fff; border-color: #555; }
+        body.dark-mode .kruti-readonly { background-color: #222; border-color: #444; }
+        body.dark-mode .stat-item { background: #333; color: #e0e0e0; }
+        body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
+        body.dark-mode .official-box h4 { color: #f8d7da; border-color: #664d03; }
+        body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
+        body.dark-mode .input-field { background-color: #333; color: #fff; border-color: #555; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
+
     <div class="header-title">
         <h1>हिंदी स्टेनो लैब</h1>
         <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
@@ -49,17 +77,26 @@
     <div id="testArea">
         <div id="studentDetailsBox" class="setup-box">
             <h3 style="margin-top: 0; color: #0277bd;">विद्यार्थी विवरण दर्ज करें</h3>
+            
             <label style="border:none; margin-top:0;">विद्यार्थी का नाम:</label>
             <input type="text" id="studentName" class="input-field" placeholder="अपना पूरा नाम दर्ज करें">
+            
             <label style="border:none;">रोल नंबर / आईडी:</label>
             <input type="text" id="studentRoll" class="input-field" placeholder="अपना रोल नंबर दर्ज करें">
-            <button class="btn" onclick="startAudioSection()">विवरण सुरक्षित करें और आगे बढ़ें</button>
+            
+            <label style="border:none;">डिक्टेशन की गति (Speed) चुनें:</label>
+            <select id="speedSelect" class="input-field">
+                <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
+                <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
+                <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
+            </select>
+
+            <button class="btn" onclick="startAudioSection()">विवरण सुरक्षित करें और टेस्ट शुरू करें</button>
         </div>
 
         <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
             <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें। ऑडियो समाप्त होते ही यह प्लेयर हट जाएगा और आपका 60 मिनट का समय स्वतः शुरू हो जाएगा।</p>
             <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">
-                <source src="dictation.mp3" type="audio/mpeg">
                 आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।
             </audio>
             <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">
@@ -70,7 +107,10 @@
         <div id="typingSection" style="display: none;">
             <div class="timer" id="timerDisplay">समय शेष: 60:00</div>
             <label style="border:none;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-            <p style="color:red; font-size:14px; margin-top:0;"><i>नोट: आप बीच में जाकर किसी शब्द को सुधार नहीं सकते। कर्सर हमेशा अंत में रहेगा, आप केवल बैकस्पेस का उपयोग कर सकते हैं।</i></p>
+            <p style="color:red; font-size:14px; margin-top:0;">
+                <i>नोट: आप बीच में जाकर सुधार नहीं कर सकते। केवल बैकस्पेस का उपयोग करें। <br>
+                <b>सख्त हिदायत (Anti-Cheat):</b> टेस्ट के दौरान कोई दूसरा टैब या ऐप न खोलें, अन्यथा टेस्ट सबमिट हो जाएगा!</i>
+            </p>
             <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
             <button id="submitBtn" class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
         </div>
@@ -83,7 +123,8 @@
         <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
             <b>नाम:</b> <span id="r_name" style="color: #007bff;"></span> | 
             <b>रोल नंबर:</b> <span id="r_roll" style="color: #007bff;"></span> |
-            <b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span>
+            <b>टेस्ट स्पीड:</b> <span id="r_testSpeed" style="color: #007bff;"></span><br>
+            <b style="display:inline-block; margin-top:5px;">लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span>
         </div>
         
         <div class="stats-grid">
@@ -101,7 +142,7 @@
                 <div class="stat-item positive" style="background: none;">माफ की गई गलतियां:<br><small>(कुल शब्दों का 5%)</small> <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
                 <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">काटी जाने वाली गलतियां:<br><small>(Excess Mistakes)</small> <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
                 <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">शुद्ध शब्द (Net Words):<br><small>(Total Words - Excess)</small> <span id="r_netWords" style="font-size: 22px;">0</span></div>
-                <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb;">
+                <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb; border-radius:4px; padding:10px;">
                     <span style="float:none; color: #155724; font-size: 20px;">टाइपिंग स्पीड: <b id="r_speed">0 WPM</b> &nbsp; | &nbsp; शुद्धता (Accuracy): <b id="r_accuracy">0%</b></span>
                 </div>
             </div>
@@ -123,28 +164,68 @@
     </div>
 </div>
 
-<textarea id="hiddenMasterText" style="display:none;">
-eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfrosnu ntZ djkus esa foyEc vfèkdj.k us çfrdj vfèkfu.kÊr fd;k chek daiuh us çFke lwpuk çfrosnu ntZ djkus esa foyEc] 'ko ijh{k.k] vk;q vkfn ds vkèkkj ij pqukSfr nhA nq?kZVuk 15-11-2009 dks ?kfVr gqbZ] vkgr dh 25-11-2009 dks e`R;q gqbZ] çFke lwpuk çfrosnu 02-12-2009 dks ntZ djk;h] jkstukepk fnukad 16-11-2009 esa okgu ds uacj vafdr ughaA ifjokj dk igyk ç;kl vkgr dks fpfdRlk dh vko';drk çnku djok;k tkuk gksrk gSA e`R;q ds i'pkr~ ifjokj ds lnL; vafre fjoktksa dks iwjk djus esa O;Lr Fks] jkstukepuk 16-11-2009 dks cuk;k x;k rFkk e`rd ds firk dks dFku fd;k fd mls jkstukeps dh vUroZLrq dk Kku ugha gS] jkstukeps esa okgu ds uacj ugha gksuk ekeys ij ?kkrd ugha gksxkA fpfdRlk lk{; fd e`rd nq?kZVuk dh frfFk ls e`R;q rd fujUrj vpsr Fkk] nq?kZVuk ,oa e`R;q ds eè; lk{; dh J`a[kyk gLr{ksi ughaA
-</textarea>
 <script>
-    // यहाँ हमने कोड को ऊपर वाले बॉक्स से पढ़ने का कमांड दे दिया है
-    const finalMasterText = document.getElementById('hiddenMasterText').value.trim();
+    // ==========================================
+    // डिक्टेशन और मास्टर टेक्स्ट सेटिंग्स (Multiple Speeds)
+    // ==========================================
+    // यहाँ आप 60, 80 और 100 WPM के लिए अलग-अलग डिक्टेशन डाल सकते हैं।
+    const stenoData = {
+        "60": {
+            audioFile: "dictation_60.mp3",
+            masterText: `;g 60 'kCn çfr feuV dh fMDVs'ku dk VSfLVax dksM gSA`
+        },
+        "80": {
+            audioFile: "dictation_80.mp3",
+            masterText: `okg cktkj tkrk gS| jke Hkh mlds lkFk gS|`
+        },
+        "100": {
+            audioFile: "dictation_100.mp3",
+            masterText: `eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj...`
+        }
+    };
 
-    let totalDuration = 3600; 
+    let finalMasterText = "";
+    let totalDuration = 3600; // 60 मिनट
     let timeLeft = totalDuration; 
     let timerInterval;
+    
+    // एंटी-चीट वैरिएबल्स
+    let isTestRunning = false;
+    let cheatWarningCount = 0;
+
+    // डार्क मोड चालू/बंद करने का फंक्शन
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+    }
+
+    // फुल-स्क्रीन मोड रिक्वेस्ट करने का फंक्शन
+    function requestFullScreen() {
+        let elem = document.documentElement;
+        if (elem.requestFullscreen) { elem.requestFullscreen(); }
+        else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } // Safari
+        else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } // IE11
+    }
 
     function startAudioSection() {
         let name = document.getElementById('studentName').value.trim();
         let roll = document.getElementById('studentRoll').value.trim();
+        let speed = document.getElementById('speedSelect').value;
 
         if(name === "" || roll === "") {
             alert("कृपया अपना नाम और रोल नंबर दर्ज करें!");
             return;
         }
 
+        // फुल स्क्रीन मोड ऑन करें (चीटिंग रोकने के लिए)
+        requestFullScreen();
+
+        // सेटिंग्स लागू करें
+        finalMasterText = stenoData[speed].masterText;
+        document.getElementById('dictationAudio').src = stenoData[speed].audioFile;
+        
         document.getElementById('r_name').innerText = name;
         document.getElementById('r_roll').innerText = roll;
+        document.getElementById('r_testSpeed').innerText = speed + " WPM";
 
         document.getElementById('studentDetailsBox').style.display = 'none';
         document.getElementById('audioSection').style.display = 'block';
@@ -161,10 +242,13 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         
+        isTestRunning = true; // एंटी-चीट सिस्टम एक्टिवेट
+        
         let studentTextArea = document.getElementById('studentText');
         studentTextArea.focus();
         timerInterval = setInterval(updateTimer, 1000);
 
+        // कीबोर्ड रिस्ट्रिक्शन (Arrow keys disabled)
         studentTextArea.addEventListener('keydown', function(e) {
             const forbiddenKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
             if (forbiddenKeys.includes(e.key)) {
@@ -172,6 +256,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
             }
         });
 
+        // माउस क्लिक रिस्ट्रिक्शन (कर्सर हमेशा अंत में)
         studentTextArea.addEventListener('mousedown', function(e) {
             setTimeout(() => {
                 studentTextArea.selectionStart = studentTextArea.value.length;
@@ -184,11 +269,28 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
             studentTextArea.selectionEnd = studentTextArea.value.length;
         });
         
+        // पेस्ट (Paste) रिस्ट्रिक्शन
         studentTextArea.addEventListener('paste', function(e) {
             e.preventDefault();
             alert("पेस्ट करना वर्जित है!");
         });
     }
+
+    // ==========================================
+    // टैब-स्विचिंग / एंटी-चीट सिस्टम (Anti-Cheat System)
+    // ==========================================
+    document.addEventListener("visibilitychange", function() {
+        if (isTestRunning && document.visibilityState === 'hidden') {
+            cheatWarningCount++;
+            if (cheatWarningCount === 1) {
+                alert("⚠️ चेतावनी (Warning): आपने टेस्ट के दौरान स्क्रीन या टैब बदला है! यह स्टेनोग्राफी परीक्षा के नियमों के विरुद्ध है। यदि आपने ऐसा दोबारा किया, तो आपका टेस्ट अपने आप सबमिट हो जाएगा!");
+            } else if (cheatWarningCount >= 2) {
+                alert("❌ चीटिंग पकड़ी गई! आपने बार-बार स्क्रीन बदली है। आपका टेस्ट अब ऑटोमैटिक सबमिट किया जा रहा है।");
+                submitTest(); // सीधे सबमिट कर दो
+            }
+        }
+    });
+    // ==========================================
 
     function updateTimer() {
         let minutes = Math.floor(timeLeft / 60);
@@ -206,7 +308,11 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     }
 
     function submitTest() {
+        isTestRunning = false; // एंटी-चीट सिस्टम डिएक्टिवेट
         clearInterval(timerInterval);
+        
+        // फुल-स्क्रीन से बाहर आएं
+        if (document.exitFullscreen) { document.exitFullscreen(); }
         
         let timeTakenSeconds = totalDuration - timeLeft;
         let tMinutes = Math.floor(timeTakenSeconds / 60);
@@ -262,93 +368,4 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         
         let omissions = 0, halfMistakes = 0, fullMistakes = 0, extraWords = 0;
         let currI = mWords.length, currJ = sWords.length;
-        let diffHtmlArray = []; 
-        
-        while(currI > 0 || currJ > 0) {
-            if (currI > 0 && currJ > 0 && path[currI][currJ] === 1) {
-                let w1 = mWords[currI-1];
-                let w2 = sWords[currJ-1];
-                if (w1 === w2) {
-                    diffHtmlArray.unshift('<span style="color: #28a745;">' + w2 + '</span>');
-                } else {
-                    let c1 = w1.replace(/[,\|]/g, '');
-                    let c2 = w2.replace(/[,\|]/g, '');
-                    let correctWordHtml = ' <span style="color: #28a745; font-family: Arial, sans-serif;">(</span><span style="color: #28a745;">' + w1 + '</span><span style="color: #28a745; font-family: Arial, sans-serif;">)</span>';
-
-                    if (c1 === c2) {
-                        halfMistakes++;
-                        diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml);
-                    } else {
-                        fullMistakes++; 
-                        diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml);
-                    }
-                }
-                currI--; currJ--;
-            } else if (currI > 0 && (currJ === 0 || path[currI][currJ] === 2)) {
-                omissions++; 
-                diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>');
-                currI--;
-            } else if (currJ > 0 && (currI === 0 || path[currI][currJ] === 3)) {
-                extraWords++; 
-                diffHtmlArray.unshift('<span style="color: #dc3545; border-bottom: 2px solid #dc3545;">' + sWords[currJ-1] + '</span>');
-                currJ--;
-            }
-        }
-        
-        let totalWords = mWords.length;
-        let totalFullMistakes = fullMistakes + extraWords + omissions; 
-        
-        let actualMistakesScore = totalFullMistakes + (halfMistakes / 2);
-        let allowedMistakes = Math.round(totalWords * 0.05);
-        
-        let excessMistakes = 0;
-        if(actualMistakesScore > allowedMistakes) {
-            excessMistakes = actualMistakesScore - allowedMistakes;
-        }
-
-        let netWords = totalWords - excessMistakes;
-        if(netWords < 0) netWords = 0;
-
-        let accuracy = (netWords / totalWords) * 100;
-        
-        if(timeTakenMins < 1) timeTakenMins = 1; 
-        let speedWPM = Math.round(netWords / timeTakenMins);
-
-        document.getElementById('r_masterWords').innerText = totalWords;
-        document.getElementById('r_omissions').innerText = omissions;
-        document.getElementById('r_fullMistakes').innerText = fullMistakes;
-        document.getElementById('r_extraWords').innerText = extraWords;
-        document.getElementById('r_halfMistakes').innerText = halfMistakes;
-        
-        document.getElementById('r_actualMistakes').innerText = actualMistakesScore;
-        document.getElementById('r_allowedMistakes').innerText = allowedMistakes;
-        document.getElementById('r_excessMistakes').innerText = excessMistakes;
-        document.getElementById('r_netWords').innerText = netWords;
-        document.getElementById('r_speed').innerText = speedWPM + " WPM";
-        document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
-
-        document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
-    }
-
-    function downloadResultPDF() {
-        const btn = document.getElementById('downloadPdfBtn');
-        btn.style.display = 'none';
-        const element = document.getElementById('resultBox');
-        
-        const opt = {
-            margin:       [10, 10, 10, 10],
-            filename:     'Hindi_Steno_Lab_Result.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            btn.style.display = 'inline-block';
-        });
-    }
-</script>
-
-</body>
-                </html>
-    
+        let diffHtmlA
