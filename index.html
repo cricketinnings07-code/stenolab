@@ -5,13 +5,11 @@
     <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* मोबाइल और इंटरनेट के लिए क्रुति देव फॉन्ट लोड करना */
         @font-face {
             font-family: 'Kruti Dev 010';
             src: url('kruti.ttf') format('truetype');
         }
 
-        /* लाइट थीम (डिफ़ॉल्ट) */
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; transition: 0.3s; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; transition: 0.3s; }
         .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; }
@@ -46,11 +44,9 @@
         .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; transition: 0.3s; }
         .legend-item { display: inline-block; margin-right: 20px; margin-bottom: 5px; }
 
-        /* डार्क मोड (Dark Mode) बटन */
         .dark-mode-btn { position: absolute; top: 20px; right: 20px; background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .dark-mode-btn:hover { background: #000; }
 
-        /* डार्क थीम की स्टाइलिंग */
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
         body.dark-mode .container { background: #1e1e1e; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
         body.dark-mode .setup-box, body.dark-mode .result-box { background: #2c2c2c; border-color: #444; }
@@ -164,46 +160,34 @@
     </div>
 </div>
 
-<script>
-    // ==========================================
-    // डिक्टेशन और मास्टर टेक्स्ट सेटिंग्स (Multiple Speeds)
-    // ==========================================
-    // यहाँ आप 60, 80 और 100 WPM के लिए अलग-अलग डिक्टेशन डाल सकते हैं।
-    const stenoData = {
-        "60": {
-            audioFile: "dictation_60.mp3",
-            masterText: `;g 60 'kCn çfr feuV dh fMDVs'ku dk VSfLVax dksM gSA`
-        },
-        "80": {
-            audioFile: "dictation_80.mp3",
-            masterText: `eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfrosnu ntZ djkus esa foyEc vfèkdj.k us çfrdj vfèkfu.kÊr fd;k chek daiuh us çFke lwpuk çfrosnu ntZ djkus esa foyEc] 'ko ijh{k.k] vk;q vkfn ds vkèkkj ij pqukSfr nhA nq?kZVuk 15-11-2009 dks ?kfVr gqbZ] vkgr dh 25-11-2009 dks e`R;q gqbZ] çFke lwpuk çfrosnu 02-12-2009 dks ntZ djk;h] jkstukepk fnukad 16-11-2009 esa okgu ds uacj vafdr ughaA ifjokj dk igyk ç;kl vkgr dks fpfdRlk dh vko';drk çnku djok;k tkuk gksrk gSA e`R;q ds i'pkr~ ifjokj ds lnL; vafre fjoktksa dks iwjk djus esa O;Lr Fks] jkstukepuk 16-11-2009 dks cuk;k x;k rFkk e`rd ds firk dks dFku fd;k fd mls jkstukeps dh vUroZLrq dk Kku ugha gS] jkstukeps esa okgu ds uacj ugha gksuk ekeys ij ?kkrd ugha gksxkA fpfdRlk lk{; fd e`rd nq?kZVuk dh frfFk ls e`R;q rd fujUrj vpsr Fkk] nq?kZVuk ,oa e`R;q ds eè; lk{; dh J`a[kyk gLr{ksi ughaA`
-        },
-        "100": {
-            audioFile: "dictation_100.mp3",
-            masterText: `eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj...`
-        }
-    };
+<textarea id="masterText_60" style="display:none;">
+;g 60 'kCn çfr feuV dh fMDVs'ku dk VSfLVax dksM gSA
+</textarea>
 
+<textarea id="masterText_80" style="display:none;">
+eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfrosnu ntZ djkus esa foyEc vfèkdj.k us çfrdj vfèkfu.kÊr fd;k chek daiuh us çFke lwpuk çfrosnu ntZ djkus esa foyEc] 'ko ijh{k.k] vk;q vkfn ds vkèkkj ij pqukSfr nhA nq?kZVuk 15-11-2009 dks ?kfVr gqbZ] vkgr dh 25-11-2009 dks e`R;q gqbZ] çFke lwpuk çfrosnu 02-12-2009 dks ntZ djk;h] jkstukepk fnukad 16-11-2009 esa okgu ds uacj vafdr ughaA ifjokj dk igyk ç;kl vkgr dks fpfdRlk dh vko';drk çnku djok;k tkuk gksrk gSA e`R;q ds i'pkr~ ifjokj ds lnL; vafre fjoktksa dks iwjk djus esa O;Lr Fks] jkstukepuk 16-11-2009 dks cuk;k x;k rFkk e`rd ds firk dks dFku fd;k fd mls jkstukeps dh vUroZLrq dk Kku ugha gS] jkstukeps esa okgu ds uacj ugha gksuk ekeys ij ?kkrd ugha gksxkA fpfdRlk lk{; fd e`rd nq?kZVuk dh frfFk ls e`R;q rd fujUrj vpsr Fkk] nq?kZVuk ,oa e`R;q ds eè; lk{; dh J`a[kyk gLr{ksi ughaA
+</textarea>
+
+<textarea id="masterText_100" style="display:none;">
+;g 100 'kCn çfr feuV dh fMDVs'ku gSA
+</textarea>
+<script>
     let finalMasterText = "";
-    let totalDuration = 3600; // 60 मिनट
+    let totalDuration = 3600; 
     let timeLeft = totalDuration; 
     let timerInterval;
-    
-    // एंटी-चीट वैरिएबल्स
     let isTestRunning = false;
     let cheatWarningCount = 0;
 
-    // डार्क मोड चालू/बंद करने का फंक्शन
     function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
     }
 
-    // फुल-स्क्रीन मोड रिक्वेस्ट करने का फंक्शन
     function requestFullScreen() {
         let elem = document.documentElement;
         if (elem.requestFullscreen) { elem.requestFullscreen(); }
-        else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } // Safari
-        else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } // IE11
+        else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
+        else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } 
     }
 
     function startAudioSection() {
@@ -216,12 +200,11 @@
             return;
         }
 
-        // फुल स्क्रीन मोड ऑन करें (चीटिंग रोकने के लिए)
         requestFullScreen();
 
-        // सेटिंग्स लागू करें
-        finalMasterText = stenoData[speed].masterText;
-        document.getElementById('dictationAudio').src = stenoData[speed].audioFile;
+        // चुनी गई स्पीड के अनुसार मास्टर टेक्स्ट और ऑडियो सेट करें
+        finalMasterText = document.getElementById('masterText_' + speed).value.trim();
+        document.getElementById('dictationAudio').src = "dictation_" + speed + ".mp3";
         
         document.getElementById('r_name').innerText = name;
         document.getElementById('r_roll').innerText = roll;
@@ -242,13 +225,12 @@
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         
-        isTestRunning = true; // एंटी-चीट सिस्टम एक्टिवेट
+        isTestRunning = true; 
         
         let studentTextArea = document.getElementById('studentText');
         studentTextArea.focus();
         timerInterval = setInterval(updateTimer, 1000);
 
-        // कीबोर्ड रिस्ट्रिक्शन (Arrow keys disabled)
         studentTextArea.addEventListener('keydown', function(e) {
             const forbiddenKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
             if (forbiddenKeys.includes(e.key)) {
@@ -256,7 +238,6 @@
             }
         });
 
-        // माउस क्लिक रिस्ट्रिक्शन (कर्सर हमेशा अंत में)
         studentTextArea.addEventListener('mousedown', function(e) {
             setTimeout(() => {
                 studentTextArea.selectionStart = studentTextArea.value.length;
@@ -269,16 +250,12 @@
             studentTextArea.selectionEnd = studentTextArea.value.length;
         });
         
-        // पेस्ट (Paste) रिस्ट्रिक्शन
         studentTextArea.addEventListener('paste', function(e) {
             e.preventDefault();
             alert("पेस्ट करना वर्जित है!");
         });
     }
 
-    // ==========================================
-    // टैब-स्विचिंग / एंटी-चीट सिस्टम (Anti-Cheat System)
-    // ==========================================
     document.addEventListener("visibilitychange", function() {
         if (isTestRunning && document.visibilityState === 'hidden') {
             cheatWarningCount++;
@@ -286,11 +263,10 @@
                 alert("⚠️ चेतावनी (Warning): आपने टेस्ट के दौरान स्क्रीन या टैब बदला है! यह स्टेनोग्राफी परीक्षा के नियमों के विरुद्ध है। यदि आपने ऐसा दोबारा किया, तो आपका टेस्ट अपने आप सबमिट हो जाएगा!");
             } else if (cheatWarningCount >= 2) {
                 alert("❌ चीटिंग पकड़ी गई! आपने बार-बार स्क्रीन बदली है। आपका टेस्ट अब ऑटोमैटिक सबमिट किया जा रहा है।");
-                submitTest(); // सीधे सबमिट कर दो
+                submitTest(); 
             }
         }
     });
-    // ==========================================
 
     function updateTimer() {
         let minutes = Math.floor(timeLeft / 60);
@@ -308,10 +284,9 @@
     }
 
     function submitTest() {
-        isTestRunning = false; // एंटी-चीट सिस्टम डिएक्टिवेट
+        isTestRunning = false; 
         clearInterval(timerInterval);
         
-        // फुल-स्क्रीन से बाहर आएं
         if (document.exitFullscreen) { document.exitFullscreen(); }
         
         let timeTakenSeconds = totalDuration - timeLeft;
@@ -368,4 +343,11 @@
         
         let omissions = 0, halfMistakes = 0, fullMistakes = 0, extraWords = 0;
         let currI = mWords.length, currJ = sWords.length;
-        let diffHtmlA
+        let diffHtmlArray = []; 
+        
+        while(currI > 0 || currJ > 0) {
+            if (currI > 0 && currJ > 0 && path[currI][currJ] === 1) {
+                let w1 = mWords[currI-1];
+                let w2 = sWords[currJ-1];
+                if (w1 === w2) {
+                    diffHtmlArray.unshift('<span style="color: #28a745;">' + w2 + '</span>
