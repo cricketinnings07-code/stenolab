@@ -7,57 +7,27 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        
         .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; }
         .header-title h1 { margin: 0; color: #0277bd; font-size: 36px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
         .header-title p { margin: 5px 0 0 0; color: #555; font-size: 18px; font-weight: bold; }
-
-        .kruti-text {
-            font-family: 'Kruti Dev 010', Arial, sans-serif;
-            font-size: 24px;
-            width: 100%;
-            padding: 15px;
-            box-sizing: border-box;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            resize: vertical;
-            background-color: #fff;
-            line-height: 1.8;
-        }
-        
+        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px; resize: vertical; background-color: #fff; line-height: 1.8; }
         textarea.kruti-text { height: 150px; }
-        
-        .kruti-readonly {
-            background-color: #f8f9fa;
-            border: 2px dashed #6c757d;
-            cursor: default;
-            min-height: 150px;
-            height: auto;
-            margin-bottom: 15px;
-        }
-
+        .kruti-readonly { background-color: #f8f9fa; border: 2px dashed #6c757d; cursor: default; min-height: 150px; height: auto; margin-bottom: 15px; }
         .timer { font-size: 24px; color: #d9534f; font-weight: bold; text-align: center; margin: 15px 0; }
         .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 4px; margin-top: 15px; width: 100%; font-weight: bold; }
         .btn:hover { background: #4cae4c; }
         .btn-info { background: #17a2b8; margin-top: 15px; }
         .btn-info:hover { background: #138496; }
-        
         .setup-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
-        .test-box, .result-box { display: none; }
-        
         .input-field { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-
-        .result-box { margin-top: 20px; padding: 20px; background: #fff; border: 2px solid #28a745; border-radius: 8px; }
+        .result-box { margin-top: 20px; padding: 20px; background: #fff; border: 2px solid #28a745; border-radius: 8px; display: none; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .stat-item { padding: 10px; background: #e9ecef; border-radius: 4px; font-size: 16px; font-weight: bold; }
         .stat-item span { float: right; color: #d9534f; }
         .stat-item.positive span { color: #28a745; }
-        
         .official-box { background: #fff3cd; padding: 15px; border: 2px solid #ffc107; border-radius: 4px; margin-bottom: 20px; }
         .official-box h4 { margin-top: 0; color: #856404; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ffeeba; padding-bottom: 5px; }
-        
         label { font-weight: bold; display: block; margin-top: 20px; margin-bottom: 10px; color: #333; font-size: 18px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
-        
         .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; }
         .legend-item { display: inline-block; margin-right: 20px; margin-bottom: 5px; }
     </style>
@@ -65,14 +35,12 @@
 <body>
 
 <div class="container">
-    
     <div class="header-title">
         <h1>हिंदी स्टेनो लैब</h1>
         <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
     </div>
 
-    <div id="testArea" style="display: block;">
-        
+    <div id="testArea">
         <div id="studentDetailsBox" class="setup-box">
             <h3 style="margin-top: 0; color: #0277bd;">विद्यार्थी विवरण दर्ज करें</h3>
             <label style="border:none; margin-top:0;">विद्यार्थी का नाम:</label>
@@ -84,11 +52,13 @@
 
         <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
             <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें। ऑडियो समाप्त होते ही यह प्लेयर हट जाएगा और आपका 60 मिनट का समय स्वतः शुरू हो जाएगा।</p>
-            
             <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">
                 <source src="dictation.mp3" type="audio/mpeg">
                 आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।
             </audio>
+            <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">
+                स्किप करें / सीधे टाइपिंग शुरू करें
+            </button>
         </div>
 
         <div id="typingSection" style="display: none;">
@@ -123,18 +93,14 @@
             <div class="stats-grid" style="margin-bottom: 0;">
                 <div class="stat-item" style="background: none;">कुल की गई गलतियां:<br><small>(Full + Partial/2)</small> <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
                 <div class="stat-item positive" style="background: none;">माफ की गई गलतियां:<br><small>(कुल शब्दों का 5%)</small> <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
-                
                 <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">काटी जाने वाली गलतियां:<br><small>(Excess Mistakes)</small> <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
                 <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">शुद्ध शब्द (Net Words):<br><small>(Total Words - Excess)</small> <span id="r_netWords" style="font-size: 22px;">0</span></div>
-                
                 <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb;">
                     <span style="float:none; color: #155724; font-size: 20px;">टाइपिंग स्पीड: <b id="r_speed">0 WPM</b> &nbsp; | &nbsp; शुद्धता (Accuracy): <b id="r_accuracy">0%</b></span>
                 </div>
             </div>
         </div>
-
         <hr>
-
         <label>आपके अनुवाद का मूल्यांकन (Evaluated Text):</label>
         <div class="color-legend">
             <b>संकेत:</b><br>
@@ -144,9 +110,7 @@
             <span class="legend-item" style="color: #dc3545; text-decoration: line-through;">■ छूटा हुआ शब्द (Omission)</span>
             <span class="legend-item" style="color: #dc3545; border-bottom: 2px solid #dc3545;">■ अतिरिक्त शब्द (Extra)</span>
         </div>
-        
         <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
-        
         <div style="text-align: center;">
             <button id="downloadPdfBtn" class="btn btn-info" style="width: auto;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
         </div>
@@ -155,13 +119,12 @@
 
 <script>
     // ==========================================
-    // एडमिन सेटिंग: यहाँ अपना मास्टर टेक्स्ट डालें!
+    // बिल्कुल सुरक्षित मास्टर टेक्स्ट (बैकटिक ` का इस्तेमाल)
     // ==========================================
-    const finalMasterText = 'izdj.k ds la{ksi esa rF; bl izdkj gS fd ifjokfn;k Jherh banzk iRuh jkes'oj] fuoklh izseuxj [khaolj e; vius iq= egkohj us fnukad 03-06-2017 dks Fkkukf/kdkjh iqfyl Fkkuk [khaolj ds le{k mifLFkr gksdj ,d fyf[kr fjiksVZ bl vk'k; dh is'k dh fd mldh csVh ihfM+rk mez 16 o"kZ vkt lqcg'; 
-    // ऊपर दिए गए टेक्स्ट को हटाकर अपना ओरिजिनल क्रुति देव डिक्टेशन कोड डालें।
+    const finalMasterText = `okg cktkj tkrk gS| jke Hkh mlds lkFk gS|`;
     // ==========================================
 
-    let totalDuration = 3600; // 60 मिनट
+    let totalDuration = 3600; 
     let timeLeft = totalDuration; 
     let timerInterval;
 
@@ -180,15 +143,15 @@
         document.getElementById('studentDetailsBox').style.display = 'none';
         document.getElementById('audioSection').style.display = 'block';
 
-        // ऑडियो खत्म होने पर इवेंट सेट करें
-        document.getElementById('dictationAudio').onended = function() { 
-            startTypingTest(); 
-        };
+        let audioPlayer = document.getElementById('dictationAudio');
+        if(audioPlayer) {
+            audioPlayer.onended = function() { 
+                startTypingTest(); 
+            };
+        }
     }
 
     function startTypingTest() {
-        alert("डिक्टेशन समाप्त! ऑडियो प्लेयर अब हटा दिया जाएगा और आपका 60 मिनट का समय शुरू होता है।");
-        
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         
@@ -250,3 +213,136 @@
         calculateDetailedMistakes(finalMasterText, studentText, timeTakenForSpeed);
         
         document.getElementById('testArea').style.display = 'none';
+        document.getElementById('resultBox').style.display = 'block';
+    }
+
+    function calculateDetailedMistakes(master, student, timeTakenMins) {
+        let mWords = master.split(/\s+/).filter(w => w.length > 0);
+        let sWords = student.split(/\s+/).filter(w => w.length > 0);
+        
+        let dp = Array(mWords.length + 1).fill(null).map(() => Array(sWords.length + 1).fill(0));
+        let path = Array(mWords.length + 1).fill(null).map(() => Array(sWords.length + 1).fill(0));
+        
+        for(let i = 1; i <= mWords.length; i++) { dp[i][0] = i; path[i][0] = 2; }
+        for(let j = 1; j <= sWords.length; j++) { dp[0][j] = j; path[0][j] = 3; }
+        
+        for(let i = 1; i <= mWords.length; i++) {
+            for(let j = 1; j <= sWords.length; j++) {
+                let cost = 1;
+                let w1 = mWords[i-1];
+                let w2 = sWords[j-1];
+                
+                if (w1 === w2) {
+                    cost = 0; 
+                } else {
+                    let c1 = w1.replace(/[,\|]/g, '');
+                    let c2 = w2.replace(/[,\|]/g, '');
+                    if (c1 === c2) cost = 0.5; 
+                }
+                
+                let diag = dp[i-1][j-1] + cost;
+                let del = dp[i-1][j] + 1;
+                let ins = dp[i][j-1] + 1;
+                
+                if (diag <= del && diag <= ins) {
+                    dp[i][j] = diag; path[i][j] = 1;
+                } else if (del <= ins) {
+                    dp[i][j] = del; path[i][j] = 2;
+                } else {
+                    dp[i][j] = ins; path[i][j] = 3;
+                }
+            }
+        }
+        
+        let omissions = 0, halfMistakes = 0, fullMistakes = 0, extraWords = 0;
+        let currI = mWords.length, currJ = sWords.length;
+        let diffHtmlArray = []; 
+        
+        while(currI > 0 || currJ > 0) {
+            if (currI > 0 && currJ > 0 && path[currI][currJ] === 1) {
+                let w1 = mWords[currI-1];
+                let w2 = sWords[currJ-1];
+                if (w1 === w2) {
+                    diffHtmlArray.unshift('<span style="color: #28a745;">' + w2 + '</span>');
+                } else {
+                    let c1 = w1.replace(/[,\|]/g, '');
+                    let c2 = w2.replace(/[,\|]/g, '');
+                    let correctWordHtml = ' <span style="color: #28a745; font-family: Arial, sans-serif;">(</span><span style="color: #28a745;">' + w1 + '</span><span style="color: #28a745; font-family: Arial, sans-serif;">)</span>';
+
+                    if (c1 === c2) {
+                        halfMistakes++;
+                        diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml);
+                    } else {
+                        fullMistakes++; 
+                        diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml);
+                    }
+                }
+                currI--; currJ--;
+            } else if (currI > 0 && (currJ === 0 || path[currI][currJ] === 2)) {
+                omissions++; 
+                diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>');
+                currI--;
+            } else if (currJ > 0 && (currI === 0 || path[currI][currJ] === 3)) {
+                extraWords++; 
+                diffHtmlArray.unshift('<span style="color: #dc3545; border-bottom: 2px solid #dc3545;">' + sWords[currJ-1] + '</span>');
+                currJ--;
+            }
+        }
+        
+        let totalWords = mWords.length;
+        let totalFullMistakes = fullMistakes + extraWords + omissions; 
+        
+        let actualMistakesScore = totalFullMistakes + (halfMistakes / 2);
+        let allowedMistakes = Math.round(totalWords * 0.05);
+        
+        let excessMistakes = 0;
+        if(actualMistakesScore > allowedMistakes) {
+            excessMistakes = actualMistakesScore - allowedMistakes;
+        }
+
+        let netWords = totalWords - excessMistakes;
+        if(netWords < 0) netWords = 0;
+
+        let accuracy = (netWords / totalWords) * 100;
+        
+        if(timeTakenMins < 1) timeTakenMins = 1; 
+        let speedWPM = Math.round(netWords / timeTakenMins);
+
+        document.getElementById('r_masterWords').innerText = totalWords;
+        document.getElementById('r_omissions').innerText = omissions;
+        document.getElementById('r_fullMistakes').innerText = fullMistakes;
+        document.getElementById('r_extraWords').innerText = extraWords;
+        document.getElementById('r_halfMistakes').innerText = halfMistakes;
+        
+        document.getElementById('r_actualMistakes').innerText = actualMistakesScore;
+        document.getElementById('r_allowedMistakes').innerText = allowedMistakes;
+        document.getElementById('r_excessMistakes').innerText = excessMistakes;
+        document.getElementById('r_netWords').innerText = netWords;
+        document.getElementById('r_speed').innerText = speedWPM + " WPM";
+        document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
+
+        document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
+    }
+
+    function downloadResultPDF() {
+        const btn = document.getElementById('downloadPdfBtn');
+        btn.style.display = 'none';
+        const element = document.getElementById('resultBox');
+        
+        const opt = {
+            margin:       [10, 10, 10, 10],
+            filename:     'Hindi_Steno_Lab_Result.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btn.style.display = 'inline-block';
+        });
+    }
+</script>
+
+</body>
+                                                                                                                                              </html>
+                
