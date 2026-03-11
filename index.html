@@ -184,10 +184,17 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     }
 
     function requestFullScreen() {
-        let elem = document.documentElement;
-        if (elem.requestFullscreen) { elem.requestFullscreen(); }
-        else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
-        else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } 
+        try {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) { 
+                // Error catching for mobile browsers
+                elem.requestFullscreen().catch(err => console.log("Fullscreen blocked by browser")); 
+            }
+            else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
+            else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } 
+        } catch(e) {
+            console.log("Fullscreen error:", e);
+        }
     }
 
     function startAudioSection() {
@@ -202,8 +209,14 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 
         requestFullScreen();
 
-        // चुनी गई स्पीड के अनुसार मास्टर टेक्स्ट और ऑडियो सेट करें
-        finalMasterText = document.getElementById('masterText_' + speed).value.trim();
+        // बॉक्स को ढूंढने और चेक करने का सुरक्षित तरीका
+        let masterTextElem = document.getElementById('masterText_' + speed);
+        if(!masterTextElem) {
+            alert("तकनीकी त्रुटि: " + speed + " WPM का मास्टर टेक्स्ट बॉक्स नहीं मिला। कृपया एडमिन सेटिंग चेक करें।");
+            return;
+        }
+
+        finalMasterText = masterTextElem.value.trim();
         document.getElementById('dictationAudio').src = "dictation_" + speed + ".mp3";
         
         document.getElementById('r_name').innerText = name;
@@ -287,7 +300,9 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         isTestRunning = false; 
         clearInterval(timerInterval);
         
-        if (document.exitFullscreen) { document.exitFullscreen(); }
+        if (document.exitFullscreen) { 
+            document.exitFullscreen().catch(e => console.log(e)); 
+        }
         
         let timeTakenSeconds = totalDuration - timeLeft;
         let tMinutes = Math.floor(timeTakenSeconds / 60);
@@ -339,15 +354,3 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                     dp[i][j] = ins; path[i][j] = 3;
                 }
             }
-        }
-        
-        let omissions = 0, halfMistakes = 0, fullMistakes = 0, extraWords = 0;
-        let currI = mWords.length, currJ = sWords.length;
-        let diffHtmlArray = []; 
-        
-        while(currI > 0 || currJ > 0) {
-            if (currI > 0 && currJ > 0 && path[currI][currJ] === 1) {
-                let w1 = mWords[currI-1];
-                let w2 = sWords[currJ-1];
-                if (w1 === w2) {
-                    diffHtmlArray.unshift('<span style="color: #28a745;">' + w2 + '</span>
