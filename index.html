@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
     <style>
         @font-face {
             font-family: 'Kruti Dev 010';
             src: url('kruti.ttf') format('truetype');
         }
 
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; transition: 0.3s; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; transition: 0.3s; margin: 0; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; transition: 0.3s; }
         .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; }
         .header-title h1 { margin: 0; color: #0277bd; font-size: 36px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
@@ -26,6 +32,8 @@
         .btn:hover { background: #4cae4c; }
         .btn-info { background: #17a2b8; margin-top: 15px; }
         .btn-info:hover { background: #138496; }
+        .btn-danger { background: #dc3545; width: auto; padding: 8px 15px; margin-top: 0; }
+        .btn-danger:hover { background: #c82333; }
         
         .setup-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; transition: 0.3s; }
         .input-field { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
@@ -45,7 +53,8 @@
         .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; transition: 0.3s; }
         .legend-item { display: inline-block; margin-right: 20px; margin-bottom: 5px; }
 
-        .dark-mode-btn { position: absolute; top: 20px; right: 20px; background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .dark-mode-btn:hover { background: #000; }
 
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
@@ -59,19 +68,46 @@
         body.dark-mode .official-box h4 { color: #f8d7da; border-color: #664d03; }
         body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
         body.dark-mode .input-field { background-color: #333; color: #fff; border-color: #555; }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
+    <div class="top-bar">
+        <div id="userProfile" style="display:none; font-weight:bold; color:#0277bd;">
+            👤 <span id="userEmailDisplay"></span>
+            <button class="btn btn-danger" onclick="logoutUser()" style="margin-left:10px;">लॉगआउट</button>
+        </div>
+        <div style="flex-grow: 1;"></div>
+        <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
+    </div>
 
     <div class="header-title">
         <h1>हिंदी स्टेनो लैब</h1>
         <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
     </div>
 
-    <div id="testArea">
+    <div id="authArea" class="setup-box">
+        <h3 style="margin-top: 0; color: #0277bd; text-align: center;">पोर्टल में प्रवेश करें</h3>
+        <p style="text-align: center; color: #555; margin-bottom:20px;">टेस्ट देने के लिए अपना खाता बनाएं या लॉगिन करें।</p>
+        
+        <label style="border:none; margin-top:0;">ईमेल आईडी (Email ID):</label>
+        <input type="email" id="authEmail" class="input-field" placeholder="अपना ईमेल दर्ज करें">
+        
+        <label style="border:none;">पासवर्ड (Password):</label>
+        <input type="password" id="authPassword" class="input-field" placeholder="पासवर्ड (कम से कम 6 अक्षर)">
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" onclick="loginUser()">लॉगिन करें (Login)</button>
+            <button class="btn btn-info" onclick="signupUser()">नया खाता बनाएं (Sign Up)</button>
+        </div>
+    </div>
+
+    <div id="testArea" style="display: none;">
         <div id="studentDetailsBox" class="setup-box">
             <h3 style="margin-top: 0; color: #0277bd;">विद्यार्थी विवरण दर्ज करें</h3>
             
@@ -173,6 +209,68 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 ;g 100 'kCn çfr feuV dh fMDVs'ku gSA
 </textarea>
 <script>
+    // ==========================================
+    // 1. Firebase Initialization (आपका कोड)
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiinjqA4Af74Hw4Cc03QifOHfg4m2iK9c",
+      authDomain: "hindi-steno-lab.firebaseapp.com",
+      projectId: "hindi-steno-lab",
+      storageBucket: "hindi-steno-lab.firebasestorage.app",
+      messagingSenderId: "705336707094",
+      appId: "1:705336707094:web:e97b085d78727b1e1a8d37"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ==========================================
+    // 2. Authentication Logic (लॉगिन / साइनअप)
+    // ==========================================
+    
+    // चेक करें कि यूज़र लॉगिन है या नहीं
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // लॉगिन हो गया: टेस्ट एरिया दिखाएं
+            document.getElementById('authArea').style.display = 'none';
+            document.getElementById('testArea').style.display = 'block';
+            document.getElementById('userProfile').style.display = 'block';
+            document.getElementById('userEmailDisplay').innerText = user.email;
+        } else {
+            // लॉगिन नहीं है: लॉगिन एरिया दिखाएं
+            document.getElementById('authArea').style.display = 'block';
+            document.getElementById('testArea').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'none';
+        }
+    });
+
+    function signupUser() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
+        
+        auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => { alert("खाता सफलतापूर्वक बन गया! अब आप टेस्ट दे सकते हैं।"); })
+        .catch((error) => { alert("एरर: " + error.message); });
+    }
+
+    function loginUser() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
+        
+        auth.signInWithEmailAndPassword(email, password)
+        .catch((error) => { alert("लॉगिन फेल: ईमेल या पासवर्ड गलत है।"); });
+    }
+
+    function logoutUser() {
+        auth.signOut().then(() => { alert("लॉगआउट सफल!"); });
+    }
+
+    // ==========================================
+    // 3. Test Logic (आपका पुराना कोड)
+    // ==========================================
     let finalMasterText = "";
     let totalDuration = 3600; 
     let timeLeft = totalDuration; 
@@ -189,15 +287,10 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
             var elem = document.documentElement;
             if (elem.requestFullscreen) {
                 var promise = elem.requestFullscreen();
-                if(promise !== undefined) {
-                    promise.catch(function(error) { console.log("Fullscreen blocked:", error); });
-                }
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
-        } catch(e) { console.log("Fullscreen API error:", e); }
+                if(promise !== undefined) { promise.catch(function(e){}); }
+            } else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+        } catch(e) {}
     }
 
     function startAudioSection() {
@@ -205,18 +298,12 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         let roll = document.getElementById('studentRoll').value.trim();
         let speed = document.getElementById('speedSelect').value;
 
-        if(name === "" || roll === "") {
-            alert("कृपया अपना नाम और रोल नंबर दर्ज करें!");
-            return;
-        }
+        if(name === "" || roll === "") { alert("कृपया अपना नाम और रोल नंबर दर्ज करें!"); return; }
 
         requestFullScreen();
 
         let masterTextElem = document.getElementById('masterText_' + speed);
-        if(!masterTextElem) {
-            alert("तकनीकी त्रुटि: " + speed + " WPM का मास्टर टेक्स्ट बॉक्स नहीं मिला।");
-            return;
-        }
+        if(!masterTextElem) { alert("तकनीकी त्रुटि: मास्टर टेक्स्ट नहीं मिला।"); return; }
 
         finalMasterText = masterTextElem.value.trim();
         document.getElementById('dictationAudio').src = "dictation_" + speed + ".mp3";
@@ -230,9 +317,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 
         let audioPlayer = document.getElementById('dictationAudio');
         if(audioPlayer) {
-            audioPlayer.onended = function() { 
-                startTypingTest(); 
-            };
+            audioPlayer.onended = function() { startTypingTest(); };
         }
     }
 
@@ -248,9 +333,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 
         studentTextArea.addEventListener('keydown', function(e) {
             const forbiddenKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
-            if (forbiddenKeys.includes(e.key)) {
-                e.preventDefault();
-            }
+            if (forbiddenKeys.includes(e.key)) { e.preventDefault(); }
         });
 
         studentTextArea.addEventListener('mousedown', function(e) {
@@ -266,8 +349,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         });
         
         studentTextArea.addEventListener('paste', function(e) {
-            e.preventDefault();
-            alert("पेस्ट करना वर्जित है!");
+            e.preventDefault(); alert("पेस्ट करना वर्जित है!");
         });
     }
 
@@ -275,9 +357,9 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         if (isTestRunning && document.visibilityState === 'hidden') {
             cheatWarningCount++;
             if (cheatWarningCount === 1) {
-                alert("⚠️ चेतावनी (Warning): आपने टेस्ट के दौरान स्क्रीन या टैब बदला है! यह स्टेनोग्राफी परीक्षा के नियमों के विरुद्ध है। यदि आपने ऐसा दोबारा किया, तो आपका टेस्ट अपने आप सबमिट हो जाएगा!");
+                alert("⚠️ चेतावनी: आपने टेस्ट के दौरान स्क्रीन बदली है! दोबारा करने पर टेस्ट सबमिट हो जाएगा!");
             } else if (cheatWarningCount >= 2) {
-                alert("❌ चीटिंग पकड़ी गई! आपने बार-बार स्क्रीन बदली है। आपका टेस्ट अब ऑटोमैटिक सबमिट किया जा रहा है।");
+                alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।");
                 submitTest(); 
             }
         }
@@ -290,11 +372,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         if (seconds < 10) seconds = "0" + seconds;
         
         document.getElementById('timerDisplay').innerText = "समय शेष: " + minutes + ":" + seconds;
-        
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            submitTest();
-        }
+        if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
         timeLeft--;
     }
 
@@ -339,9 +417,8 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                 let w1 = mWords[i-1];
                 let w2 = sWords[j-1];
                 
-                if (w1 === w2) {
-                    cost = 0; 
-                } else {
+                if (w1 === w2) { cost = 0; } 
+                else {
                     let c1 = w1.replace(/[,\|]/g, '');
                     let c2 = w2.replace(/[,\|]/g, '');
                     if (c1 === c2) cost = 0.5; 
@@ -351,13 +428,9 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                 let del = dp[i-1][j] + 1;
                 let ins = dp[i][j-1] + 1;
                 
-                if (diag <= del && diag <= ins) {
-                    dp[i][j] = diag; path[i][j] = 1;
-                } else if (del <= ins) {
-                    dp[i][j] = del; path[i][j] = 2;
-                } else {
-                    dp[i][j] = ins; path[i][j] = 3;
-                }
+                if (diag <= del && diag <= ins) { dp[i][j] = diag; path[i][j] = 1; } 
+                else if (del <= ins) { dp[i][j] = del; path[i][j] = 2; } 
+                else { dp[i][j] = ins; path[i][j] = 3; }
             }
         }
         
@@ -376,23 +449,14 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                     let c2 = w2.replace(/[,\|]/g, '');
                     let correctWordHtml = ' <span style="color: #28a745; font-family: Arial, sans-serif;">(</span><span style="color: #28a745;">' + w1 + '</span><span style="color: #28a745; font-family: Arial, sans-serif;">)</span>';
 
-                    if (c1 === c2) {
-                        halfMistakes++;
-                        diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml);
-                    } else {
-                        fullMistakes++; 
-                        diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml);
-                    }
+                    if (c1 === c2) { halfMistakes++; diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml); } 
+                    else { fullMistakes++; diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml); }
                 }
                 currI--; currJ--;
             } else if (currI > 0 && (currJ === 0 || path[currI][currJ] === 2)) {
-                omissions++; 
-                diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>');
-                currI--;
+                omissions++; diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>'); currI--;
             } else if (currJ > 0 && (currI === 0 || path[currI][currJ] === 3)) {
-                extraWords++; 
-                diffHtmlArray.unshift('<span style="color: #dc3545; border-bottom: 2px solid #dc3545;">' + sWords[currJ-1] + '</span>');
-                currJ--;
+                extraWords++; diffHtmlArray.unshift('<span style="color: #dc3545; border-bottom: 2px solid #dc3545;">' + sWords[currJ-1] + '</span>'); currJ--;
             }
         }
         
@@ -400,12 +464,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         let totalFullMistakes = fullMistakes + extraWords + omissions; 
         let actualMistakesScore = totalFullMistakes + (halfMistakes / 2);
         let allowedMistakes = Math.round(totalWords * 0.05);
-        
-        let excessMistakes = 0;
-        if(actualMistakesScore > allowedMistakes) {
-            excessMistakes = actualMistakesScore - allowedMistakes;
-        }
-
+        let excessMistakes = actualMistakesScore > allowedMistakes ? actualMistakesScore - allowedMistakes : 0;
         let netWords = totalWords - excessMistakes;
         if(netWords < 0) netWords = 0;
 
@@ -418,15 +477,38 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.getElementById('r_fullMistakes').innerText = fullMistakes;
         document.getElementById('r_extraWords').innerText = extraWords;
         document.getElementById('r_halfMistakes').innerText = halfMistakes;
-        
         document.getElementById('r_actualMistakes').innerText = actualMistakesScore;
         document.getElementById('r_allowedMistakes').innerText = allowedMistakes;
         document.getElementById('r_excessMistakes').innerText = excessMistakes;
         document.getElementById('r_netWords').innerText = netWords;
         document.getElementById('r_speed').innerText = speedWPM + " WPM";
         document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
-
         document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
+
+        // ==========================================
+        // डेटाबेस में रिज़ल्ट सेव करना (Firestore Save)
+        // ==========================================
+        let studentName = document.getElementById('studentName').value;
+        let studentRoll = document.getElementById('studentRoll').value;
+        let testSpeed = document.getElementById('speedSelect').value;
+        
+        if (auth.currentUser) {
+            db.collection("steno_results").add({
+                email: auth.currentUser.email,
+                name: studentName,
+                rollNumber: studentRoll,
+                speedTarget: testSpeed,
+                actualSpeedWPM: speedWPM,
+                accuracy: accuracy.toFixed(2),
+                totalMistakes: actualMistakesScore,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                console.log("रिज़ल्ट डेटाबेस में सेव हो गया!");
+            }).catch((error) => {
+                console.error("रिज़ल्ट सेव करने में त्रुटि: ", error);
+            });
+        }
+        // ==========================================
     }
 
     function downloadResultPDF() {
