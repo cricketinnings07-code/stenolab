@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+
     <style>
         @font-face {
             font-family: 'Kruti Dev 010';
@@ -26,6 +31,8 @@
         .btn:hover { background: #4cae4c; }
         .btn-info { background: #17a2b8; margin-top: 15px; }
         .btn-info:hover { background: #138496; }
+        .btn-danger { background: #dc3545; padding: 8px 15px; margin-top: 0; width: auto; font-size: 14px;}
+        .btn-danger:hover { background: #c82333; }
         
         .setup-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; transition: 0.3s; }
         .input-field { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
@@ -45,7 +52,7 @@
         .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; transition: 0.3s; }
         .legend-item { display: inline-block; margin-right: 20px; margin-bottom: 5px; }
 
-        .top-bar { display: flex; justify-content: flex-end; margin-bottom: 15px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;}
         .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .dark-mode-btn:hover { background: #000; }
 
@@ -60,16 +67,18 @@
         body.dark-mode .official-box h4 { color: #f8d7da; border-color: #664d03; }
         body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
         body.dark-mode .input-field { background-color: #333; color: #fff; border-color: #555; }
-
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; }
-        }
+        body.dark-mode .top-bar { border-bottom-color: #444; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="top-bar">
+        <div id="userProfile" style="display:none; font-weight:bold; color:#0277bd; font-size: 16px;">
+            👤 <span id="userEmailDisplay"></span>
+            <button class="btn btn-danger" onclick="logoutUser()" style="margin-left:15px;">लॉगआउट</button>
+        </div>
+        <div id="spacer" style="flex-grow: 1;"></div>
         <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
     </div>
 
@@ -78,95 +87,113 @@
         <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
     </div>
 
-    <div id="testArea">
-        <div id="studentDetailsBox" class="setup-box">
-            <h3 style="margin-top: 0; color: #0277bd;">विद्यार्थी विवरण दर्ज करें</h3>
-            
-            <label style="border:none; margin-top:0;">विद्यार्थी का नाम:</label>
-            <input type="text" id="studentName" class="input-field" placeholder="अपना पूरा नाम दर्ज करें">
-            
-            <label style="border:none;">रोल नंबर / आईडी:</label>
-            <input type="text" id="studentRoll" class="input-field" placeholder="अपना रोल नंबर दर्ज करें">
-            
-            <label style="border:none;">डिक्टेशन की गति (Speed) चुनें:</label>
-            <select id="speedSelect" class="input-field">
-                <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
-                <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
-                <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
-            </select>
-
-            <button class="btn" onclick="startAudioSection()">विवरण सुरक्षित करें और टेस्ट शुरू करें</button>
-        </div>
-
-        <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
-            <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें। ऑडियो समाप्त होते ही यह प्लेयर हट जाएगा और आपका 60 मिनट का समय स्वतः शुरू हो जाएगा।</p>
-            <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">
-                आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।
-            </audio>
-            <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">
-                स्किप करें / सीधे टाइपिंग शुरू करें
-            </button>
-        </div>
-
-        <div id="typingSection" style="display: none;">
-            <div class="timer" id="timerDisplay">समय शेष: 60:00</div>
-            <label style="border:none;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-            <p style="color:red; font-size:14px; margin-top:0;">
-                <i>नोट: आप बीच में जाकर सुधार नहीं कर सकते। केवल बैकस्पेस का उपयोग करें। <br>
-                <b>सख्त हिदायत (Anti-Cheat):</b> टेस्ट के दौरान कोई दूसरा टैब या ऐप न खोलें, अन्यथा टेस्ट सबमिट हो जाएगा!</i>
-            </p>
-            <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
-            <button id="submitBtn" class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
+    <div id="authArea" class="setup-box">
+        <h3 style="margin-top: 0; color: #0277bd; text-align: center;">पोर्टल में प्रवेश करें</h3>
+        <p style="text-align: center; color: #555; margin-bottom:20px;">टेस्ट देने के लिए अपना खाता बनाएं या लॉगिन करें।</p>
+        
+        <label style="border:none; margin-top:0;">ईमेल आईडी (Email ID):</label>
+        <input type="email" id="authEmail" class="input-field" placeholder="अपना ईमेल दर्ज करें">
+        
+        <label style="border:none;">पासवर्ड (Password):</label>
+        <input type="password" id="authPassword" class="input-field" placeholder="पासवर्ड (कम से कम 6 अक्षर)">
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" onclick="loginUser()">लॉगिन करें (Login)</button>
+            <button class="btn btn-info" onclick="signupUser()">नया खाता बनाएं (Sign Up)</button>
         </div>
     </div>
 
-    <div id="resultBox" class="result-box">
-        <h2 style="color: #0277bd; text-align: center; margin-top: 0; margin-bottom: 5px; font-size: 28px;">हिंदी स्टेनो लैब</h2>
-        <h3 style="color: #28a745; margin-top: 0; margin-bottom: 15px; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
-        
-        <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
-            <b>नाम:</b> <span id="r_name" style="color: #007bff;"></span> | 
-            <b>रोल नंबर:</b> <span id="r_roll" style="color: #007bff;"></span> |
-            <b>टेस्ट स्पीड:</b> <span id="r_testSpeed" style="color: #007bff;"></span><br>
-            <b style="display:inline-block; margin-top:5px;">लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stat-item positive">कुल शब्द (Master Words): <span id="r_masterWords">0</span></div>
-            <div class="stat-item">छूटे हुए शब्द (Omissions): <span id="r_omissions">0</span></div>
-            <div class="stat-item">स्पेलिंग/गलत शब्द (Substitution): <span id="r_fullMistakes">0</span></div>
-            <div class="stat-item">अतिरिक्त शब्द (Extra Words): <span id="r_extraWords">0</span></div>
-            <div class="stat-item" style="grid-column: span 2;">विराम चिह्न / आधी गलतियां (Partial Mistakes): <span id="r_halfMistakes">0</span></div>
-        </div>
+    <div id="mainAppArea" style="display: none;">
+        <div id="testArea">
+            <div id="studentDetailsBox" class="setup-box">
+                <h3 style="margin-top: 0; color: #0277bd;">विद्यार्थी विवरण दर्ज करें</h3>
+                
+                <label style="border:none; margin-top:0;">विद्यार्थी का नाम:</label>
+                <input type="text" id="studentName" class="input-field" placeholder="अपना पूरा नाम दर्ज करें">
+                
+                <label style="border:none;">रोल नंबर / आईडी:</label>
+                <input type="text" id="studentRoll" class="input-field" placeholder="अपना रोल नंबर दर्ज करें">
+                
+                <label style="border:none;">डिक्टेशन की गति (Speed) चुनें:</label>
+                <select id="speedSelect" class="input-field">
+                    <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
+                    <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
+                    <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
+                </select>
 
-        <div class="official-box">
-            <h4>आधिकारिक मूल्यांकन (Official Evaluation - 5% Margin Rule)</h4>
-            <div class="stats-grid" style="margin-bottom: 0;">
-                <div class="stat-item" style="background: none;">कुल की गई गलतियां:<br><small>(Full + Partial/2)</small> <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
-                <div class="stat-item positive" style="background: none;">माफ की गई गलतियां:<br><small>(कुल शब्दों का 5%)</small> <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
-                <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">काटी जाने वाली गलतियां:<br><small>(Excess Mistakes)</small> <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
-                <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">शुद्ध शब्द (Net Words):<br><small>(Total Words - Excess)</small> <span id="r_netWords" style="font-size: 22px;">0</span></div>
-                <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb; border-radius:4px; padding:10px;">
-                    <span style="float:none; color: #155724; font-size: 20px;">टाइपिंग स्पीड: <b id="r_speed">0 WPM</b> &nbsp; | &nbsp; शुद्धता (Accuracy): <b id="r_accuracy">0%</b></span>
-                </div>
+                <button class="btn" onclick="startAudioSection()">विवरण सुरक्षित करें और टेस्ट शुरू करें</button>
+            </div>
+
+            <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
+                <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें। ऑडियो समाप्त होते ही यह प्लेयर हट जाएगा और आपका 60 मिनट का समय स्वतः शुरू हो जाएगा।</p>
+                <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">
+                    आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।
+                </audio>
+                <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">
+                    स्किप करें / सीधे टाइपिंग शुरू करें
+                </button>
+            </div>
+
+            <div id="typingSection" style="display: none;">
+                <div class="timer" id="timerDisplay">समय शेष: 60:00</div>
+                <label style="border:none;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
+                <p style="color:red; font-size:14px; margin-top:0;">
+                    <i>नोट: आप बीच में जाकर सुधार नहीं कर सकते। केवल बैकस्पेस का उपयोग करें। <br>
+                    <b>सख्त हिदायत (Anti-Cheat):</b> टेस्ट के दौरान कोई दूसरा टैब या ऐप न खोलें, अन्यथा टेस्ट सबमिट हो जाएगा!</i>
+                </p>
+                <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
+                <button id="submitBtn" class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
             </div>
         </div>
-        
-        <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; display:none;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
 
-        <hr>
-        <label>आपके अनुवाद का मूल्यांकन (Evaluated Text):</label>
-        <div class="color-legend">
-            <b>संकेत:</b><br>
-            <span class="legend-item" style="color: #28a745;">■ सही शब्द</span>
-            <span class="legend-item"><span style="color: #dc3545;">■ स्पेलिंग गलती (Full)</span></span>
-            <span class="legend-item"><span style="color: #fd7e14;">■ विराम चिह्न (Partial)</span></span>
-            <span class="legend-item" style="color: #dc3545; text-decoration: line-through;">■ छूटा हुआ शब्द (Omission)</span>
-            <span class="legend-item" style="color: #dc3545; border-bottom: 2px solid #dc3545;">■ अतिरिक्त शब्द (Extra)</span>
-        </div>
-        <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
-        <div style="text-align: center;">
-            <button id="downloadPdfBtn" class="btn btn-info" style="width: auto;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
+        <div id="resultBox" class="result-box">
+            <h2 style="color: #0277bd; text-align: center; margin-top: 0; margin-bottom: 5px; font-size: 28px;">हिंदी स्टेनो लैब</h2>
+            <h3 style="color: #28a745; margin-top: 0; margin-bottom: 15px; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
+            
+            <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
+                <b>नाम:</b> <span id="r_name" style="color: #007bff;"></span> | 
+                <b>रोल नंबर:</b> <span id="r_roll" style="color: #007bff;"></span> |
+                <b>टेस्ट स्पीड:</b> <span id="r_testSpeed" style="color: #007bff;"></span><br>
+                <b style="display:inline-block; margin-top:5px;">लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item positive">कुल शब्द (Master Words): <span id="r_masterWords">0</span></div>
+                <div class="stat-item">छूटे हुए शब्द (Omissions): <span id="r_omissions">0</span></div>
+                <div class="stat-item">स्पेलिंग/गलत शब्द (Substitution): <span id="r_fullMistakes">0</span></div>
+                <div class="stat-item">अतिरिक्त शब्द (Extra Words): <span id="r_extraWords">0</span></div>
+                <div class="stat-item" style="grid-column: span 2;">विराम चिह्न / आधी गलतियां (Partial Mistakes): <span id="r_halfMistakes">0</span></div>
+            </div>
+
+            <div class="official-box">
+                <h4>आधिकारिक मूल्यांकन (Official Evaluation - 5% Margin Rule)</h4>
+                <div class="stats-grid" style="margin-bottom: 0;">
+                    <div class="stat-item" style="background: none;">कुल की गई गलतियां:<br><small>(Full + Partial/2)</small> <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
+                    <div class="stat-item positive" style="background: none;">माफ की गई गलतियां:<br><small>(कुल शब्दों का 5%)</small> <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
+                    <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">काटी जाने वाली गलतियां:<br><small>(Excess Mistakes)</small> <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
+                    <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">शुद्ध शब्द (Net Words):<br><small>(Total Words - Excess)</small> <span id="r_netWords" style="font-size: 22px;">0</span></div>
+                    <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb; border-radius:4px; padding:10px;">
+                        <span style="float:none; color: #155724; font-size: 20px;">टाइपिंग स्पीड: <b id="r_speed">0 WPM</b> &nbsp; | &nbsp; शुद्धता (Accuracy): <b id="r_accuracy">0%</b></span>
+                    </div>
+                </div>
+            </div>
+            
+            <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; display:none;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
+
+            <hr>
+            <label>आपके अनुवाद का मूल्यांकन (Evaluated Text):</label>
+            <div class="color-legend">
+                <b>संकेत:</b><br>
+                <span class="legend-item" style="color: #28a745;">■ सही शब्द</span>
+                <span class="legend-item"><span style="color: #dc3545;">■ स्पेलिंग गलती (Full)</span></span>
+                <span class="legend-item"><span style="color: #fd7e14;">■ विराम चिह्न (Partial)</span></span>
+                <span class="legend-item" style="color: #dc3545; text-decoration: line-through;">■ छूटा हुआ शब्द (Omission)</span>
+                <span class="legend-item" style="color: #dc3545; border-bottom: 2px solid #dc3545;">■ अतिरिक्त शब्द (Extra)</span>
+            </div>
+            <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
+            <div style="text-align: center;">
+                <button id="downloadPdfBtn" class="btn btn-info" style="width: auto;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
+            </div>
         </div>
     </div>
 </div>
@@ -183,7 +210,63 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 ;g 100 'kCn çfr feuV dh fMDVs'ku gSA
 </textarea>
 <script>
-    // आपका Google Apps Script URL
+    // ==========================================
+    // 1. Firebase Authentication Logic (लॉगिन/साइनअप)
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiinjqA4Af74Hw4Cc03QifOHfg4m2iK9c",
+      authDomain: "hindi-steno-lab.firebaseapp.com",
+      projectId: "hindi-steno-lab",
+      storageBucket: "hindi-steno-lab.firebasestorage.app",
+      messagingSenderId: "705336707094",
+      appId: "1:705336707094:web:e97b085d78727b1e1a8d37"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // चेक करें कि यूज़र लॉगिन है या नहीं
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            document.getElementById('authArea').style.display = 'none';
+            document.getElementById('mainAppArea').style.display = 'block';
+            document.getElementById('spacer').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'block';
+            document.getElementById('userEmailDisplay').innerText = user.email;
+        } else {
+            document.getElementById('authArea').style.display = 'block';
+            document.getElementById('mainAppArea').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('spacer').style.display = 'block';
+        }
+    });
+
+    function signupUser() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
+        
+        auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => { alert("खाता सफलतापूर्वक बन गया! अब आप टेस्ट दे सकते हैं।"); })
+        .catch((error) => { alert("एरर: " + error.message); });
+    }
+
+    function loginUser() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
+        
+        auth.signInWithEmailAndPassword(email, password)
+        .catch((error) => { alert("लॉगिन फेल: ईमेल या पासवर्ड गलत है।"); });
+    }
+
+    function logoutUser() {
+        auth.signOut();
+    }
+
+    // ==========================================
+    // 2. Test Logic & Google Sheets (आपका डेटाबेस)
+    // ==========================================
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
 
     let finalMasterText = "";
@@ -400,13 +483,9 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
         document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
 
-        // ==========================================
-        // Google Sheets में रिज़ल्ट सेव करना
-        // ==========================================
         saveResultToGoogleSheet(speedWPM, accuracy.toFixed(2), actualMistakesScore);
     }
 
-    // Google Sheet पर डेटा भेजने वाला फंक्शन
     function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes) {
         let dataPayload = {
             name: document.getElementById('studentName').value.trim(),
@@ -425,12 +504,10 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
             body: JSON.stringify(dataPayload)
         })
         .then(response => {
-            document.getElementById('saveStatus').style.display = 'block'; // सफलता का मैसेज दिखाएं
+            document.getElementById('saveStatus').style.display = 'block';
             console.log("Success: Data saved to Google Sheets");
         })
-        .catch(error => {
-            console.error("Error saving data:", error);
-        });
+        .catch(error => { console.error("Error saving data:", error); });
     }
 
     function downloadResultPDF() {
