@@ -59,11 +59,6 @@
         body.dark-mode .official-box h4 { color: #f8d7da; border-color: #664d03; }
         body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
         body.dark-mode .input-field { background-color: #333; color: #fff; border-color: #555; }
-
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .dark-mode-btn { position: static; display: block; width: 100%; margin-bottom: 15px; }
-        }
     </style>
 </head>
 <body>
@@ -189,21 +184,20 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.body.classList.toggle('dark-mode');
     }
 
-    // फुल स्क्रीन कोड को 100% सुरक्षित बनाया गया है
     function requestFullScreen() {
         try {
             var elem = document.documentElement;
             if (elem.requestFullscreen) {
                 var promise = elem.requestFullscreen();
-                if(promise && promise.catch) { promise.catch(function(e){}); }
+                if(promise !== undefined) {
+                    promise.catch(function(error) { console.log("Fullscreen blocked:", error); });
+                }
             } else if (elem.webkitRequestFullscreen) {
                 elem.webkitRequestFullscreen();
             } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
             }
-        } catch(e) {
-            console.log("Fullscreen not supported by this browser.");
-        }
+        } catch(e) { console.log("Fullscreen API error:", e); }
     }
 
     function startAudioSection() {
@@ -311,7 +305,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         try {
             if (document.exitFullscreen) { 
                 var promise = document.exitFullscreen(); 
-                if(promise && promise.catch) { promise.catch(function(e){}); }
+                if(promise !== undefined) { promise.catch(function(e){}); }
             }
         } catch(e) {}
         
@@ -354,4 +348,109 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                 }
                 
                 let diag = dp[i-1][j-1] + cost;
-                le
+                let del = dp[i-1][j] + 1;
+                let ins = dp[i][j-1] + 1;
+                
+                if (diag <= del && diag <= ins) {
+                    dp[i][j] = diag; path[i][j] = 1;
+                } else if (del <= ins) {
+                    dp[i][j] = del; path[i][j] = 2;
+                } else {
+                    dp[i][j] = ins; path[i][j] = 3;
+                }
+            }
+        }
+        
+        let omissions = 0, halfMistakes = 0, fullMistakes = 0, extraWords = 0;
+        let currI = mWords.length, currJ = sWords.length;
+        let diffHtmlArray = []; 
+        
+        while(currI > 0 || currJ > 0) {
+            if (currI > 0 && currJ > 0 && path[currI][currJ] === 1) {
+                let w1 = mWords[currI-1];
+                let w2 = sWords[currJ-1];
+                if (w1 === w2) {
+                    diffHtmlArray.unshift('<span style="color: #28a745;">' + w2 + '</span>');
+                } else {
+                    let c1 = w1.replace(/[,\|]/g, '');
+                    let c2 = w2.replace(/[,\|]/g, '');
+                    let correctWordHtml = ' <span style="color: #28a745; font-family: Arial, sans-serif;">(</span><span style="color: #28a745;">' + w1 + '</span><span style="color: #28a745; font-family: Arial, sans-serif;">)</span>';
+
+                    if (c1 === c2) {
+                        halfMistakes++;
+                        diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml);
+                    } else {
+                        fullMistakes++; 
+                        diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml);
+                    }
+                }
+                currI--; currJ--;
+            } else if (currI > 0 && (currJ === 0 || path[currI][currJ] === 2)) {
+                omissions++; 
+                diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>');
+                currI--;
+            } else if (currJ > 0 && (currI === 0 || path[currI][currJ] === 3)) {
+                extraWords++; 
+                diffHtmlArray.unshift('<span style="color: #dc3545; border-bottom: 2px solid #dc3545;">' + sWords[currJ-1] + '</span>');
+                currJ--;
+            }
+        }
+        
+        let totalWords = mWords.length;
+        let totalFullMistakes = fullMistakes + extraWords + omissions; 
+        let actualMistakesScore = totalFullMistakes + (halfMistakes / 2);
+        let allowedMistakes = Math.round(totalWords * 0.05);
+        
+        let excessMistakes = 0;
+        if(actualMistakesScore > allowedMistakes) {
+            excessMistakes = actualMistakesScore - allowedMistakes;
+        }
+
+        let netWords = totalWords - excessMistakes;
+        if(netWords < 0) netWords = 0;
+
+        let accuracy = (netWords / totalWords) * 100;
+        if(timeTakenMins < 1) timeTakenMins = 1; 
+        let speedWPM = Math.round(netWords / timeTakenMins);
+
+        document.getElementById('r_masterWords').innerText = totalWords;
+        document.getElementById('r_omissions').innerText = omissions;
+        document.getElementById('r_fullMistakes').innerText = fullMistakes;
+        document.getElementById('r_extraWords').innerText = extraWords;
+        document.getElementById('r_halfMistakes').innerText = halfMistakes;
+        
+        document.getElementById('r_actualMistakes').innerText = actualMistakesScore;
+        document.getElementById('r_allowedMistakes').innerText = allowedMistakes;
+        document.getElementById('r_excessMistakes').innerText = excessMistakes;
+        document.getElementById('r_netWords').innerText = netWords;
+        document.getElementById('r_speed').innerText = speedWPM + " WPM";
+        document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
+
+        document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
+    }
+
+    function downloadResultPDF() {
+        const btn = document.getElementById('downloadPdfBtn');
+        btn.style.display = 'none';
+        
+        let wasDarkMode = document.body.classList.contains('dark-mode');
+        if(wasDarkMode) document.body.classList.remove('dark-mode');
+
+        const element = document.getElementById('resultBox');
+        const opt = {
+            margin:       [10, 10, 10, 10],
+            filename:     'Hindi_Steno_Lab_Result.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btn.style.display = 'inline-block';
+            if(wasDarkMode) document.body.classList.add('dark-mode'); 
+        });
+    }
+</script>
+
+</body>
+</html>
