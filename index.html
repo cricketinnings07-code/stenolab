@@ -272,8 +272,8 @@
                     <tr>
                         <th>रैंक</th>
                         <th>विद्यार्थी का नाम</th>
-                        <th>स्पीड (WPM)</th>
-                        <th>एक्यूरेसी</th>
+                        <th>Total Correct word</th>
+                        <th>Accuracy</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboardData">
@@ -519,6 +519,8 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         let actualMistakesScore = totalFullMistakes + (halfMistakes / 2);
         let allowedMistakes = Math.round(totalWords * 0.05);
         let excessMistakes = actualMistakesScore > allowedMistakes ? actualMistakesScore - allowedMistakes : 0;
+        
+        // यह है आपका Total Correct Words
         let netWords = totalWords - excessMistakes; if(netWords < 0) netWords = 0;
 
         let accuracy = (netWords / totalWords) * 100;
@@ -538,17 +540,19 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
         document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
 
-        saveResultToGoogleSheet(speedWPM, accuracy.toFixed(2), actualMistakesScore);
+        // अब हम netWords (Total Correct Words) को भी शीट में भेज रहे हैं
+        saveResultToGoogleSheet(speedWPM, accuracy.toFixed(2), actualMistakesScore, netWords);
     }
 
-    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes) {
+    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
         let dataPayload = {
             name: document.getElementById('studentName').value.trim(),
             rollNumber: document.getElementById('studentRoll').value.trim(),
             speedTarget: document.getElementById('speedSelect').value,
             actualSpeedWPM: speedWPM,
             accuracy: accuracy, 
-            totalMistakes: totalMistakes
+            totalMistakes: totalMistakes,
+            netWords: netWords  // नया डेटा जो शीट में जाएगा
         };
 
         fetch(GOOGLE_SHEET_WEB_APP_URL, {
@@ -571,7 +575,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     }
 
     // ==========================================
-    // 3. Leaderboard Fetching Logic
+    // 3. Leaderboard Fetching Logic (Updated)
     // ==========================================
     function showLeaderboardOnly() {
         document.getElementById('studentDetailsBox').style.display = 'none';
@@ -589,23 +593,28 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         fetch(GOOGLE_SHEET_WEB_APP_URL)
         .then(response => response.json())
         .then(data => {
-            // एक्यूरेसी के हिसाब से डेटा को सॉर्ट (Sort) करें
+            // एक्यूरेसी और सही शब्दों के हिसाब से सॉर्टिंग
             data.sort((a, b) => {
-                let accA = parseFloat(a.accuracy);
-                let accB = parseFloat(b.accuracy);
+                let accA = parseFloat(a.accuracy) || 0;
+                let accB = parseFloat(b.accuracy) || 0;
                 if (accB !== accA) return accB - accA; // जिसकी एक्यूरेसी ज़्यादा, वो ऊपर
-                return parseFloat(b.speed) - parseFloat(a.speed); // एक्यूरेसी सेम होने पर स्पीड चेक होगी
+                
+                let wordsA = parseInt(a.netWords) || 0;
+                let wordsB = parseInt(b.netWords) || 0;
+                return wordsB - wordsA; // एक्यूरेसी सेम होने पर Total Correct Words चेक होंगे
             });
 
             let tableHtml = "";
             data.forEach((student, index) => {
-                // टॉप 3 बच्चों को मेडल दें
                 let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
                 
+                // अगर पुराने रिज़ल्ट में netWords नहीं हैं, तो 0 दिखाएं
+                let correctWords = student.netWords ? student.netWords : "0"; 
+
                 tableHtml += `<tr>
                     <td><b>${rankIcon}</b></td>
                     <td>${student.name}</td>
-                    <td>${student.speed} WPM</td>
+                    <td>${correctWords}</td>
                     <td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td>
                 </tr>`;
             });
