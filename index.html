@@ -648,25 +648,59 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         });
     }
 </script>
-    function signupUser() {
+  // 1. स्मार्ट सिक्यूरिटी चेक: क्या ईमेल वेरीफाई हो चुका है?
+    auth.onAuthStateChanged((user) => {
+        // नया चेक: user.emailVerified
+        if (user && user.emailVerified) {
+            let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
+            let userName = user.displayName || user.email.split('@')[0];
+
+            currentUserData = { name: userName, roll: generatedRoll, email: user.email };
+
+            document.getElementById('displayStudentName').innerText = userName;
+            document.getElementById('displayStudentRoll').innerText = generatedRoll;
+            
+            document.getElementById('authWrapper').style.display = 'none';
+            document.getElementById('mainAppArea').style.display = 'block';
+            document.getElementById('spacer').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('userEmailDisplay').innerText = userName;
+        } else {
+            document.getElementById('authWrapper').style.display = 'flex';
+            document.getElementById('mainAppArea').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('spacer').style.display = 'block';
+        }
+    });
+
+    // 2. नया स्मार्ट लॉगिन और साइन-अप सिस्टम (Verification के साथ)
+    function processAuth() {
         const email = document.getElementById('authEmail').value.trim();
         const password = document.getElementById('authPassword').value.trim();
-        const name = document.getElementById('authName').value.trim();
+        const name = document.getElementById('authName') ? document.getElementById('authName').value.trim() : "";
 
         if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
 
         if(isSignupMode) {
             if(!name) { alert("खाता बनाने के लिए पूरा नाम डालना ज़रूरी है!"); return; }
+            
             auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
-                // नाम को Firebase प्रोफाइल में सेव करें
-                return userCredential.user.updateProfile({ displayName: name });
+                // नाम सेव करें और तुरंत वेरिफिकेशन ईमेल भेजें
+                return userCredential.user.updateProfile({ displayName: name })
+                .then(() => {
+                    return userCredential.user.sendEmailVerification(); 
+                });
             })
-            .then(() => { alert("खाता सफलतापूर्वक बन गया!"); location.reload(); })
-            .catch((error) => { 
-                // 🚀 नया स्मार्ट एरर चेकिंग सिस्टम 🚀
+            .then(() => {
+                // बच्चे को तुरंत लॉगआउट कर दें ताकि वह बिना वेरीफाई किए अंदर न जा सके
+                auth.signOut(); 
+                alert("✅ खाता बन गया! लेकिन सुरक्षा कारणों से आपको अपना ईमेल वेरीफाई करना होगा। आपके ईमेल इनबॉक्स (या Spam फोल्डर) पर एक लिंक भेजा गया है, कृपया उस पर क्लिक करें।");
+                toggleAuthMode(); // वापस लॉगिन स्क्रीन पर भेज दें
+            })
+            .catch((error) => {
                 if (error.code === 'auth/email-already-in-use') {
-                    alert("⚠️ इस ईमेल आईडी से पहले ही एक खाता बना हुआ है! कृपया नीचे 'लॉगिन करें' पर क्लिक करें।");
+                    alert("⚠️ इस ईमेल आईडी से पहले ही एक खाता बना हुआ है! कृपया लॉगिन करें।");
                 } else if (error.code === 'auth/weak-password') {
                     alert("⚠️ आपका पासवर्ड बहुत कमज़ोर है! कृपया कम से कम 6 अक्षरों का पासवर्ड बनाएं।");
                 } else {
@@ -674,9 +708,15 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                 }
             });
         } else {
-            // यह हिस्सा लॉगिन के लिए है (इसे नहीं छेड़ना है)
+            // लॉगिन के समय चेक करें कि क्या बच्चे ने लिंक पर क्लिक किया है या नहीं
             auth.signInWithEmailAndPassword(email, password)
-            .catch((error) => { 
+            .then((userCredential) => {
+                if (!userCredential.user.emailVerified) {
+                    auth.signOut(); // अगर वेरीफाई नहीं है, तो तुरंत बाहर निकाल दें
+                    alert("⚠️ आपका ईमेल अभी तक वेरीफाई नहीं हुआ है! कृपया अपना ईमेल इनबॉक्स (या Spam फोल्डर) चेक करें और लिंक पर क्लिक करके वेरीफाई करें।");
+                }
+            })
+            .catch((error) => {
                 if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
                     alert("❌ लॉगिन फेल: आपने ईमेल या पासवर्ड गलत डाला है।");
                 } else {
@@ -685,6 +725,5 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
             });
         }
     }
-
 </body>
 </html>
