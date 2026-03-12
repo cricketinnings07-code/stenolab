@@ -8,12 +8,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        @font-face {
-            font-family: 'Kruti Dev 010';
-            src: url('kruti.ttf') format('truetype');
-        }
+        @font-face { font-family: 'Kruti Dev 010'; src: url('kruti.ttf') format('truetype'); }
 
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 20px; transition: background-color 0.3s; margin: 0; min-height: 100vh; }
         .container { max-width: 900px; margin: 0 auto; position: relative; transition: 0.3s; }
@@ -28,26 +26,16 @@
 
         .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 65vh; }
         .auth-box { background: white; width: 100%; max-width: 380px; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeInSlideUp 0.6s ease-out; }
-        
-        @keyframes fadeInSlideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         .auth-box h3 { color: #0277bd; text-align: center; margin-top: 0; font-size: 24px; margin-bottom: 5px;}
         .auth-box p { text-align: center; color: #777; font-size: 14px; margin-bottom: 25px; }
         .auth-box label { font-size: 13px; font-weight: 600; margin-top: 10px; margin-bottom: 5px; color: #444; border: none; padding: 0; display: block; }
         
         .auth-input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; box-sizing: border-box; transition: all 0.3s; background: #fafafa; }
         .auth-input:focus { border-color: #0277bd; background: #fff; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); outline: none; }
-        
         .forgot-link { display: block; text-align: right; color: #0277bd; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; margin-top: -8px; margin-bottom: 20px; transition: 0.3s; }
-        .forgot-link:hover { color: #01579b; text-decoration: underline; }
-        
         .auth-btn-full { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; color: white; margin-bottom: 15px;}
         .btn-primary { background: linear-gradient(135deg, #0277bd, #01579b); box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(2, 119, 189, 0.4); }
-        
         .switch-auth { text-align: center; font-size: 13px; color: #555; }
         .switch-auth span { color: #0277bd; font-weight: bold; cursor: pointer; text-decoration: underline; }
 
@@ -56,17 +44,13 @@
         .readonly-info p { margin: 5px 0; font-size: 15px; color: #0056b3; }
         
         .input-field { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: 0.3s;}
-        .input-field:focus { border-color: #0277bd; outline: none; box-shadow: 0 0 0 3px rgba(2, 119, 189, 0.1); }
         select.input-field { cursor: pointer; }
         
         .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 8px; margin-top: 15px; width: 100%; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
-        .btn:hover { background: #4cae4c; transform: translateY(-2px); }
+        .btn:hover { transform: translateY(-2px); }
         .btn-info { background: #17a2b8; margin-top: 15px; }
-        .btn-info:hover { background: #138496; }
         .btn-danger { background: #dc3545; padding: 8px 15px; margin-top: 0; width: auto; font-size: 14px; border-radius: 8px; box-shadow: none;}
-        .btn-danger:hover { background: #c82333; transform: none; }
         .btn-warning { background: linear-gradient(135deg, #ffc107, #e0a800); color: #333; margin-top: 20px;}
-        .btn-warning:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4); }
         
         .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 8px; resize: vertical; background-color: #fff; line-height: 1.8; transition: 0.3s; }
         textarea.kruti-text { height: 150px; }
@@ -90,44 +74,21 @@
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 16px; }
         .leaderboard-table th, .leaderboard-table td { padding: 14px; text-align: left; border-bottom: 1px solid #ddd; }
         .leaderboard-table th { background-color: #0277bd; color: white; font-weight: bold; border-radius: 4px 4px 0 0; }
-        .leaderboard-table tr:hover { background-color: #f1f8ff; }
+        
+        /* 🚀 Chart Container 🚀 */
+        .chart-container { width: 100%; max-width: 320px; margin: 20px auto; text-align: center; }
 
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .header-title { background: #1e1e1e; border-bottom-color: #4fc3f7; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        body.dark-mode .header-title h1 { color: #4fc3f7; }
-        body.dark-mode .header-title p { color: #aaa; }
-        body.dark-mode .top-bar { border-bottom-color: #333; }
-        
-        body.dark-mode .auth-box { background: #1e1e1e; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        body.dark-mode .auth-box h3 { color: #4fc3f7; }
-        body.dark-mode .auth-box p, body.dark-mode .auth-box label { color: #aaa; }
-        body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
-        body.dark-mode .auth-input:focus { border-color: #4fc3f7; box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.1); }
-        body.dark-mode .forgot-link { color: #4fc3f7; }
-        body.dark-mode .switch-auth { color: #aaa; }
-        body.dark-mode .switch-auth span { color: #4fc3f7; }
-        
-        body.dark-mode .setup-box, body.dark-mode .result-box, body.dark-mode .leaderboard-box { background: #1e1e1e; border-color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
-        body.dark-mode label { color: #e0e0e0; border-bottom-color: #444;}
-        body.dark-mode .input-field { background-color: #2a2a2a; color: #fff; border-color: #444; }
-        body.dark-mode .input-field:focus { border-color: #4fc3f7; }
+        body.dark-mode .header-title, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box, body.dark-mode .leaderboard-box { background: #1e1e1e; border-color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
+        body.dark-mode .input-field, body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
+        body.dark-mode .kruti-text { background: #2a2a2a; color: #fff; border-color: #444; }
+        body.dark-mode .stat-item, body.dark-mode .leaderboard-table tr:hover { background: #2a2a2a; border-color: #333; }
+        body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
+        body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
         body.dark-mode .readonly-info { background: #1a2a3a; border-color: #0f4c81; }
         body.dark-mode .readonly-info p { color: #4fc3f7; }
-        body.dark-mode .kruti-text { background-color: #2a2a2a; color: #fff; border-color: #444; }
-        body.dark-mode .kruti-readonly { background-color: #1a1a1a; border-color: #444; }
-        body.dark-mode .stat-item { background: #2a2a2a; border-color: #333; color: #e0e0e0; }
-        body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
-        body.dark-mode .official-box h4 { color: #f8d7da; border-color: #664d03; }
-        body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
-        body.dark-mode .timer { background: #4a191c; border-color: #721c24; color: #ff8a80; }
-        body.dark-mode .leaderboard-table th { background-color: #01579b; }
-        body.dark-mode .leaderboard-table td { border-bottom-color: #444; }
-        body.dark-mode .leaderboard-table tr:hover { background-color: #2a2a2a; }
 
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .auth-box { padding: 25px 20px; }
-        }
+        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -151,144 +112,106 @@
         <div id="authArea" class="auth-box">
             <h3 id="authTitle">लॉगिन करें</h3>
             <p id="authSubtitle">टेस्ट देने के लिए अपना खाता खोलें</p>
-            
             <div id="nameFieldContainer" style="display: none;">
-                <label>विद्यार्थी का पूरा नाम (Full Name)</label>
+                <label>विद्यार्थी का पूरा नाम</label>
                 <input type="text" id="authName" class="auth-input" placeholder="जैसे: राहुल कुमार">
             </div>
-
-            <label>ईमेल आईडी (Email ID)</label>
-            <input type="email" id="authEmail" class="auth-input" placeholder="student@example.com">
-            
-            <label>पासवर्ड (Password)</label>
-            <input type="password" id="authPassword" class="auth-input" placeholder="कम से कम 6 अक्षर">
-            
+            <label>ईमेल आईडी</label><input type="email" id="authEmail" class="auth-input" placeholder="student@example.com">
+            <label>पासवर्ड</label><input type="password" id="authPassword" class="auth-input" placeholder="कम से कम 6 अक्षर">
             <span class="forgot-link" id="forgotPwdLink" onclick="resetPassword()">पासवर्ड भूल गए?</span>
-            
             <button class="auth-btn-full btn-primary" id="mainAuthBtn" onclick="processAuth()">लॉगिन करें</button>
-            
-            <div class="switch-auth" id="switchAuthText">
-                नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें</span>
-            </div>
+            <div class="switch-auth" id="switchAuthText">नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें</span></div>
         </div>
     </div>
 
     <div id="mainAppArea" style="display: none;">
-        <div class="header-title">
-            <h1>हिंदी स्टेनो लैब</h1>
-            <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
-        </div>
+        <div class="header-title"><h1>हिंदी स्टेनो लैब</h1><p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p></div>
 
         <div id="testArea">
             <div id="studentDetailsBox" class="setup-box">
                 <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">टेस्ट सेटअप</h3>
-                
                 <div class="readonly-info">
                     <p><b>विद्यार्थी का नाम:</b> <span id="displayStudentName">लोड हो रहा है...</span></p>
                     <p><b>सिस्टम रोल नंबर:</b> <span id="displayStudentRoll">लोड हो रहा है...</span></p>
+                    <p id="dataLoadingMsg" style="color: #d9534f; font-weight:bold;">⏳ सर्वर से डिक्टेशन लोड हो रहा है...</p>
                 </div>
                 
                 <label style="border:none; margin-top:0;">डिक्टेशन की गति (Speed) चुनें:</label>
-                <select id="speedSelect" class="input-field">
+                <select id="speedSelect" class="input-field" disabled>
                     <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
                     <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
                     <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
                 </select>
 
-                <button class="btn" onclick="startAudioSection()">टेस्ट शुरू करें</button>
+                <button id="startTestBtn" class="btn" style="opacity: 0.5; cursor: not-allowed;" disabled onclick="startAudioSection()">टेस्ट शुरू करें</button>
                 <button class="btn" style="background: none; color: #0277bd; border: 2px solid #0277bd; margin-top: 10px;" onclick="showLeaderboardOnly()">📊 सीधे लीडरबोर्ड देखें</button>
             </div>
 
             <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
-                <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें। ऑडियो समाप्त होते ही यह प्लेयर हट जाएगा और आपका 60 मिनट का समय स्वतः शुरू हो जाएगा।</p>
-                <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">
-                    आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।
-                </audio>
-                <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">
-                    स्किप करें / सीधे टाइपिंग शुरू करें
-                </button>
+                <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें।</p>
+                <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।</audio>
+                <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">स्किप करें / सीधे टाइपिंग शुरू करें</button>
             </div>
 
             <div id="typingSection" style="display: none;">
                 <div class="timer" id="timerDisplay">समय शेष: 60:00</div>
                 <label style="border:none;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-                <p style="color:red; font-size:14px; margin-top:0;">
-                    <i>नोट: आप बीच में जाकर सुधार नहीं कर सकते। केवल बैकस्पेस का उपयोग करें। <br>
-                    <b>सख्त हिदायत (Anti-Cheat):</b> टेस्ट के दौरान कोई दूसरा टैब या ऐप न खोलें, अन्यथा टेस्ट सबमिट हो जाएगा!</i>
-                </p>
+                <p style="color:red; font-size:14px; margin-top:0;"><i>सख्त हिदायत: टेस्ट के दौरान कोई दूसरा टैब न खोलें!</i></p>
                 <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
-                <button id="submitBtn" class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
+                <button class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
             </div>
         </div>
 
         <div id="resultBox" class="result-box">
-            <h2 style="color: #0277bd; text-align: center; margin-top: 0; margin-bottom: 5px; font-size: 28px;">हिंदी स्टेनो लैब</h2>
-            <h3 style="color: #28a745; margin-top: 0; margin-bottom: 15px; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
+            <h2 style="color: #0277bd; text-align: center; margin-top: 0;">हिंदी स्टेनो लैब</h2>
+            <h3 style="color: #28a745; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
             
             <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 15px;">
-                <b>नाम:</b> <span id="r_name" style="color: #007bff;"></span> &nbsp;|&nbsp; 
-                <b>रोल नंबर:</b> <span id="r_roll" style="color: #007bff;"></span> &nbsp;|&nbsp;
-                <b>टेस्ट स्पीड:</b> <span id="r_testSpeed" style="color: #007bff;"></span><br>
+                <b>नाम:</b> <span id="r_name"></span> &nbsp;|&nbsp; <b>टेस्ट स्पीड:</b> <span id="r_testSpeed"></span><br>
                 <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span></div>
             </div>
             
+            <div class="chart-container">
+                <canvas id="resultChart"></canvas>
+            </div>
+
             <div class="stats-grid">
-                <div class="stat-item positive">कुल शब्द (Master Words): <span id="r_masterWords">0</span></div>
-                <div class="stat-item">छूटे हुए शब्द (Omissions): <span id="r_omissions">0</span></div>
-                <div class="stat-item">स्पेलिंग/गलत शब्द (Substitution): <span id="r_fullMistakes">0</span></div>
-                <div class="stat-item">अतिरिक्त शब्द (Extra Words): <span id="r_extraWords">0</span></div>
-                <div class="stat-item" style="grid-column: span 2;">विराम चिह्न / आधी गलतियां (Partial Mistakes): <span id="r_halfMistakes">0</span></div>
+                <div class="stat-item positive">कुल शब्द: <span id="r_masterWords">0</span></div>
+                <div class="stat-item">छूटे हुए शब्द: <span id="r_omissions">0</span></div>
+                <div class="stat-item">स्पेलिंग/गलत शब्द: <span id="r_fullMistakes">0</span></div>
+                <div class="stat-item">अतिरिक्त शब्द: <span id="r_extraWords">0</span></div>
             </div>
 
             <div class="official-box">
-                <h4>आधिकारिक मूल्यांकन (Official Evaluation - 5% Margin Rule)</h4>
+                <h4>आधिकारिक मूल्यांकन (5% Margin Rule)</h4>
                 <div class="stats-grid" style="margin-bottom: 0;">
-                    <div class="stat-item" style="background: none; border:none;">कुल की गई गलतियां:<br><small>(Full + Partial/2)</small> <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
-                    <div class="stat-item positive" style="background: none; border:none;">माफ की गई गलतियां:<br><small>(कुल शब्दों का 5%)</small> <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
-                    <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; border-radius:0; padding-top: 15px;">काटी जाने वाली गलतियां:<br><small>(Excess Mistakes)</small> <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
-                    <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; border-radius:0; padding-top: 15px;">शुद्ध शब्द (Net Words):<br><small>(Total Words - Excess)</small> <span id="r_netWords" style="font-size: 22px;">0</span></div>
-                    <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb; border-radius:8px; padding:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <span style="float:none; color: #155724; font-size: 22px;">टाइपिंग स्पीड: <b id="r_speed">0 WPM</b> &nbsp; | &nbsp; शुद्धता (Accuracy): <b id="r_accuracy">0%</b></span>
+                    <div class="stat-item" style="background: none; border:none;">कुल गलतियां: <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
+                    <div class="stat-item positive" style="background: none; border:none;">माफ की गई (5%): <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
+                    <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; border-radius:0;">काटी जाने वाली (Excess): <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
+                    <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; border-radius:0;">शुद्ध शब्द (Net Words): <span id="r_netWords" style="font-size: 22px;">0</span></div>
+                    <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; border: 1px solid #c3e6cb; padding:15px;">
+                        <span style="float:none; color: #155724; font-size: 22px;">स्पीड: <b id="r_speed">0 WPM</b> &nbsp;|&nbsp; एक्यूरेसी: <b id="r_accuracy">0%</b></span>
                     </div>
                 </div>
             </div>
             
-            <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; font-size: 16px; display:none; background: #d4edda; padding: 10px; border-radius: 8px;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
+            <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; display:none; background: #d4edda; padding: 10px; border-radius: 8px;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
 
             <button class="btn btn-warning" onclick="showLeaderboard()">🏆 लीडरबोर्ड (All India Rank) देखें</button>
 
             <hr style="border-top: 1px solid #eee; margin: 20px 0;">
-            <label style="border:none;">आपके अनुवाद का मूल्यांकन (Evaluated Text):</label>
-            <div class="color-legend">
-                <b>संकेत:</b><br>
-                <span class="legend-item" style="color: #28a745;">■ सही शब्द</span>
-                <span class="legend-item"><span style="color: #dc3545;">■ स्पेलिंग गलती (Full)</span></span>
-                <span class="legend-item"><span style="color: #fd7e14;">■ विराम चिह्न (Partial)</span></span>
-                <span class="legend-item" style="color: #dc3545; text-decoration: line-through;">■ छूटा हुआ शब्द (Omission)</span>
-                <span class="legend-item" style="color: #dc3545; border-bottom: 2px solid #dc3545;">■ अतिरिक्त शब्द (Extra)</span>
-            </div>
+            <label style="border:none;">आपके अनुवाद का मूल्यांकन:</label>
             <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
             <div style="text-align: center;">
-                <button id="downloadPdfBtn" class="btn btn-info" style="width: auto; box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
+                <button id="downloadPdfBtn" class="btn btn-info" style="width: auto;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
             </div>
         </div>
 
         <div id="leaderboardBox" class="leaderboard-box">
             <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 28px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">जिन विद्यार्थियों की एक्यूरेसी (Accuracy) सबसे अधिक है, वे टॉप पर हैं। (सिर्फ बेस्ट रिज़ल्ट)</p>
-            
             <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>रैंक</th>
-                        <th>विद्यार्थी का नाम</th>
-                        <th>Total Correct word</th>
-                        <th>Accuracy</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardData">
-                    <tr><td colspan="4" style="text-align: center;">डेटा लोड हो रहा है... कृपया प्रतीक्षा करें।</td></tr>
-                </tbody>
+                <thead><tr><th>रैंक</th><th>विद्यार्थी का नाम</th><th>Total Correct</th><th>Accuracy</th></tr></thead>
+                <tbody id="leaderboardData"><tr><td colspan="4" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
             </table>
             <button class="btn btn-info" onclick="location.reload()" style="margin-top: 20px;">नया टेस्ट दें</button>
         </div>
@@ -296,21 +219,8 @@
     </div>
 </div>
 
-<textarea id="masterText_60" style="display:none;">
-;g 60 'kCn çfr feuV dh fMDVs'ku dk VSfLVax dksM gSA
-</textarea>
-
-<textarea id="masterText_80" style="display:none;">
-eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfrosnu ntZ djkus esa foyEc vfèkdj.k us çfrdj vfèkfu.kÊr fd;k chek daiuh us çFke lwpuk çfrosnu ntZ djkus esa foyEc] 'ko ijh{k.k] vk;q vkfn ds vkèkkj ij pqukSfr nhA nq?kZVuk 15-11-2009 dks ?kfVr gqbZ] vkgr dh 25-11-2009 dks e`R;q gqbZ] çFke lwpuk çfrosnu 02-12-2009 dks ntZ djk;h] jkstukepk fnukad 16-11-2009 esa okgu ds uacj vafdr ughaA ifjokj dk igyk ç;kl vkgr dks fpfdRlk dh vko';drk çnku djok;k tkuk gksrk gSA e`R;q ds i'pkr~ ifjokj ds lnL; vafre fjoktksa dks iwjk djus esa O;Lr Fks] jkstukepuk 16-11-2009 dks cuk;k x;k rFkk e`rd ds firk dks dFku fd;k fd mls jkstukeps dh vUroZLrq dk Kku ugha gS] jkstukeps esa okgu ds uacj ugha gksuk ekeys ij ?kkrd ugha gksxkA fpfdRlk lk{; fd e`rd nq?kZVuk dh frfFk ls e`R;q rd fujUrj vpsr Fkk] nq?kZVuk ,oa e`R;q ds eè; lk{; dh J`a[kyk gLr{ksi ughaA
-</textarea>
-
-<textarea id="masterText_100" style="display:none;">
-;g 100 'kCn çfr feuV dh fMDVs'ku gSA
-</textarea>
 <script>
-    // ==========================================
-    // 1. Firebase Configuration & Authentication
-    // ==========================================
+    // 1. Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
       authDomain: "hindi-steno-lab-1.firebaseapp.com",
@@ -319,7 +229,6 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
       messagingSenderId: "752963570462",
       appId: "1:752963570462:web:718d84f4fb4a3321d3d70f"
     };
-    
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
@@ -328,45 +237,31 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 
     function toggleAuthMode() {
         isSignupMode = !isSignupMode;
-        if(isSignupMode) {
-            document.getElementById('authTitle').innerText = "नया खाता बनाएं";
-            document.getElementById('authSubtitle').innerText = "पोर्टल से जुड़ने के लिए अपनी जानकारी दें";
-            document.getElementById('nameFieldContainer').style.display = "block";
-            document.getElementById('mainAuthBtn').innerText = "नया खाता बनाएं";
-            document.getElementById('mainAuthBtn').style.background = "linear-gradient(135deg, #28a745, #218838)";
-            document.getElementById('forgotPwdLink').style.display = "none";
-            document.getElementById('switchAuthText').innerHTML = "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>";
-        } else {
-            document.getElementById('authTitle').innerText = "लॉगिन करें";
-            document.getElementById('authSubtitle').innerText = "टेस्ट देने के लिए अपना खाता खोलें";
-            document.getElementById('nameFieldContainer').style.display = "none";
-            document.getElementById('mainAuthBtn').innerText = "लॉगिन करें";
-            document.getElementById('mainAuthBtn').style.background = "linear-gradient(135deg, #0277bd, #01579b)";
-            document.getElementById('forgotPwdLink').style.display = "block";
-            document.getElementById('switchAuthText').innerHTML = "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
-        }
+        document.getElementById('authTitle').innerText = isSignupMode ? "नया खाता बनाएं" : "लॉगिन करें";
+        document.getElementById('nameFieldContainer').style.display = isSignupMode ? "block" : "none";
+        document.getElementById('forgotPwdLink').style.display = isSignupMode ? "none" : "block";
+        document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
     }
 
     auth.onAuthStateChanged((user) => {
         if (user && user.emailVerified) {
             let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
             let userName = user.displayName || user.email.split('@')[0];
-
             currentUserData = { name: userName, roll: generatedRoll, email: user.email };
-
             document.getElementById('displayStudentName').innerText = userName;
             document.getElementById('displayStudentRoll').innerText = generatedRoll;
             
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('mainAppArea').style.display = 'block';
-            document.getElementById('spacer').style.display = 'none';
             document.getElementById('userProfile').style.display = 'flex';
             document.getElementById('userEmailDisplay').innerText = userName;
+            
+            // 🚀 लॉगिन होते ही गूगल शीट (Admin Panel) से डेटा मंगाना शुरू करें 🚀
+            fetchDataFromGoogleSheet();
         } else {
             document.getElementById('authWrapper').style.display = 'flex';
             document.getElementById('mainAppArea').style.display = 'none';
             document.getElementById('userProfile').style.display = 'none';
-            document.getElementById('spacer').style.display = 'block';
         }
     });
 
@@ -374,145 +269,130 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         const email = document.getElementById('authEmail').value.trim();
         const password = document.getElementById('authPassword').value.trim();
         const name = document.getElementById('authName') ? document.getElementById('authName').value.trim() : "";
-
-        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
+        if(!email || !password) return alert("कृपया ईमेल और पासवर्ड डालें!");
 
         if(isSignupMode) {
-            if(!name) { alert("खाता बनाने के लिए पूरा नाम डालना ज़रूरी है!"); return; }
-            
-            auth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                return userCredential.user.updateProfile({ displayName: name })
-                .then(() => {
-                    return userCredential.user.sendEmailVerification(); 
-                });
-            })
-            .then(() => {
-                auth.signOut(); 
-                alert("✅ खाता बन गया! लेकिन सुरक्षा कारणों से आपको अपना ईमेल वेरीफाई करना होगा। आपके ईमेल इनबॉक्स (या Spam फोल्डर) पर एक लिंक भेजा गया है, कृपया उस पर क्लिक करें।");
-                toggleAuthMode();
-            })
-            .catch((error) => {
-                if (error.code === 'auth/email-already-in-use') {
-                    alert("⚠️ इस ईमेल आईडी से पहले ही एक खाता बना हुआ है! कृपया लॉगिन करें।");
-                } else if (error.code === 'auth/weak-password') {
-                    alert("⚠️ आपका पासवर्ड बहुत कमज़ोर है! कृपया कम से कम 6 अक्षरों का पासवर्ड बनाएं।");
-                } else {
-                    alert("एरर: " + error.message); 
-                }
-            });
+            if(!name) return alert("खाता बनाने के लिए पूरा नाम डालना ज़रूरी है!");
+            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+                return userCredential.user.updateProfile({ displayName: name }).then(() => userCredential.user.sendEmailVerification());
+            }).then(() => {
+                auth.signOut(); alert("✅ खाता बन गया! कृपया अपना ईमेल (इनबॉक्स या Spam फोल्डर) चेक करें और लिंक पर क्लिक करके वेरीफाई करें।"); toggleAuthMode();
+            }).catch(e => alert("एरर: " + e.message));
         } else {
-            auth.signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
+            auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
                 if (!userCredential.user.emailVerified) {
-                    auth.signOut();
-                    alert("⚠️ आपका ईमेल अभी तक वेरीफाई नहीं हुआ है! कृपया अपना ईमेल इनबॉक्स (या Spam फोल्डर) चेक करें और लिंक पर क्लिक करके वेरीफाई करें।");
+                    userCredential.user.sendEmailVerification().then(() => {
+                        auth.signOut(); alert("⚠️ आपका ईमेल वेरीफाई नहीं है! हमने आपके ईमेल पर 'नया लिंक' भेजा है। कृपया वेरीफाई करें।");
+                    });
                 }
-            })
-            .catch((error) => {
-                if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                    alert("❌ लॉगिन फेल: आपने ईमेल या पासवर्ड गलत डाला है।");
-                } else {
-                    alert("एरर: " + error.message);
-                }
-            });
+            }).catch(e => alert("❌ लॉगिन फेल: ईमेल या पासवर्ड गलत है।"));
         }
     }
-
     function logoutUser() { auth.signOut(); location.reload(); }
-
     function resetPassword() {
         const email = document.getElementById('authEmail').value.trim();
-        if(!email) { alert("पासवर्ड रीसेट करने के लिए कृपया बॉक्स में अपना ईमेल दर्ज करें और फिर 'पासवर्ड भूल गए?' पर क्लिक करें।"); return; }
-        auth.sendPasswordResetEmail(email)
-        .then(() => { alert("पासवर्ड रीसेट करने का लिंक आपके ईमेल पर भेज दिया गया है!"); })
-        .catch((error) => { alert("एरर: " + error.message); });
+        if(!email) return alert("पासवर्ड रीसेट के लिए पहले अपना ईमेल दर्ज करें।");
+        auth.sendPasswordResetEmail(email).then(() => alert("लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
 
     // ==========================================
-    // 2. Test Execution & Result Logic
+    // 2. Google Sheet Fetching (Admin Panel & Leaderboard)
     // ==========================================
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
+    
+    let adminSettingsData = null; 
+    let globalLeaderboardData = null; 
+    let resultChartInstance = null; // ग्राफ़िक का इंस्टेंस
 
-    let finalMasterText = "";
-    let totalDuration = 3600; 
-    let timeLeft = totalDuration; 
-    let timerInterval;
-    let isTestRunning = false;
-    let cheatWarningCount = 0;
-
-    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-
-    function requestFullScreen() {
-        try { var elem = document.documentElement; if (elem.requestFullscreen) { var p = elem.requestFullscreen(); if(p !== undefined) { p.catch(e=>{}); } } else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } } catch(e) {}
+    function fetchDataFromGoogleSheet() {
+        fetch(GOOGLE_SHEET_WEB_APP_URL)
+        .then(response => response.json())
+        .then(data => {
+            adminSettingsData = data.adminSettings;
+            globalLeaderboardData = data.leaderboard;
+            
+            document.getElementById('dataLoadingMsg').style.color = "green";
+            document.getElementById('dataLoadingMsg').innerText = "✅ डिक्टेशन लोड हो गया! अब आप टेस्ट शुरू कर सकते हैं।";
+            document.getElementById('speedSelect').disabled = false;
+            
+            let startBtn = document.getElementById('startTestBtn');
+            startBtn.disabled = false;
+            startBtn.style.opacity = 1;
+            startBtn.style.cursor = "pointer";
+        })
+        .catch(err => {
+            document.getElementById('dataLoadingMsg').innerText = "❌ सर्वर से कनेक्ट नहीं हो पाया। कृपया पेज रिफ्रेश करें।";
+        });
     }
 
-    function startAudioSection() {
-        requestFullScreen();
-        let speed = document.getElementById('speedSelect').value;
-        let masterTextElem = document.getElementById('masterText_' + speed);
-        if(!masterTextElem) { alert("तकनीकी त्रुटि: मास्टर टेक्स्ट नहीं मिला।"); return; }
+    // Google Drive के लिंक को ऑडियो प्लेयर के लिए सही बनाने का फंक्शन
+    function formatDriveLink(url) {
+        if(url && url.includes("drive.google.com/file/d/")) {
+            let fileId = url.split('/file/d/')[1].split('/')[0];
+            return `https://drive.google.com/uc?export=download&id=${fileId}`;
+        }
+        return url;
+    }
 
-        finalMasterText = masterTextElem.value.trim();
-        document.getElementById('dictationAudio').src = "dictation_" + speed + ".mp3";
+    // ==========================================
+    // 3. Test Logic & Chart Graphics
+    // ==========================================
+    let finalMasterText = "";
+    let totalDuration = 3600; let timeLeft = totalDuration; let timerInterval; let isTestRunning = false;
+
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+    function requestFullScreen() { try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); } catch(e) {} }
+
+    function startAudioSection() {
+        let speed = document.getElementById('speedSelect').value;
         
+        // 🚀 नया: HTML से नहीं, सीधा Google Sheet के Admin डेटा से पैसेज उठाएं 🚀
+        if(!adminSettingsData || !adminSettingsData[speed]) {
+            alert(`तकनीकी त्रुटि: एडमिन ने अभी तक ${speed} WPM का डेटा अपलोड नहीं किया है! कृपया अपनी Google Sheet के 'Admin' पन्ने में डेटा डालें।`); return;
+        }
+
+        finalMasterText = adminSettingsData[speed].text;
+        let rawAudioLink = adminSettingsData[speed].audio;
+        let finalAudioLink = formatDriveLink(rawAudioLink);
+
+        requestFullScreen();
+        document.getElementById('dictationAudio').src = finalAudioLink;
         document.getElementById('r_name').innerText = currentUserData.name;
-        document.getElementById('r_roll').innerText = currentUserData.roll;
         document.getElementById('r_testSpeed').innerText = speed + " WPM";
 
         document.getElementById('studentDetailsBox').style.display = 'none';
         document.getElementById('audioSection').style.display = 'block';
 
         let audioPlayer = document.getElementById('dictationAudio');
-        if(audioPlayer) { audioPlayer.onended = function() { startTypingTest(); }; }
+        if(audioPlayer) audioPlayer.onended = function() { startTypingTest(); };
     }
 
     function startTypingTest() {
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
-        
-        let studentTextArea = document.getElementById('studentText');
-        studentTextArea.focus();
+        let stdArea = document.getElementById('studentText'); stdArea.focus();
         timerInterval = setInterval(updateTimer, 1000);
-
-        studentTextArea.addEventListener('keydown', function(e) {
-            const forbiddenKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
-            if (forbiddenKeys.includes(e.key)) { e.preventDefault(); }
-        });
-        studentTextArea.addEventListener('mousedown', function(e) { setTimeout(() => { studentTextArea.selectionStart = studentTextArea.value.length; studentTextArea.selectionEnd = studentTextArea.value.length; }, 0); });
-        studentTextArea.addEventListener('click', function(e) { studentTextArea.selectionStart = studentTextArea.value.length; studentTextArea.selectionEnd = studentTextArea.value.length; });
-        studentTextArea.addEventListener('paste', function(e) { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
+        stdArea.addEventListener('paste', e => { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
     }
 
     document.addEventListener("visibilitychange", function() {
-        if (isTestRunning && document.visibilityState === 'hidden') {
-            cheatWarningCount++;
-            if (cheatWarningCount === 1) { alert("⚠️ चेतावनी: आपने टेस्ट के दौरान स्क्रीन बदली है! दोबारा ऐसा करने पर टेस्ट सबमिट हो जाएगा!"); } 
-            else if (cheatWarningCount >= 2) { alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।"); submitTest(); }
-        }
+        if (isTestRunning && document.visibilityState === 'hidden') { alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।"); submitTest(); }
     });
 
     function updateTimer() {
-        let minutes = Math.floor(timeLeft / 60); let seconds = timeLeft % 60;
-        if (minutes < 10) minutes = "0" + minutes; if (seconds < 10) seconds = "0" + seconds;
-        document.getElementById('timerDisplay').innerText = "समय शेष: " + minutes + ":" + seconds;
+        let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
+        document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
         if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
         timeLeft--;
     }
 
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
-        try { if (document.exitFullscreen) { var p = document.exitFullscreen(); if(p !== undefined) { p.catch(e=>{}); } } } catch(e) {}
-        
-        let timeTakenSeconds = totalDuration - timeLeft;
-        let tMinutes = Math.floor(timeTakenSeconds / 60); let tSeconds = timeTakenSeconds % 60;
-        document.getElementById('r_timeTaken').innerText = tMinutes + " मिनट " + tSeconds + " सेकंड";
-        let timeTakenForSpeed = timeTakenSeconds / 60;
-
-        let studentText = document.getElementById('studentText').value.trim();
-        calculateDetailedMistakes(finalMasterText, studentText, timeTakenForSpeed);
-        
+        try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
+        let tt = totalDuration - timeLeft;
+        document.getElementById('r_timeTaken').innerText = `${Math.floor(tt / 60)} मिनट ${tt % 60} सेकंड`;
+        calculateDetailedMistakes(finalMasterText, document.getElementById('studentText').value.trim(), tt / 60);
         document.getElementById('testArea').style.display = 'none';
         document.getElementById('resultBox').style.display = 'block';
     }
@@ -520,145 +400,114 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     function calculateDetailedMistakes(master, student, timeTakenMins) {
         let mWords = master.split(/\s+/).filter(w => w.length > 0);
         let sWords = student.split(/\s+/).filter(w => w.length > 0);
-        
-        let dp = Array(mWords.length + 1).fill(null).map(() => Array(sWords.length + 1).fill(0));
-        let path = Array(mWords.length + 1).fill(null).map(() => Array(sWords.length + 1).fill(0));
-        for(let i = 1; i <= mWords.length; i++) { dp[i][0] = i; path[i][0] = 2; }
-        for(let j = 1; j <= sWords.length; j++) { dp[0][j] = j; path[0][j] = 3; }
-        
-        for(let i = 1; i <= mWords.length; i++) {
-            for(let j = 1; j <= sWords.length; j++) {
-                let cost = 1; let w1 = mWords[i-1]; let w2 = sWords[j-1];
-                if (w1 === w2) { cost = 0; } else { let c1 = w1.replace(/[,\|]/g, ''); let c2 = w2.replace(/[,\|]/g, ''); if (c1 === c2) cost = 0.5; }
-                let diag = dp[i-1][j-1] + cost; let del = dp[i-1][j] + 1; let ins = dp[i][j-1] + 1;
-                if (diag <= del && diag <= ins) { dp[i][j] = diag; path[i][j] = 1; } else if (del <= ins) { dp[i][j] = del; path[i][j] = 2; } else { dp[i][j] = ins; path[i][j] = 3; }
+        let dp = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
+        let path = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
+        for(let i=1;i<=mWords.length;i++){dp[i][0]=i;path[i][0]=2;} for(let j=1;j<=sWords.length;j++){dp[0][j]=j;path[0][j]=3;}
+        for(let i=1;i<=mWords.length;i++){
+            for(let j=1;j<=sWords.length;j++){
+                let cost = (mWords[i-1]===sWords[j-1]) ? 0 : (mWords[i-1].replace(/[,\|]/g,'')===sWords[j-1].replace(/[,\|]/g,'') ? 0.5 : 1);
+                let diag = dp[i-1][j-1]+cost; let del = dp[i-1][j]+1; let ins = dp[i][j-1]+1;
+                if(diag<=del && diag<=ins){dp[i][j]=diag;path[i][j]=1;} else if(del<=ins){dp[i][j]=del;path[i][j]=2;} else{dp[i][j]=ins;path[i][j]=3;}
             }
         }
-        
-        let omissions = 0, halfMistakes = 0, fullMistakes = 0, extraWords = 0;
-        let currI = mWords.length, currJ = sWords.length; let diffHtmlArray = []; 
-        while(currI > 0 || currJ > 0) {
-            if (currI > 0 && currJ > 0 && path[currI][currJ] === 1) {
-                let w1 = mWords[currI-1]; let w2 = sWords[currJ-1];
-                if (w1 === w2) { diffHtmlArray.unshift('<span style="color: #28a745;">' + w2 + '</span>'); } 
+        let om=0, hm=0, fm=0, ew=0, currI=mWords.length, currJ=sWords.length, diffHtml=[]; 
+        while(currI>0 || currJ>0) {
+            if(currI>0 && currJ>0 && path[currI][currJ]===1) {
+                let w1=mWords[currI-1], w2=sWords[currJ-1];
+                if(w1===w2) diffHtml.unshift(`<span style="color:#28a745;">${w2}</span>`);
                 else {
-                    let c1 = w1.replace(/[,\|]/g, ''); let c2 = w2.replace(/[,\|]/g, '');
-                    let correctWordHtml = ' <span style="color: #28a745; font-family: Arial, sans-serif;">(</span><span style="color: #28a745;">' + w1 + '</span><span style="color: #28a745; font-family: Arial, sans-serif;">)</span>';
-                    if (c1 === c2) { halfMistakes++; diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml); } else { fullMistakes++; diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml); }
+                    let cwHtml=` <span style="color:#28a745;font-family:Arial;">(</span><span style="color:#28a745;">${w1}</span><span style="color:#28a745;font-family:Arial;">)</span>`;
+                    if(w1.replace(/[,\|]/g,'')===w2.replace(/[,\|]/g,'')){hm++; diffHtml.unshift(`<span style="color:#fd7e14;">${w2}</span>`+cwHtml);} 
+                    else{fm++; diffHtml.unshift(`<span style="color:#dc3545;">${w2}</span>`+cwHtml);}
                 }
                 currI--; currJ--;
-            } else if (currI > 0 && (currJ === 0 || path[currI][currJ] === 2)) { omissions++; diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>'); currI--; } 
-            else if (currJ > 0 && (currI === 0 || path[currI][currJ] === 3)) { extraWords++; diffHtmlArray.unshift('<span style="color: #dc3545; border-bottom: 2px solid #dc3545;">' + sWords[currJ-1] + '</span>'); currJ--; }
+            } else if(currI>0 && (currJ===0 || path[currI][currJ]===2)){om++; diffHtml.unshift(`<span style="color:#dc3545;text-decoration:line-through;">${mWords[currI-1]}</span>`); currI--;} 
+            else if(currJ>0 && (currI===0 || path[currI][currJ]===3)){ew++; diffHtml.unshift(`<span style="color:#dc3545;border-bottom:2px solid #dc3545;">${sWords[currJ-1]}</span>`); currJ--;}
         }
         
-        let totalWords = mWords.length;
-        let totalFullMistakes = fullMistakes + extraWords + omissions; 
-        let actualMistakesScore = totalFullMistakes + (halfMistakes / 2);
-        
-        let allowedMistakes = Math.round(totalWords * 0.05);
-        if (sWords.length === 0) { allowedMistakes = 0; } // 🚀 ZERO TYPING FIX 🚀
+        let tw = mWords.length, totalErr = fm + ew + om, actualErr = totalErr + (hm/2);
+        let allowed = (sWords.length===0) ? 0 : Math.round(tw * 0.05);
+        let excess = actualErr > allowed ? actualErr - allowed : 0;
+        let net = tw - excess; if(net>sWords.length) net = sWords.length; if(net<0) net=0;
+        let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0;
+        let wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
 
-        let excessMistakes = actualMistakesScore > allowedMistakes ? actualMistakesScore - allowedMistakes : 0;
-        
-        let netWords = totalWords - excessMistakes; 
-        if (netWords > sWords.length) { netWords = sWords.length; } // 🚀 ZERO TYPING FIX 🚀
-        if(netWords < 0) netWords = 0;
-        
-        let accuracy = 0;
-        if (totalWords > 0 && sWords.length > 0) { accuracy = (netWords / totalWords) * 100; }
-        
-        if(timeTakenMins < 1) timeTakenMins = 1; 
-        let speedWPM = Math.round(netWords / timeTakenMins);
+        document.getElementById('r_masterWords').innerText=tw; document.getElementById('r_omissions').innerText=om;
+        document.getElementById('r_fullMistakes').innerText=fm; document.getElementById('r_extraWords').innerText=ew;
+        document.getElementById('r_actualMistakes').innerText=actualErr; document.getElementById('r_allowedMistakes').innerText=allowed;
+        document.getElementById('r_excessMistakes').innerText = excess;
+        document.getElementById('r_netWords').innerText = net;
+        document.getElementById('r_speed').innerText = wpm + " WPM";
+        document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
+        document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
 
-        document.getElementById('r_masterWords').innerText = totalWords;
-        document.getElementById('r_omissions').innerText = omissions;
-        document.getElementById('r_fullMistakes').innerText = fullMistakes;
-        document.getElementById('r_extraWords').innerText = extraWords;
-        document.getElementById('r_halfMistakes').innerText = halfMistakes;
-        document.getElementById('r_actualMistakes').innerText = actualMistakesScore;
-        document.getElementById('r_allowedMistakes').innerText = allowedMistakes;
-        document.getElementById('r_excessMistakes').innerText = excessMistakes;
-        document.getElementById('r_netWords').innerText = netWords;
-        document.getElementById('r_speed').innerText = speedWPM + " WPM";
-        document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
-        document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
+        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net);
+        
+        // 🚀 नया: Chart.js ग्राफ़ बनाएं 🚀
+        drawResultChart(net, actualErr);
+    }
 
-        saveResultToGoogleSheet(speedWPM, accuracy.toFixed(2), actualMistakesScore, netWords);
+    function drawResultChart(netWords, mistakes) {
+        let ctx = document.getElementById('resultChart').getContext('2d');
+        if(resultChartInstance) resultChartInstance.destroy();
+        
+        resultChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['शुद्ध शब्द (Net Words)', 'कुल गलतियां (Mistakes)'],
+                datasets: [{
+                    data: [netWords, mistakes],
+                    backgroundColor: ['#28a745', '#dc3545'],
+                    borderWidth: 2, borderColor: '#ffffff'
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
+        });
     }
 
     function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
-        let dataPayload = {
-            name: currentUserData.name,
-            rollNumber: currentUserData.roll,
-            email: currentUserData.email,  
-            speedTarget: document.getElementById('speedSelect').value,
-            actualSpeedWPM: speedWPM,
-            accuracy: accuracy, 
-            totalMistakes: totalMistakes,
-            netWords: netWords
-        };
-
-        fetch(GOOGLE_SHEET_WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(dataPayload)
-        })
+        let dataPayload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: document.getElementById('speedSelect').value, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords };
+        fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(dataPayload) })
         .then(response => { document.getElementById('saveStatus').style.display = 'block'; })
         .catch(error => { console.error("Error saving data:", error); });
     }
 
     function downloadResultPDF() {
-        const btn = document.getElementById('downloadPdfBtn'); btn.style.display = 'none';
-        let wasDarkMode = document.body.classList.contains('dark-mode'); if(wasDarkMode) document.body.classList.remove('dark-mode');
+        const btn = document.getElementById('downloadPdfBtn'); 
+        const lbBtn = document.querySelector('button[onclick="showLeaderboard()"]');
+        btn.style.display = 'none'; if(lbBtn) lbBtn.style.display = 'none';
+        let wasDarkMode = document.body.classList.contains('dark-mode'); 
+        if(wasDarkMode) document.body.classList.remove('dark-mode');
+        
         const element = document.getElementById('resultBox');
         const opt = { margin: [10, 10, 10, 10], filename: 'Hindi_Steno_Lab_Result.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-        html2pdf().set(opt).from(element).save().then(() => { btn.style.display = 'inline-block'; if(wasDarkMode) document.body.classList.add('dark-mode'); });
-    }
-
-    // ==========================================
-    // 3. Leaderboard Fetching Logic
-    // ==========================================
-    function showLeaderboardOnly() {
-        document.getElementById('studentDetailsBox').style.display = 'none';
-        document.getElementById('leaderboardBox').style.display = 'block';
-        fetchLeaderboardData();
-    }
-
-    function showLeaderboard() {
-        document.getElementById('resultBox').style.display = 'none';
-        document.getElementById('leaderboardBox').style.display = 'block';
-        fetchLeaderboardData();
-    }
-
-    function fetchLeaderboardData() {
-        fetch(GOOGLE_SHEET_WEB_APP_URL)
-        .then(response => response.json())
-        .then(data => {
-            data.sort((a, b) => {
-                let accA = parseFloat(a.accuracy) || 0; let accB = parseFloat(b.accuracy) || 0;
-                if (accB !== accA) return accB - accA; 
-                let wordsA = parseInt(a.netWords) || 0; let wordsB = parseInt(b.netWords) || 0;
-                return wordsB - wordsA; 
-            });
-
-            let tableHtml = "";
-            data.forEach((student, index) => {
-                let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
-                let correctWords = student.netWords ? student.netWords : "0"; 
-                tableHtml += `<tr>
-                    <td><b>${rankIcon}</b></td>
-                    <td>${student.name}</td>
-                    <td>${correctWords}</td>
-                    <td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td>
-                </tr>`;
-            });
-            
-            if(data.length === 0) { tableHtml = "<tr><td colspan='4' style='text-align:center;'>अभी तक कोई रिज़ल्ट नहीं है।</td></tr>"; }
-            document.getElementById('leaderboardData').innerHTML = tableHtml;
-        })
-        .catch(err => {
-            document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई। कृपया रिफ्रेश करें।</td></tr>";
+        
+        html2pdf().set(opt).from(element).save().then(() => { 
+            btn.style.display = 'inline-block'; if(lbBtn) lbBtn.style.display = 'inline-block';
+            if(wasDarkMode) document.body.classList.add('dark-mode'); 
         });
+    }
+
+    function showLeaderboardOnly() { document.getElementById('studentDetailsBox').style.display = 'none'; document.getElementById('leaderboardBox').style.display = 'block'; renderLeaderboard(); }
+    function showLeaderboard() { document.getElementById('resultBox').style.display = 'none'; document.getElementById('leaderboardBox').style.display = 'block'; renderLeaderboard(); }
+
+    function renderLeaderboard() {
+        if (!globalLeaderboardData) { document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
+        globalLeaderboardData.sort((a, b) => {
+            let accA = parseFloat(a.accuracy) || 0; let accB = parseFloat(b.accuracy) || 0;
+            if (accB !== accA) return accB - accA; 
+            let wordsA = parseInt(a.netWords) || 0; let wordsB = parseInt(b.netWords) || 0;
+            return wordsB - wordsA; 
+        });
+
+        let tableHtml = "";
+        globalLeaderboardData.forEach((student, index) => {
+            let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
+            let correctWords = student.netWords ? student.netWords : "0"; 
+            tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
+        });
+        if(globalLeaderboardData.length === 0) { tableHtml = "<tr><td colspan='4' style='text-align:center;'>अभी तक कोई रिज़ल्ट नहीं है।</td></tr>"; }
+        document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
 </script>
 
