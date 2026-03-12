@@ -4,13 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-
     <style>
         @font-face {
             font-family: 'Kruti Dev 010';
@@ -32,8 +26,6 @@
         .btn:hover { background: #4cae4c; }
         .btn-info { background: #17a2b8; margin-top: 15px; }
         .btn-info:hover { background: #138496; }
-        .btn-danger { background: #dc3545; width: auto; padding: 8px 15px; margin-top: 0; }
-        .btn-danger:hover { background: #c82333; }
         
         .setup-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; transition: 0.3s; }
         .input-field { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
@@ -53,7 +45,7 @@
         .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; transition: 0.3s; }
         .legend-item { display: inline-block; margin-right: 20px; margin-bottom: 5px; }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .top-bar { display: flex; justify-content: flex-end; margin-bottom: 15px; }
         .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .dark-mode-btn:hover { background: #000; }
 
@@ -78,11 +70,6 @@
 
 <div class="container">
     <div class="top-bar">
-        <div id="userProfile" style="display:none; font-weight:bold; color:#0277bd;">
-            👤 <span id="userEmailDisplay"></span>
-            <button class="btn btn-danger" onclick="logoutUser()" style="margin-left:10px;">लॉगआउट</button>
-        </div>
-        <div style="flex-grow: 1;"></div>
         <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
     </div>
 
@@ -91,23 +78,7 @@
         <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
     </div>
 
-    <div id="authArea" class="setup-box">
-        <h3 style="margin-top: 0; color: #0277bd; text-align: center;">पोर्टल में प्रवेश करें</h3>
-        <p style="text-align: center; color: #555; margin-bottom:20px;">टेस्ट देने के लिए अपना खाता बनाएं या लॉगिन करें।</p>
-        
-        <label style="border:none; margin-top:0;">ईमेल आईडी (Email ID):</label>
-        <input type="email" id="authEmail" class="input-field" placeholder="अपना ईमेल दर्ज करें">
-        
-        <label style="border:none;">पासवर्ड (Password):</label>
-        <input type="password" id="authPassword" class="input-field" placeholder="पासवर्ड (कम से कम 6 अक्षर)">
-        
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" onclick="loginUser()">लॉगिन करें (Login)</button>
-            <button class="btn btn-info" onclick="signupUser()">नया खाता बनाएं (Sign Up)</button>
-        </div>
-    </div>
-
-    <div id="testArea" style="display: none;">
+    <div id="testArea">
         <div id="studentDetailsBox" class="setup-box">
             <h3 style="margin-top: 0; color: #0277bd;">विद्यार्थी विवरण दर्ज करें</h3>
             
@@ -180,6 +151,9 @@
                 </div>
             </div>
         </div>
+        
+        <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; display:none;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
+
         <hr>
         <label>आपके अनुवाद का मूल्यांकन (Evaluated Text):</label>
         <div class="color-legend">
@@ -209,68 +183,9 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 ;g 100 'kCn çfr feuV dh fMDVs'ku gSA
 </textarea>
 <script>
-    // ==========================================
-    // 1. Firebase Initialization (आपका कोड)
-    // ==========================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyDiinjqA4Af74Hw4Cc03QifOHfg4m2iK9c",
-      authDomain: "hindi-steno-lab.firebaseapp.com",
-      projectId: "hindi-steno-lab",
-      storageBucket: "hindi-steno-lab.firebasestorage.app",
-      messagingSenderId: "705336707094",
-      appId: "1:705336707094:web:e97b085d78727b1e1a8d37"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    // आपका Google Apps Script URL
+    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
 
-    // ==========================================
-    // 2. Authentication Logic (लॉगिन / साइनअप)
-    // ==========================================
-    
-    // चेक करें कि यूज़र लॉगिन है या नहीं
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            // लॉगिन हो गया: टेस्ट एरिया दिखाएं
-            document.getElementById('authArea').style.display = 'none';
-            document.getElementById('testArea').style.display = 'block';
-            document.getElementById('userProfile').style.display = 'block';
-            document.getElementById('userEmailDisplay').innerText = user.email;
-        } else {
-            // लॉगिन नहीं है: लॉगिन एरिया दिखाएं
-            document.getElementById('authArea').style.display = 'block';
-            document.getElementById('testArea').style.display = 'none';
-            document.getElementById('userProfile').style.display = 'none';
-        }
-    });
-
-    function signupUser() {
-        const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value.trim();
-        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
-        
-        auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => { alert("खाता सफलतापूर्वक बन गया! अब आप टेस्ट दे सकते हैं।"); })
-        .catch((error) => { alert("एरर: " + error.message); });
-    }
-
-    function loginUser() {
-        const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value.trim();
-        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
-        
-        auth.signInWithEmailAndPassword(email, password)
-        .catch((error) => { alert("लॉगिन फेल: ईमेल या पासवर्ड गलत है।"); });
-    }
-
-    function logoutUser() {
-        auth.signOut().then(() => { alert("लॉगआउट सफल!"); });
-    }
-
-    // ==========================================
-    // 3. Test Logic (आपका पुराना कोड)
-    // ==========================================
     let finalMasterText = "";
     let totalDuration = 3600; 
     let timeLeft = totalDuration; 
@@ -357,7 +272,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         if (isTestRunning && document.visibilityState === 'hidden') {
             cheatWarningCount++;
             if (cheatWarningCount === 1) {
-                alert("⚠️ चेतावनी: आपने टेस्ट के दौरान स्क्रीन बदली है! दोबारा करने पर टेस्ट सबमिट हो जाएगा!");
+                alert("⚠️ चेतावनी: आपने टेस्ट के दौरान स्क्रीन बदली है! दोबारा ऐसा करने पर टेस्ट सबमिट हो जाएगा!");
             } else if (cheatWarningCount >= 2) {
                 alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।");
                 submitTest(); 
@@ -486,29 +401,36 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
 
         // ==========================================
-        // डेटाबेस में रिज़ल्ट सेव करना (Firestore Save)
+        // Google Sheets में रिज़ल्ट सेव करना
         // ==========================================
-        let studentName = document.getElementById('studentName').value;
-        let studentRoll = document.getElementById('studentRoll').value;
-        let testSpeed = document.getElementById('speedSelect').value;
-        
-        if (auth.currentUser) {
-            db.collection("steno_results").add({
-                email: auth.currentUser.email,
-                name: studentName,
-                rollNumber: studentRoll,
-                speedTarget: testSpeed,
-                actualSpeedWPM: speedWPM,
-                accuracy: accuracy.toFixed(2),
-                totalMistakes: actualMistakesScore,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                console.log("रिज़ल्ट डेटाबेस में सेव हो गया!");
-            }).catch((error) => {
-                console.error("रिज़ल्ट सेव करने में त्रुटि: ", error);
-            });
-        }
-        // ==========================================
+        saveResultToGoogleSheet(speedWPM, accuracy.toFixed(2), actualMistakesScore);
+    }
+
+    // Google Sheet पर डेटा भेजने वाला फंक्शन
+    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes) {
+        let dataPayload = {
+            name: document.getElementById('studentName').value.trim(),
+            rollNumber: document.getElementById('studentRoll').value.trim(),
+            speedTarget: document.getElementById('speedSelect').value,
+            actualSpeedWPM: speedWPM,
+            accuracy: accuracy + "%",
+            totalMistakes: totalMistakes
+        };
+
+        fetch(GOOGLE_SHEET_WEB_APP_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+            },
+            body: JSON.stringify(dataPayload)
+        })
+        .then(response => {
+            document.getElementById('saveStatus').style.display = 'block'; // सफलता का मैसेज दिखाएं
+            console.log("Success: Data saved to Google Sheets");
+        })
+        .catch(error => {
+            console.error("Error saving data:", error);
+        });
     }
 
     function downloadResultPDF() {
