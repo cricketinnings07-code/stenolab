@@ -648,6 +648,43 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         });
     }
 </script>
+    function signupUser() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        const name = document.getElementById('authName').value.trim();
+
+        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
+
+        if(isSignupMode) {
+            if(!name) { alert("खाता बनाने के लिए पूरा नाम डालना ज़रूरी है!"); return; }
+            auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // नाम को Firebase प्रोफाइल में सेव करें
+                return userCredential.user.updateProfile({ displayName: name });
+            })
+            .then(() => { alert("खाता सफलतापूर्वक बन गया!"); location.reload(); })
+            .catch((error) => { 
+                // 🚀 नया स्मार्ट एरर चेकिंग सिस्टम 🚀
+                if (error.code === 'auth/email-already-in-use') {
+                    alert("⚠️ इस ईमेल आईडी से पहले ही एक खाता बना हुआ है! कृपया नीचे 'लॉगिन करें' पर क्लिक करें।");
+                } else if (error.code === 'auth/weak-password') {
+                    alert("⚠️ आपका पासवर्ड बहुत कमज़ोर है! कृपया कम से कम 6 अक्षरों का पासवर्ड बनाएं।");
+                } else {
+                    alert("एरर: " + error.message); 
+                }
+            });
+        } else {
+            // यह हिस्सा लॉगिन के लिए है (इसे नहीं छेड़ना है)
+            auth.signInWithEmailAndPassword(email, password)
+            .catch((error) => { 
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    alert("❌ लॉगिन फेल: आपने ईमेल या पासवर्ड गलत डाला है।");
+                } else {
+                    alert("एरर: " + error.message);
+                }
+            });
+        }
+    }
 
 </body>
 </html>
