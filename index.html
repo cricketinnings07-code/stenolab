@@ -16,97 +16,158 @@
             src: url('kruti.ttf') format('truetype');
         }
 
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; transition: 0.3s; margin: 0; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; transition: 0.3s; }
-        .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; }
-        .header-title h1 { margin: 0; color: #0277bd; font-size: 36px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .header-title p { margin: 5px 0 0 0; color: #555; font-size: 18px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 20px; transition: background-color 0.3s; margin: 0; min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; position: relative; transition: 0.3s; }
         
-        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px; resize: vertical; background-color: #fff; line-height: 1.8; transition: 0.3s; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;}
+        .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .dark-mode-btn:hover { background: #000; transform: translateY(-2px); }
+
+        .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .header-title h1 { margin: 0; color: #0277bd; font-size: 32px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .header-title p { margin: 5px 0 0 0; color: #666; font-size: 16px; font-weight: 600; }
+
+        /* ========================================== */
+        /* नया एनिमेटेड और सेंटर्ड लॉगिन बॉक्स डिज़ाइन */
+        /* ========================================== */
+        .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 65vh; }
+        .auth-box { background: white; width: 100%; max-width: 360px; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeInSlideUp 0.6s ease-out; }
+        
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-box h3 { color: #0277bd; text-align: center; margin-top: 0; font-size: 22px; margin-bottom: 8px;}
+        .auth-box p { text-align: center; color: #777; font-size: 13px; margin-bottom: 25px; }
+        .auth-box label { font-size: 13px; font-weight: 600; margin-top: 10px; margin-bottom: 5px; color: #444; border: none; padding: 0; display: block; }
+        
+        .auth-input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; box-sizing: border-box; transition: all 0.3s; background: #fafafa; }
+        .auth-input:focus { border-color: #0277bd; background: #fff; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); outline: none; }
+        
+        .forgot-link { display: block; text-align: right; color: #0277bd; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; margin-top: -8px; margin-bottom: 20px; transition: 0.3s; }
+        .forgot-link:hover { color: #01579b; text-decoration: underline; }
+        
+        .auth-btn-group { display: flex; gap: 12px; }
+        .auth-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; color: white; }
+        .btn-login { background: linear-gradient(135deg, #0277bd, #01579b); box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(2, 119, 189, 0.4); }
+        .btn-signup { background: linear-gradient(135deg, #28a745, #218838); box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
+        .btn-signup:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4); }
+
+        /* ========================================== */
+        /* टेस्ट एरिया की पुरानी स्टाइलिंग */
+        /* ========================================== */
+        .setup-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .input-field { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: 0.3s;}
+        .input-field:focus { border-color: #0277bd; outline: none; box-shadow: 0 0 0 3px rgba(2, 119, 189, 0.1); }
+        select.input-field { cursor: pointer; }
+        
+        .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 8px; margin-top: 15px; width: 100%; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
+        .btn:hover { background: #4cae4c; transform: translateY(-2px); }
+        .btn-info { background: #17a2b8; margin-top: 15px; }
+        .btn-info:hover { background: #138496; }
+        .btn-danger { background: #dc3545; padding: 8px 15px; margin-top: 0; width: auto; font-size: 14px; border-radius: 8px; box-shadow: none;}
+        .btn-danger:hover { background: #c82333; transform: none; }
+        
+        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 8px; resize: vertical; background-color: #fff; line-height: 1.8; transition: 0.3s; }
         textarea.kruti-text { height: 150px; }
         .kruti-readonly { background-color: #f8f9fa; border: 2px dashed #6c757d; cursor: default; min-height: 150px; height: auto; margin-bottom: 15px; }
         
-        .timer { font-size: 24px; color: #d9534f; font-weight: bold; text-align: center; margin: 15px 0; }
-        .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 4px; margin-top: 15px; width: 100%; font-weight: bold; }
-        .btn:hover { background: #4cae4c; }
-        .btn-info { background: #17a2b8; margin-top: 15px; }
-        .btn-info:hover { background: #138496; }
-        .btn-danger { background: #dc3545; padding: 8px 15px; margin-top: 0; width: auto; font-size: 14px;}
-        .btn-danger:hover { background: #c82333; }
+        .timer { font-size: 24px; color: #d9534f; font-weight: bold; text-align: center; margin: 15px 0; background: #f8d7da; padding: 10px; border-radius: 8px; border: 1px solid #f5c6cb;}
         
-        .setup-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; transition: 0.3s; }
-        .input-field { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        select.input-field { cursor: pointer; }
-        
-        .result-box { margin-top: 20px; padding: 20px; background: #fff; border: 2px solid #28a745; border-radius: 8px; display: none; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-item { padding: 10px; background: #e9ecef; border-radius: 4px; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        .stat-item span { float: right; color: #d9534f; }
+        .result-box { margin-top: 20px; padding: 25px; background: #fff; border: 2px solid #28a745; border-radius: 12px; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-item { padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 15px; font-weight: bold; transition: 0.3s; border: 1px solid #eee; }
+        .stat-item span { float: right; color: #d9534f; font-size: 16px;}
         .stat-item.positive span { color: #28a745; }
         
-        .official-box { background: #fff3cd; padding: 15px; border: 2px solid #ffc107; border-radius: 4px; margin-bottom: 20px; transition: 0.3s; }
-        .official-box h4 { margin-top: 0; color: #856404; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ffeeba; padding-bottom: 5px; }
-        
-        label { font-weight: bold; display: block; margin-top: 20px; margin-bottom: 10px; color: #333; font-size: 18px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
-        
-        .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 4px; margin-bottom: 15px; font-size: 15px; line-height: 1.6; transition: 0.3s; }
-        .legend-item { display: inline-block; margin-right: 20px; margin-bottom: 5px; }
+        .official-box { background: #fff3cd; padding: 20px; border: 2px solid #ffc107; border-radius: 8px; margin-bottom: 20px; transition: 0.3s; }
+        .official-box h4 { margin-top: 0; color: #856404; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ffeeba; padding-bottom: 10px; }
+        label { font-weight: bold; display: block; margin-top: 20px; margin-bottom: 10px; color: #333; font-size: 16px; border-bottom: 2px solid #e0e0e0; padding-bottom: 5px; }
+        .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; line-height: 1.6; transition: 0.3s; }
+        .legend-item { display: inline-block; margin-right: 15px; margin-bottom: 5px; }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;}
-        .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .dark-mode-btn:hover { background: #000; }
-
+        /* ========================================== */
+        /* डार्क मोड की शानदार सेटिंग्स */
+        /* ========================================== */
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .container { background: #1e1e1e; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
-        body.dark-mode .setup-box, body.dark-mode .result-box { background: #2c2c2c; border-color: #444; }
-        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode label, body.dark-mode p { color: #e0e0e0; }
-        body.dark-mode .kruti-text { background-color: #333; color: #fff; border-color: #555; }
-        body.dark-mode .kruti-readonly { background-color: #222; border-color: #444; }
-        body.dark-mode .stat-item { background: #333; color: #e0e0e0; }
+        body.dark-mode .header-title { background: #1e1e1e; border-bottom-color: #4fc3f7; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        body.dark-mode .header-title h1 { color: #4fc3f7; }
+        body.dark-mode .header-title p { color: #aaa; }
+        body.dark-mode .top-bar { border-bottom-color: #333; }
+        
+        body.dark-mode .auth-box { background: #1e1e1e; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        body.dark-mode .auth-box h3 { color: #4fc3f7; }
+        body.dark-mode .auth-box p, body.dark-mode .auth-box label { color: #aaa; }
+        body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
+        body.dark-mode .auth-input:focus { border-color: #4fc3f7; box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.1); }
+        body.dark-mode .forgot-link { color: #4fc3f7; }
+        
+        body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
+        body.dark-mode label { color: #e0e0e0; border-bottom-color: #444;}
+        body.dark-mode .input-field { background-color: #2a2a2a; color: #fff; border-color: #444; }
+        body.dark-mode .input-field:focus { border-color: #4fc3f7; }
+        body.dark-mode .kruti-text { background-color: #2a2a2a; color: #fff; border-color: #444; }
+        body.dark-mode .kruti-readonly { background-color: #1a1a1a; border-color: #444; }
+        body.dark-mode .stat-item { background: #2a2a2a; border-color: #333; color: #e0e0e0; }
         body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
         body.dark-mode .official-box h4 { color: #f8d7da; border-color: #664d03; }
         body.dark-mode .color-legend { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
-        body.dark-mode .input-field { background-color: #333; color: #fff; border-color: #555; }
-        body.dark-mode .top-bar { border-bottom-color: #444; }
+        body.dark-mode .timer { background: #4a191c; border-color: #721c24; color: #ff8a80; }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .auth-box { padding: 25px 20px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="top-bar">
-        <div id="userProfile" style="display:none; font-weight:bold; color:#0277bd; font-size: 16px;">
-            👤 <span id="userEmailDisplay"></span>
+        <div id="userProfile" style="display:none; font-weight:600; color:#0277bd; font-size: 15px; align-items: center;">
+            <span style="font-size: 18px; margin-right: 5px;">👤</span> <span id="userEmailDisplay"></span>
             <button class="btn btn-danger" onclick="logoutUser()" style="margin-left:15px;">लॉगआउट</button>
         </div>
         <div id="spacer" style="flex-grow: 1;"></div>
         <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
     </div>
 
-    <div class="header-title">
-        <h1>हिंदी स्टेनो लैब</h1>
-        <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
-    </div>
-
-    <div id="authArea" class="setup-box">
-        <h3 style="margin-top: 0; color: #0277bd; text-align: center;">पोर्टल में प्रवेश करें</h3>
-        <p style="text-align: center; color: #555; margin-bottom:20px;">टेस्ट देने के लिए अपना खाता बनाएं या लॉगिन करें।</p>
+    <div id="authWrapper" class="auth-wrapper">
+        <div class="header-title" style="position: absolute; top: 70px; width: 100%; box-sizing: border-box; max-width: 900px; z-index: -1;">
+            <h1>हिंदी स्टेनो लैब</h1>
+            <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
+        </div>
         
-        <label style="border:none; margin-top:0;">ईमेल आईडी (Email ID):</label>
-        <input type="email" id="authEmail" class="input-field" placeholder="अपना ईमेल दर्ज करें">
-        
-        <label style="border:none;">पासवर्ड (Password):</label>
-        <input type="password" id="authPassword" class="input-field" placeholder="पासवर्ड (कम से कम 6 अक्षर)">
-        
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" onclick="loginUser()">लॉगिन करें (Login)</button>
-            <button class="btn btn-info" onclick="signupUser()">नया खाता बनाएं (Sign Up)</button>
+        <div id="authArea" class="auth-box">
+            <h3>पोर्टल में प्रवेश करें</h3>
+            <p>टेस्ट देने के लिए अपना खाता बनाएं या लॉगिन करें</p>
+            
+            <label>ईमेल आईडी (Email ID)</label>
+            <input type="email" id="authEmail" class="auth-input" placeholder="student@example.com">
+            
+            <label>पासवर्ड (Password)</label>
+            <input type="password" id="authPassword" class="auth-input" placeholder="कम से कम 6 अक्षर दर्ज करें">
+            
+            <span class="forgot-link" onclick="resetPassword()">पासवर्ड भूल गए?</span>
+            
+            <div class="auth-btn-group">
+                <button class="auth-btn btn-login" onclick="loginUser()">लॉगिन करें</button>
+                <button class="auth-btn btn-signup" onclick="signupUser()">नया खाता बनाएं</button>
+            </div>
         </div>
     </div>
 
     <div id="mainAppArea" style="display: none;">
+        <div class="header-title">
+            <h1>हिंदी स्टेनो लैब</h1>
+            <p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
+        </div>
+
         <div id="testArea">
             <div id="studentDetailsBox" class="setup-box">
-                <h3 style="margin-top: 0; color: #0277bd;">विद्यार्थी विवरण दर्ज करें</h3>
+                <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">विद्यार्थी विवरण दर्ज करें</h3>
                 
                 <label style="border:none; margin-top:0;">विद्यार्थी का नाम:</label>
                 <input type="text" id="studentName" class="input-field" placeholder="अपना पूरा नाम दर्ज करें">
@@ -150,11 +211,11 @@
             <h2 style="color: #0277bd; text-align: center; margin-top: 0; margin-bottom: 5px; font-size: 28px;">हिंदी स्टेनो लैब</h2>
             <h3 style="color: #28a745; margin-top: 0; margin-bottom: 15px; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
             
-            <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
-                <b>नाम:</b> <span id="r_name" style="color: #007bff;"></span> | 
-                <b>रोल नंबर:</b> <span id="r_roll" style="color: #007bff;"></span> |
+            <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 15px;">
+                <b>नाम:</b> <span id="r_name" style="color: #007bff;"></span> &nbsp;|&nbsp; 
+                <b>रोल नंबर:</b> <span id="r_roll" style="color: #007bff;"></span> &nbsp;|&nbsp;
                 <b>टेस्ट स्पीड:</b> <span id="r_testSpeed" style="color: #007bff;"></span><br>
-                <b style="display:inline-block; margin-top:5px;">लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span>
+                <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span></div>
             </div>
             
             <div class="stats-grid">
@@ -168,20 +229,20 @@
             <div class="official-box">
                 <h4>आधिकारिक मूल्यांकन (Official Evaluation - 5% Margin Rule)</h4>
                 <div class="stats-grid" style="margin-bottom: 0;">
-                    <div class="stat-item" style="background: none;">कुल की गई गलतियां:<br><small>(Full + Partial/2)</small> <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
-                    <div class="stat-item positive" style="background: none;">माफ की गई गलतियां:<br><small>(कुल शब्दों का 5%)</small> <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
-                    <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">काटी जाने वाली गलतियां:<br><small>(Excess Mistakes)</small> <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
-                    <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; padding-top: 15px;">शुद्ध शब्द (Net Words):<br><small>(Total Words - Excess)</small> <span id="r_netWords" style="font-size: 22px;">0</span></div>
-                    <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb; border-radius:4px; padding:10px;">
-                        <span style="float:none; color: #155724; font-size: 20px;">टाइपिंग स्पीड: <b id="r_speed">0 WPM</b> &nbsp; | &nbsp; शुद्धता (Accuracy): <b id="r_accuracy">0%</b></span>
+                    <div class="stat-item" style="background: none; border:none;">कुल की गई गलतियां:<br><small>(Full + Partial/2)</small> <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
+                    <div class="stat-item positive" style="background: none; border:none;">माफ की गई गलतियां:<br><small>(कुल शब्दों का 5%)</small> <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
+                    <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; border-radius:0; padding-top: 15px;">काटी जाने वाली गलतियां:<br><small>(Excess Mistakes)</small> <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
+                    <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; border-radius:0; padding-top: 15px;">शुद्ध शब्द (Net Words):<br><small>(Total Words - Excess)</small> <span id="r_netWords" style="font-size: 22px;">0</span></div>
+                    <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; margin-top: 10px; border: 1px solid #c3e6cb; border-radius:8px; padding:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <span style="float:none; color: #155724; font-size: 22px;">टाइपिंग स्पीड: <b id="r_speed">0 WPM</b> &nbsp; | &nbsp; शुद्धता (Accuracy): <b id="r_accuracy">0%</b></span>
                     </div>
                 </div>
             </div>
             
-            <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; display:none;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
+            <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; font-size: 16px; display:none; background: #d4edda; padding: 10px; border-radius: 8px;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
 
-            <hr>
-            <label>आपके अनुवाद का मूल्यांकन (Evaluated Text):</label>
+            <hr style="border-top: 1px solid #eee; margin: 20px 0;">
+            <label style="border:none;">आपके अनुवाद का मूल्यांकन (Evaluated Text):</label>
             <div class="color-legend">
                 <b>संकेत:</b><br>
                 <span class="legend-item" style="color: #28a745;">■ सही शब्द</span>
@@ -192,7 +253,7 @@
             </div>
             <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
             <div style="text-align: center;">
-                <button id="downloadPdfBtn" class="btn btn-info" style="width: auto;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
+                <button id="downloadPdfBtn" class="btn btn-info" style="width: auto; box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
             </div>
         </div>
     </div>
@@ -211,7 +272,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 </textarea>
 <script>
     // ==========================================
-    // 1. Firebase Authentication Logic (लॉगिन/साइनअप - नई API Key के साथ)
+    // 1. Firebase Authentication Logic
     // ==========================================
     const firebaseConfig = {
       apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
@@ -225,16 +286,15 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // चेक करें कि यूज़र लॉगिन है या नहीं
     auth.onAuthStateChanged((user) => {
         if (user) {
-            document.getElementById('authArea').style.display = 'none';
+            document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('mainAppArea').style.display = 'block';
             document.getElementById('spacer').style.display = 'none';
-            document.getElementById('userProfile').style.display = 'block';
+            document.getElementById('userProfile').style.display = 'flex';
             document.getElementById('userEmailDisplay').innerText = user.email;
         } else {
-            document.getElementById('authArea').style.display = 'block';
+            document.getElementById('authWrapper').style.display = 'flex';
             document.getElementById('mainAppArea').style.display = 'none';
             document.getElementById('userProfile').style.display = 'none';
             document.getElementById('spacer').style.display = 'block';
@@ -264,8 +324,25 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         auth.signOut();
     }
 
+    // नया: पासवर्ड भूल गए (Reset Password) फंक्शन
+    function resetPassword() {
+        const email = document.getElementById('authEmail').value.trim();
+        if(!email) { 
+            alert("पासवर्ड रीसेट करने के लिए कृपया बॉक्स में अपना ईमेल दर्ज करें और फिर 'पासवर्ड भूल गए?' पर क्लिक करें।"); 
+            return; 
+        }
+        
+        auth.sendPasswordResetEmail(email)
+        .then(() => {
+            alert("पासवर्ड रीसेट करने का लिंक आपके ईमेल (" + email + ") पर भेज दिया गया है। कृपया अपना इनबॉक्स चेक करें!");
+        })
+        .catch((error) => {
+            alert("एरर: " + error.message);
+        });
+    }
+
     // ==========================================
-    // 2. Test Logic & Google Sheets (आपका डेटाबेस)
+    // 2. Test Logic & Google Sheets
     // ==========================================
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
 
