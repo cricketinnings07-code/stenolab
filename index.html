@@ -27,15 +27,15 @@
         .header-title p { margin: 5px 0 0 0; color: #666; font-size: 16px; font-weight: 600; }
 
         .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 65vh; }
-        .auth-box { background: white; width: 100%; max-width: 360px; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeInSlideUp 0.6s ease-out; }
+        .auth-box { background: white; width: 100%; max-width: 380px; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeInSlideUp 0.6s ease-out; }
         
         @keyframes fadeInSlideUp {
             from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .auth-box h3 { color: #0277bd; text-align: center; margin-top: 0; font-size: 22px; margin-bottom: 8px;}
-        .auth-box p { text-align: center; color: #777; font-size: 13px; margin-bottom: 25px; }
+        .auth-box h3 { color: #0277bd; text-align: center; margin-top: 0; font-size: 24px; margin-bottom: 5px;}
+        .auth-box p { text-align: center; color: #777; font-size: 14px; margin-bottom: 25px; }
         .auth-box label { font-size: 13px; font-weight: 600; margin-top: 10px; margin-bottom: 5px; color: #444; border: none; padding: 0; display: block; }
         
         .auth-input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; box-sizing: border-box; transition: all 0.3s; background: #fafafa; }
@@ -44,14 +44,17 @@
         .forgot-link { display: block; text-align: right; color: #0277bd; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; margin-top: -8px; margin-bottom: 20px; transition: 0.3s; }
         .forgot-link:hover { color: #01579b; text-decoration: underline; }
         
-        .auth-btn-group { display: flex; gap: 12px; }
-        .auth-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; color: white; }
-        .btn-login { background: linear-gradient(135deg, #0277bd, #01579b); box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(2, 119, 189, 0.4); }
-        .btn-signup { background: linear-gradient(135deg, #28a745, #218838); box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
-        .btn-signup:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4); }
+        .auth-btn-full { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; color: white; margin-bottom: 15px;}
+        .btn-primary { background: linear-gradient(135deg, #0277bd, #01579b); box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(2, 119, 189, 0.4); }
+        
+        .switch-auth { text-align: center; font-size: 13px; color: #555; }
+        .switch-auth span { color: #0277bd; font-weight: bold; cursor: pointer; text-decoration: underline; }
 
         .setup-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .readonly-info { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #b8daff; margin-bottom: 15px; }
+        .readonly-info p { margin: 5px 0; font-size: 15px; color: #0056b3; }
+        
         .input-field { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: 0.3s;}
         .input-field:focus { border-color: #0277bd; outline: none; box-shadow: 0 0 0 3px rgba(2, 119, 189, 0.1); }
         select.input-field { cursor: pointer; }
@@ -84,7 +87,6 @@
         .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; line-height: 1.6; transition: 0.3s; }
         .legend-item { display: inline-block; margin-right: 15px; margin-bottom: 5px; }
 
-        /* Leaderboard Table Styles */
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 16px; }
         .leaderboard-table th, .leaderboard-table td { padding: 14px; text-align: left; border-bottom: 1px solid #ddd; }
         .leaderboard-table th { background-color: #0277bd; color: white; font-weight: bold; border-radius: 4px 4px 0 0; }
@@ -102,11 +104,15 @@
         body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
         body.dark-mode .auth-input:focus { border-color: #4fc3f7; box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.1); }
         body.dark-mode .forgot-link { color: #4fc3f7; }
+        body.dark-mode .switch-auth { color: #aaa; }
+        body.dark-mode .switch-auth span { color: #4fc3f7; }
         
         body.dark-mode .setup-box, body.dark-mode .result-box, body.dark-mode .leaderboard-box { background: #1e1e1e; border-color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
         body.dark-mode label { color: #e0e0e0; border-bottom-color: #444;}
         body.dark-mode .input-field { background-color: #2a2a2a; color: #fff; border-color: #444; }
         body.dark-mode .input-field:focus { border-color: #4fc3f7; }
+        body.dark-mode .readonly-info { background: #1a2a3a; border-color: #0f4c81; }
+        body.dark-mode .readonly-info p { color: #4fc3f7; }
         body.dark-mode .kruti-text { background-color: #2a2a2a; color: #fff; border-color: #444; }
         body.dark-mode .kruti-readonly { background-color: #1a1a1a; border-color: #444; }
         body.dark-mode .stat-item { background: #2a2a2a; border-color: #333; color: #e0e0e0; }
@@ -143,20 +149,26 @@
         </div>
         
         <div id="authArea" class="auth-box">
-            <h3>पोर्टल में प्रवेश करें</h3>
-            <p>टेस्ट देने के लिए अपना खाता बनाएं या लॉगिन करें</p>
+            <h3 id="authTitle">लॉगिन करें</h3>
+            <p id="authSubtitle">टेस्ट देने के लिए अपना खाता खोलें</p>
             
+            <div id="nameFieldContainer" style="display: none;">
+                <label>विद्यार्थी का पूरा नाम (Full Name)</label>
+                <input type="text" id="authName" class="auth-input" placeholder="जैसे: राहुल कुमार">
+            </div>
+
             <label>ईमेल आईडी (Email ID)</label>
             <input type="email" id="authEmail" class="auth-input" placeholder="student@example.com">
             
             <label>पासवर्ड (Password)</label>
-            <input type="password" id="authPassword" class="auth-input" placeholder="कम से कम 6 अक्षर दर्ज करें">
+            <input type="password" id="authPassword" class="auth-input" placeholder="कम से कम 6 अक्षर">
             
-            <span class="forgot-link" onclick="resetPassword()">पासवर्ड भूल गए?</span>
+            <span class="forgot-link" id="forgotPwdLink" onclick="resetPassword()">पासवर्ड भूल गए?</span>
             
-            <div class="auth-btn-group">
-                <button class="auth-btn btn-login" onclick="loginUser()">लॉगिन करें</button>
-                <button class="auth-btn btn-signup" onclick="signupUser()">नया खाता बनाएं</button>
+            <button class="auth-btn-full btn-primary" id="mainAuthBtn" onclick="processAuth()">लॉगिन करें</button>
+            
+            <div class="switch-auth" id="switchAuthText">
+                नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें</span>
             </div>
         </div>
     </div>
@@ -169,23 +181,21 @@
 
         <div id="testArea">
             <div id="studentDetailsBox" class="setup-box">
-                <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">विद्यार्थी विवरण दर्ज करें</h3>
+                <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">टेस्ट सेटअप</h3>
                 
-                <label style="border:none; margin-top:0;">विद्यार्थी का नाम:</label>
-                <input type="text" id="studentName" class="input-field" placeholder="अपना पूरा नाम दर्ज करें">
+                <div class="readonly-info">
+                    <p><b>विद्यार्थी का नाम:</b> <span id="displayStudentName">लोड हो रहा है...</span></p>
+                    <p><b>सिस्टम रोल नंबर:</b> <span id="displayStudentRoll">लोड हो रहा है...</span></p>
+                </div>
                 
-                <label style="border:none;">रोल नंबर / आईडी:</label>
-                <input type="text" id="studentRoll" class="input-field" placeholder="अपना रोल नंबर दर्ज करें">
-                
-                <label style="border:none;">डिक्टेशन की गति (Speed) चुनें:</label>
+                <label style="border:none; margin-top:0;">डिक्टेशन की गति (Speed) चुनें:</label>
                 <select id="speedSelect" class="input-field">
                     <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
                     <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
                     <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
                 </select>
 
-                <button class="btn" onclick="startAudioSection()">विवरण सुरक्षित करें और टेस्ट शुरू करें</button>
-                
+                <button class="btn" onclick="startAudioSection()">टेस्ट शुरू करें</button>
                 <button class="btn" style="background: none; color: #0277bd; border: 2px solid #0277bd; margin-top: 10px;" onclick="showLeaderboardOnly()">📊 सीधे लीडरबोर्ड देखें</button>
             </div>
 
@@ -265,7 +275,7 @@
 
         <div id="leaderboardBox" class="leaderboard-box">
             <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 28px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">जिन विद्यार्थियों की एक्यूरेसी (Accuracy) सबसे अधिक है, वे टॉप पर हैं।</p>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">जिन विद्यार्थियों की एक्यूरेसी (Accuracy) सबसे अधिक है, वे टॉप पर हैं। (सिर्फ बेस्ट रिज़ल्ट)</p>
             
             <table class="leaderboard-table">
                 <thead>
@@ -299,7 +309,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
 </textarea>
 <script>
     // ==========================================
-    // 1. Firebase Authentication Logic
+    // 1. Firebase Authentication Logic (Smart Login)
     // ==========================================
     const firebaseConfig = {
       apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
@@ -313,13 +323,68 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    let isSignupMode = false;
+    let currentUserData = { name: "", roll: "", email: "" };
+
+    function toggleAuthMode() {
+        isSignupMode = !isSignupMode;
+        if(isSignupMode) {
+            document.getElementById('authTitle').innerText = "नया खाता बनाएं";
+            document.getElementById('authSubtitle').innerText = "पोर्टल से जुड़ने के लिए अपनी जानकारी दें";
+            document.getElementById('nameFieldContainer').style.display = "block";
+            document.getElementById('mainAuthBtn').innerText = "नया खाता बनाएं";
+            document.getElementById('mainAuthBtn').style.background = "linear-gradient(135deg, #28a745, #218838)";
+            document.getElementById('forgotPwdLink').style.display = "none";
+            document.getElementById('switchAuthText').innerHTML = "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>";
+        } else {
+            document.getElementById('authTitle').innerText = "लॉगिन करें";
+            document.getElementById('authSubtitle').innerText = "टेस्ट देने के लिए अपना खाता खोलें";
+            document.getElementById('nameFieldContainer').style.display = "none";
+            document.getElementById('mainAuthBtn').innerText = "लॉगिन करें";
+            document.getElementById('mainAuthBtn').style.background = "linear-gradient(135deg, #0277bd, #01579b)";
+            document.getElementById('forgotPwdLink').style.display = "block";
+            document.getElementById('switchAuthText').innerHTML = "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
+        }
+    }
+
+    function processAuth() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        const name = document.getElementById('authName').value.trim();
+
+        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
+
+        if(isSignupMode) {
+            if(!name) { alert("खाता बनाने के लिए पूरा नाम डालना ज़रूरी है!"); return; }
+            auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // नाम को Firebase प्रोफाइल में सेव करें
+                return userCredential.user.updateProfile({ displayName: name });
+            })
+            .then(() => { alert("खाता सफलतापूर्वक बन गया!"); location.reload(); })
+            .catch((error) => { alert("एरर: " + error.message); });
+        } else {
+            auth.signInWithEmailAndPassword(email, password)
+            .catch((error) => { alert("लॉगिन फेल: ईमेल या पासवर्ड गलत है।"); });
+        }
+    }
+
     auth.onAuthStateChanged((user) => {
         if (user) {
+            // ऑटो-जेनरेट नाम और रोल नंबर
+            let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
+            let userName = user.displayName || user.email.split('@')[0];
+
+            currentUserData = { name: userName, roll: generatedRoll, email: user.email };
+
+            document.getElementById('displayStudentName').innerText = userName;
+            document.getElementById('displayStudentRoll').innerText = generatedRoll;
+            
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('mainAppArea').style.display = 'block';
             document.getElementById('spacer').style.display = 'none';
             document.getElementById('userProfile').style.display = 'flex';
-            document.getElementById('userEmailDisplay').innerText = user.email;
+            document.getElementById('userEmailDisplay').innerText = userName;
         } else {
             document.getElementById('authWrapper').style.display = 'flex';
             document.getElementById('mainAppArea').style.display = 'none';
@@ -328,42 +393,18 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         }
     });
 
-    function signupUser() {
-        const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value.trim();
-        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
-        
-        auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => { alert("खाता सफलतापूर्वक बन गया! अब आप टेस्ट दे सकते हैं।"); })
-        .catch((error) => { alert("एरर: " + error.message); });
-    }
-
-    function loginUser() {
-        const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value.trim();
-        if(!email || !password) { alert("कृपया ईमेल और पासवर्ड डालें!"); return; }
-        
-        auth.signInWithEmailAndPassword(email, password)
-        .catch((error) => { alert("लॉगिन फेल: ईमेल या पासवर्ड गलत है।"); });
-    }
-
-    function logoutUser() {
-        auth.signOut();
-    }
+    function logoutUser() { auth.signOut(); location.reload(); }
 
     function resetPassword() {
         const email = document.getElementById('authEmail').value.trim();
-        if(!email) { 
-            alert("पासवर्ड रीसेट करने के लिए कृपया बॉक्स में अपना ईमेल दर्ज करें और फिर 'पासवर्ड भूल गए?' पर क्लिक करें।"); 
-            return; 
-        }
+        if(!email) { alert("पासवर्ड रीसेट करने के लिए कृपया बॉक्स में अपना ईमेल दर्ज करें और फिर 'पासवर्ड भूल गए?' पर क्लिक करें।"); return; }
         auth.sendPasswordResetEmail(email)
         .then(() => { alert("पासवर्ड रीसेट करने का लिंक आपके ईमेल पर भेज दिया गया है!"); })
         .catch((error) => { alert("एरर: " + error.message); });
     }
 
     // ==========================================
-    // 2. Test Logic & Google Sheets (Leaderboard)
+    // 2. Test Logic & Google Sheets
     // ==========================================
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
 
@@ -377,31 +418,20 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
     function requestFullScreen() {
-        try {
-            var elem = document.documentElement;
-            if (elem.requestFullscreen) { var p = elem.requestFullscreen(); if(p !== undefined) { p.catch(e=>{}); } } 
-            else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
-            else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
-        } catch(e) {}
+        try { var elem = document.documentElement; if (elem.requestFullscreen) { var p = elem.requestFullscreen(); if(p !== undefined) { p.catch(e=>{}); } } else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } } catch(e) {}
     }
 
     function startAudioSection() {
-        let name = document.getElementById('studentName').value.trim();
-        let roll = document.getElementById('studentRoll').value.trim();
-        let speed = document.getElementById('speedSelect').value;
-
-        if(name === "" || roll === "") { alert("कृपया अपना नाम और रोल नंबर दर्ज करें!"); return; }
-
         requestFullScreen();
-
+        let speed = document.getElementById('speedSelect').value;
         let masterTextElem = document.getElementById('masterText_' + speed);
         if(!masterTextElem) { alert("तकनीकी त्रुटि: मास्टर टेक्स्ट नहीं मिला।"); return; }
 
         finalMasterText = masterTextElem.value.trim();
         document.getElementById('dictationAudio').src = "dictation_" + speed + ".mp3";
         
-        document.getElementById('r_name').innerText = name;
-        document.getElementById('r_roll').innerText = roll;
+        document.getElementById('r_name').innerText = currentUserData.name;
+        document.getElementById('r_roll').innerText = currentUserData.roll;
         document.getElementById('r_testSpeed').innerText = speed + " WPM";
 
         document.getElementById('studentDetailsBox').style.display = 'none';
@@ -414,7 +444,6 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     function startTypingTest() {
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
-        
         isTestRunning = true; 
         
         let studentTextArea = document.getElementById('studentText');
@@ -425,15 +454,8 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
             const forbiddenKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
             if (forbiddenKeys.includes(e.key)) { e.preventDefault(); }
         });
-
-        studentTextArea.addEventListener('mousedown', function(e) {
-            setTimeout(() => { studentTextArea.selectionStart = studentTextArea.value.length; studentTextArea.selectionEnd = studentTextArea.value.length; }, 0);
-        });
-
-        studentTextArea.addEventListener('click', function(e) {
-            studentTextArea.selectionStart = studentTextArea.value.length; studentTextArea.selectionEnd = studentTextArea.value.length;
-        });
-        
+        studentTextArea.addEventListener('mousedown', function(e) { setTimeout(() => { studentTextArea.selectionStart = studentTextArea.value.length; studentTextArea.selectionEnd = studentTextArea.value.length; }, 0); });
+        studentTextArea.addEventListener('click', function(e) { studentTextArea.selectionStart = studentTextArea.value.length; studentTextArea.selectionEnd = studentTextArea.value.length; });
         studentTextArea.addEventListener('paste', function(e) { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
     }
 
@@ -448,16 +470,13 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     function updateTimer() {
         let minutes = Math.floor(timeLeft / 60); let seconds = timeLeft % 60;
         if (minutes < 10) minutes = "0" + minutes; if (seconds < 10) seconds = "0" + seconds;
-        
         document.getElementById('timerDisplay').innerText = "समय शेष: " + minutes + ":" + seconds;
         if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
         timeLeft--;
     }
 
     function submitTest() {
-        isTestRunning = false; 
-        clearInterval(timerInterval);
-        
+        isTestRunning = false; clearInterval(timerInterval);
         try { if (document.exitFullscreen) { var p = document.exitFullscreen(); if(p !== undefined) { p.catch(e=>{}); } } } catch(e) {}
         
         let timeTakenSeconds = totalDuration - timeLeft;
@@ -478,26 +497,20 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         
         let dp = Array(mWords.length + 1).fill(null).map(() => Array(sWords.length + 1).fill(0));
         let path = Array(mWords.length + 1).fill(null).map(() => Array(sWords.length + 1).fill(0));
-        
         for(let i = 1; i <= mWords.length; i++) { dp[i][0] = i; path[i][0] = 2; }
         for(let j = 1; j <= sWords.length; j++) { dp[0][j] = j; path[0][j] = 3; }
         
         for(let i = 1; i <= mWords.length; i++) {
             for(let j = 1; j <= sWords.length; j++) {
                 let cost = 1; let w1 = mWords[i-1]; let w2 = sWords[j-1];
-                if (w1 === w2) { cost = 0; } 
-                else { let c1 = w1.replace(/[,\|]/g, ''); let c2 = w2.replace(/[,\|]/g, ''); if (c1 === c2) cost = 0.5; }
-                
+                if (w1 === w2) { cost = 0; } else { let c1 = w1.replace(/[,\|]/g, ''); let c2 = w2.replace(/[,\|]/g, ''); if (c1 === c2) cost = 0.5; }
                 let diag = dp[i-1][j-1] + cost; let del = dp[i-1][j] + 1; let ins = dp[i][j-1] + 1;
-                if (diag <= del && diag <= ins) { dp[i][j] = diag; path[i][j] = 1; } 
-                else if (del <= ins) { dp[i][j] = del; path[i][j] = 2; } 
-                else { dp[i][j] = ins; path[i][j] = 3; }
+                if (diag <= del && diag <= ins) { dp[i][j] = diag; path[i][j] = 1; } else if (del <= ins) { dp[i][j] = del; path[i][j] = 2; } else { dp[i][j] = ins; path[i][j] = 3; }
             }
         }
         
         let omissions = 0, halfMistakes = 0, fullMistakes = 0, extraWords = 0;
         let currI = mWords.length, currJ = sWords.length; let diffHtmlArray = []; 
-        
         while(currI > 0 || currJ > 0) {
             if (currI > 0 && currJ > 0 && path[currI][currJ] === 1) {
                 let w1 = mWords[currI-1]; let w2 = sWords[currJ-1];
@@ -505,12 +518,10 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                 else {
                     let c1 = w1.replace(/[,\|]/g, ''); let c2 = w2.replace(/[,\|]/g, '');
                     let correctWordHtml = ' <span style="color: #28a745; font-family: Arial, sans-serif;">(</span><span style="color: #28a745;">' + w1 + '</span><span style="color: #28a745; font-family: Arial, sans-serif;">)</span>';
-                    if (c1 === c2) { halfMistakes++; diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml); } 
-                    else { fullMistakes++; diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml); }
+                    if (c1 === c2) { halfMistakes++; diffHtmlArray.unshift('<span style="color: #fd7e14;">' + w2 + '</span>' + correctWordHtml); } else { fullMistakes++; diffHtmlArray.unshift('<span style="color: #dc3545;">' + w2 + '</span>' + correctWordHtml); }
                 }
                 currI--; currJ--;
-            } 
-            else if (currI > 0 && (currJ === 0 || path[currI][currJ] === 2)) { omissions++; diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>'); currI--; } 
+            } else if (currI > 0 && (currJ === 0 || path[currI][currJ] === 2)) { omissions++; diffHtmlArray.unshift('<span style="color: #dc3545; text-decoration: line-through;">' + mWords[currI-1] + '</span>'); currI--; } 
             else if (currJ > 0 && (currI === 0 || path[currI][currJ] === 3)) { extraWords++; diffHtmlArray.unshift('<span style="color: #dc3545; border-bottom: 2px solid #dc3545;">' + sWords[currJ-1] + '</span>'); currJ--; }
         }
         
@@ -519,10 +530,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         let actualMistakesScore = totalFullMistakes + (halfMistakes / 2);
         let allowedMistakes = Math.round(totalWords * 0.05);
         let excessMistakes = actualMistakesScore > allowedMistakes ? actualMistakesScore - allowedMistakes : 0;
-        
-        // यह है आपका Total Correct Words
         let netWords = totalWords - excessMistakes; if(netWords < 0) netWords = 0;
-
         let accuracy = (netWords / totalWords) * 100;
         if(timeTakenMins < 1) timeTakenMins = 1; 
         let speedWPM = Math.round(netWords / timeTakenMins);
@@ -540,19 +548,19 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         document.getElementById('r_accuracy').innerText = accuracy.toFixed(2) + "%";
         document.getElementById('displayEvaluatedText').innerHTML = diffHtmlArray.join(' ');
 
-        // अब हम netWords (Total Correct Words) को भी शीट में भेज रहे हैं
         saveResultToGoogleSheet(speedWPM, accuracy.toFixed(2), actualMistakesScore, netWords);
     }
 
     function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
         let dataPayload = {
-            name: document.getElementById('studentName').value.trim(),
-            rollNumber: document.getElementById('studentRoll').value.trim(),
+            name: currentUserData.name,
+            rollNumber: currentUserData.roll,
+            email: currentUserData.email,  // ईमेल अब डेटाबेस में जाएगा
             speedTarget: document.getElementById('speedSelect').value,
             actualSpeedWPM: speedWPM,
             accuracy: accuracy, 
             totalMistakes: totalMistakes,
-            netWords: netWords  // नया डेटा जो शीट में जाएगा
+            netWords: netWords
         };
 
         fetch(GOOGLE_SHEET_WEB_APP_URL, {
@@ -567,15 +575,13 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
     function downloadResultPDF() {
         const btn = document.getElementById('downloadPdfBtn'); btn.style.display = 'none';
         let wasDarkMode = document.body.classList.contains('dark-mode'); if(wasDarkMode) document.body.classList.remove('dark-mode');
-
         const element = document.getElementById('resultBox');
         const opt = { margin: [10, 10, 10, 10], filename: 'Hindi_Steno_Lab_Result.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-
         html2pdf().set(opt).from(element).save().then(() => { btn.style.display = 'inline-block'; if(wasDarkMode) document.body.classList.add('dark-mode'); });
     }
 
     // ==========================================
-    // 3. Leaderboard Fetching Logic (Updated)
+    // 3. Leaderboard Fetching Logic (Smart Filtering)
     // ==========================================
     function showLeaderboardOnly() {
         document.getElementById('studentDetailsBox').style.display = 'none';
@@ -593,24 +599,17 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
         fetch(GOOGLE_SHEET_WEB_APP_URL)
         .then(response => response.json())
         .then(data => {
-            // एक्यूरेसी और सही शब्दों के हिसाब से सॉर्टिंग
             data.sort((a, b) => {
-                let accA = parseFloat(a.accuracy) || 0;
-                let accB = parseFloat(b.accuracy) || 0;
-                if (accB !== accA) return accB - accA; // जिसकी एक्यूरेसी ज़्यादा, वो ऊपर
-                
-                let wordsA = parseInt(a.netWords) || 0;
-                let wordsB = parseInt(b.netWords) || 0;
-                return wordsB - wordsA; // एक्यूरेसी सेम होने पर Total Correct Words चेक होंगे
+                let accA = parseFloat(a.accuracy) || 0; let accB = parseFloat(b.accuracy) || 0;
+                if (accB !== accA) return accB - accA; 
+                let wordsA = parseInt(a.netWords) || 0; let wordsB = parseInt(b.netWords) || 0;
+                return wordsB - wordsA; 
             });
 
             let tableHtml = "";
             data.forEach((student, index) => {
                 let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
-                
-                // अगर पुराने रिज़ल्ट में netWords नहीं हैं, तो 0 दिखाएं
                 let correctWords = student.netWords ? student.netWords : "0"; 
-
                 tableHtml += `<tr>
                     <td><b>${rankIcon}</b></td>
                     <td>${student.name}</td>
@@ -619,10 +618,7 @@ eksVj okgu vfèkfu;e] 1988 èkkjk;sa 166 vkSj 173 Dyse çfrdj çFke lwpuk çfros
                 </tr>`;
             });
             
-            if(data.length === 0) {
-                tableHtml = "<tr><td colspan='4' style='text-align:center;'>अभी तक कोई रिज़ल्ट नहीं है।</td></tr>";
-            }
-            
+            if(data.length === 0) { tableHtml = "<tr><td colspan='4' style='text-align:center;'>अभी तक कोई रिज़ल्ट नहीं है।</td></tr>"; }
             document.getElementById('leaderboardData').innerHTML = tableHtml;
         })
         .catch(err => {
