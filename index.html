@@ -243,9 +243,18 @@
         </div>
     </div>
 
-    <div id="leaderboardView" class="view-section setup-box" style="border: 2px solid #ffc107;">
+   <div id="leaderboardView" class="view-section setup-box" style="border: 2px solid #ffc107;">
         <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 26px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
         <p style="text-align: center; color: #666; margin-bottom: 20px;">किसने कौनसी रैंक हासिल की, यहाँ देखें।</p>
+
+        <label style="border:none; margin-top:0;"><b>किस डिक्टेशन का लीडरबोर्ड देखना है?</b></label>
+        <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fff3cd; color:#856404; font-weight:bold; border:2px solid #ffc107;">
+            <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
+            <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
+            <option value="90">90 शब्द प्रति मिनट (90 WPM)</option>
+            <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
+        </select>
+
         <div style="overflow-x: auto;">
             <table class="data-table">
                 <thead><tr><th>रैंक</th><th>विद्यार्थी का नाम</th><th>Net Words</th><th>Accuracy</th></tr></thead>
@@ -253,8 +262,6 @@
             </table>
         </div>
     </div>
-
-</div>
 
 <script>
     // 1. Firebase Config
@@ -481,6 +488,7 @@
         
         // 🚀 नया बदलाव: टेस्ट सबमिट होते ही मेनू बार वापस ले आएं 🚀
         document.getElementById('mainNavbar').style.display = 'flex';
+        document.getElementById('leaderboardSpeedSelect').value = document.getElementById('speedSelect').value;
 
         // Scroll to top of result
         window.scrollTo(0, 0);
@@ -567,7 +575,12 @@
     // ==========================================
     function renderLeaderboard() {
         if (!globalLeaderboardData) { document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
-        globalLeaderboardData.sort((a, b) => {
+
+        // 🚀 नया बदलाव: जो स्पीड चुनी गई है, सिर्फ उसका डेटा फिल्टर करें
+        let selectedSpeed = document.getElementById('leaderboardSpeedSelect').value;
+        let filteredData = globalLeaderboardData.filter(item => item.speed == selectedSpeed);
+
+        filteredData.sort((a, b) => {
             let accA = parseFloat(a.accuracy) || 0; let accB = parseFloat(b.accuracy) || 0;
             if (accB !== accA) return accB - accA; 
             let wordsA = parseInt(a.netWords) || 0; let wordsB = parseInt(b.netWords) || 0;
@@ -575,12 +588,12 @@
         });
 
         let tableHtml = "";
-        globalLeaderboardData.forEach((student, index) => {
+        filteredData.forEach((student, index) => {
             let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
             let correctWords = student.netWords ? student.netWords : "0"; 
             tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
         });
-        if(globalLeaderboardData.length === 0) { tableHtml = "<tr><td colspan='4' style='text-align:center;'>अभी तक कोई रिज़ल्ट नहीं है।</td></tr>"; }
+        if(filteredData.length === 0) { tableHtml = `<tr><td colspan='4' style='text-align:center;'>${selectedSpeed} WPM वाले डिक्टेशन का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; }
         document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
 
