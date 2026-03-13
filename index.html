@@ -13,33 +13,39 @@
     <style>
         @font-face { font-family: 'Kruti Dev 010'; src: url('kruti.ttf') format('truetype'); }
 
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 20px; transition: background-color 0.3s; margin: 0; min-height: 100vh; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 15px; transition: background-color 0.3s; margin: 0; min-height: 100vh; }
         .container { max-width: 900px; margin: 0 auto; position: relative; transition: 0.3s; }
         
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd; flex-wrap: wrap; gap: 10px;}
-        .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        /* 🚀 नया: टॉप बार और नेविगेशन मेनू 🚀 */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 15px 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .top-header h1 { margin: 0; color: #0277bd; font-size: 26px; }
+        .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .dark-mode-btn:hover { background: #000; transform: translateY(-2px); }
 
-        .header-title { text-align: center; border-bottom: 2px solid #0277bd; padding-bottom: 10px; margin-bottom: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .header-title h1 { margin: 0; color: #0277bd; font-size: 32px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .header-title p { margin: 5px 0 0 0; color: #666; font-size: 16px; font-weight: 600; }
+        .navbar { display: flex; gap: 5px; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow-x: auto; white-space: nowrap; }
+        .nav-btn { flex: 1; padding: 12px 15px; border: none; background: transparent; font-size: 15px; font-weight: bold; color: #555; cursor: pointer; border-radius: 8px; transition: 0.3s; text-align: center; }
+        .nav-btn:hover { background: #f0f2f5; color: #0277bd; }
+        .nav-btn.active { background: #0277bd; color: white; box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
+
+        /* व्यू सेक्शन (टैब्स को छुपाने/दिखाने के लिए) */
+        .view-section { display: none; animation: fadeInSlideUp 0.4s ease-out; }
+        .view-section.active { display: block; }
+        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 65vh; }
-        .auth-box { background: white; width: 100%; max-width: 380px; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); animation: fadeInSlideUp 0.6s ease-out; }
-        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .auth-box { background: white; width: 100%; max-width: 380px; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .auth-box h3 { color: #0277bd; text-align: center; margin-top: 0; font-size: 24px; margin-bottom: 5px;}
         .auth-box p { text-align: center; color: #777; font-size: 14px; margin-bottom: 25px; }
-        .auth-box label { font-size: 13px; font-weight: 600; margin-top: 10px; margin-bottom: 5px; color: #444; border: none; padding: 0; display: block; }
-        
-        .auth-input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; box-sizing: border-box; transition: all 0.3s; background: #fafafa; }
-        .auth-input:focus { border-color: #0277bd; background: #fff; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); outline: none; }
-        .forgot-link { display: block; text-align: right; color: #0277bd; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; margin-top: -8px; margin-bottom: 20px; transition: 0.3s; }
-        .auth-btn-full { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; color: white; margin-bottom: 15px;}
-        .btn-primary { background: linear-gradient(135deg, #0277bd, #01579b); box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
+        .auth-box label { font-size: 13px; font-weight: 600; margin-top: 10px; margin-bottom: 5px; color: #444; display: block; }
+        .auth-input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; box-sizing: border-box; transition: 0.3s; background: #fafafa; }
+        .auth-input:focus { border-color: #0277bd; background: #fff; outline: none; }
+        .forgot-link { display: block; text-align: right; color: #0277bd; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: -8px; margin-bottom: 20px; }
+        .auth-btn-full { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; margin-bottom: 15px; background: linear-gradient(135deg, #0277bd, #01579b); }
         .switch-auth { text-align: center; font-size: 13px; color: #555; }
         .switch-auth span { color: #0277bd; font-weight: bold; cursor: pointer; text-decoration: underline; }
 
-        .setup-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .setup-box, .result-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .result-box { border: 2px solid #28a745; display: none; }
         .readonly-info { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #b8daff; margin-bottom: 15px; }
         .readonly-info p { margin: 5px 0; font-size: 15px; color: #0056b3; }
         
@@ -49,9 +55,7 @@
         .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 8px; margin-top: 15px; width: 100%; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
         .btn:hover { transform: translateY(-2px); }
         .btn-info { background: #17a2b8; margin-top: 15px; }
-        .btn-danger { background: #dc3545; padding: 8px 15px; margin-top: 0; width: auto; font-size: 14px; border-radius: 8px; box-shadow: none;}
-        .btn-warning { background: linear-gradient(135deg, #ffc107, #e0a800); color: #333; margin-top: 20px;}
-        .btn-secondary { background: #6c757d; }
+        .btn-danger { background: #dc3545; width: auto; font-size: 14px; }
         
         .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 8px; resize: vertical; background-color: #fff; line-height: 1.8; transition: 0.3s; }
         textarea.kruti-text { height: 150px; }
@@ -59,19 +63,15 @@
         
         .timer { font-size: 24px; color: #d9534f; font-weight: bold; text-align: center; margin: 15px 0; background: #f8d7da; padding: 10px; border-radius: 8px; border: 1px solid #f5c6cb;}
         
-        .result-box, .leaderboard-box, .dashboard-box { margin-top: 20px; padding: 25px; background: #fff; border: 2px solid #28a745; border-radius: 12px; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.05); animation: fadeInSlideUp 0.5s ease-out;}
-        .leaderboard-box { border-color: #ffc107; }
-        .dashboard-box { border-color: #17a2b8; }
-        
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-item { padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 15px; font-weight: bold; transition: 0.3s; border: 1px solid #eee; }
+        .stat-item { padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 15px; font-weight: bold; border: 1px solid #eee; }
         .stat-item span { float: right; color: #d9534f; font-size: 16px;}
         .stat-item.positive span { color: #28a745; }
         
-        .official-box { background: #fff3cd; padding: 20px; border: 2px solid #ffc107; border-radius: 8px; margin-bottom: 20px; transition: 0.3s; }
-        .official-box h4 { margin-top: 0; color: #856404; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ffeeba; padding-bottom: 10px; }
-        label { font-weight: bold; display: block; margin-top: 20px; margin-bottom: 10px; color: #333; font-size: 16px; border-bottom: 2px solid #e0e0e0; padding-bottom: 5px; }
-        .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; line-height: 1.6; transition: 0.3s; }
+        .official-box { background: #fff3cd; padding: 20px; border: 2px solid #ffc107; border-radius: 8px; margin-bottom: 20px; }
+        .official-box h4 { margin-top: 0; color: #856404; text-align: center; border-bottom: 1px solid #ffeeba; padding-bottom: 10px; }
+        
+        .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
         .legend-item { display: inline-block; margin-right: 15px; margin-bottom: 5px; }
 
         .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px; }
@@ -81,8 +81,11 @@
         
         .chart-container { width: 100%; max-width: 320px; margin: 20px auto; text-align: center; }
 
+        /* Dark Mode */
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .header-title, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box, body.dark-mode .leaderboard-box, body.dark-mode .dashboard-box { background: #1e1e1e; border-color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
+        body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; }
+        body.dark-mode .nav-btn { color: #aaa; } body.dark-mode .nav-btn:hover { background: #2a2a2a; color:#fff; }
+        body.dark-mode .nav-btn.active { background: #01579b; color: #fff; }
         body.dark-mode .input-field, body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
         body.dark-mode .kruti-text { background: #2a2a2a; color: #fff; border-color: #444; }
         body.dark-mode .stat-item, body.dark-mode .data-table tr:hover { background: #2a2a2a; border-color: #333; }
@@ -90,27 +93,28 @@
         body.dark-mode .color-legend, body.dark-mode .readonly-info { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
         body.dark-mode .readonly-info p { color: #4fc3f7; }
 
-        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } .data-table { font-size: 13px; } .data-table th, .data-table td { padding: 8px; } }
+        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } .navbar { overflow-x: scroll; } .nav-btn { padding: 10px; font-size: 14px;} }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="top-bar">
-        <div id="userProfile" style="display:none; font-weight:600; color:#0277bd; font-size: 15px; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div><span style="font-size: 18px; margin-right: 5px;">👤</span> <span id="userEmailDisplay"></span></div>
-            <button class="btn btn-info" onclick="showDashboard()" style="margin:0; padding: 6px 12px; font-size: 14px;">📊 मेरा डैशबोर्ड</button>
-            <button class="btn btn-danger" onclick="logoutUser()" style="margin:0; padding: 6px 12px; font-size: 14px;">लॉगआउट</button>
-        </div>
-        <div id="spacer" style="flex-grow: 1;"></div>
+    
+    <div class="top-header">
+        <h1>हिंदी स्टेनो लैब</h1>
         <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
     </div>
 
+    <div id="mainNavbar" class="navbar" style="display:none;">
+        <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">🏠 Home</button>
+        <button class="nav-btn" id="btn-dashboard" onclick="switchTab('dashboard')">📊 Dashboard</button>
+        <button class="nav-btn" id="btn-test" onclick="switchTab('test')">✍️ Steno Test</button>
+        <button class="nav-btn" id="btn-profile" onclick="switchTab('profile')">👤 Profile</button>
+        <button class="nav-btn" id="btn-leaderboard" onclick="switchTab('leaderboard')">🏆 Leaderboard</button>
+    </div>
+
     <div id="authWrapper" class="auth-wrapper">
-        <div class="header-title" style="position: absolute; top: 70px; width: 100%; box-sizing: border-box; max-width: 900px; z-index: -1;">
-            <h1>हिंदी स्टेनो लैब</h1><p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p>
-        </div>
-        <div id="authArea" class="auth-box">
+        <div class="auth-box">
             <h3 id="authTitle">लॉगिन करें</h3><p id="authSubtitle">टेस्ट देने के लिए अपना खाता खोलें</p>
             <div id="nameFieldContainer" style="display: none;">
                 <label>विद्यार्थी का पूरा नाम</label><input type="text" id="authName" class="auth-input" placeholder="जैसे: राहुल कुमार">
@@ -118,49 +122,71 @@
             <label>ईमेल आईडी</label><input type="email" id="authEmail" class="auth-input" placeholder="student@example.com">
             <label>पासवर्ड</label><input type="password" id="authPassword" class="auth-input" placeholder="कम से कम 6 अक्षर">
             <span class="forgot-link" id="forgotPwdLink" onclick="resetPassword()">पासवर्ड भूल गए?</span>
-            <button class="auth-btn-full btn-primary" id="mainAuthBtn" onclick="processAuth()">लॉगिन करें</button>
+            <button class="auth-btn-full" id="mainAuthBtn" onclick="processAuth()">लॉगिन करें</button>
             <div class="switch-auth" id="switchAuthText">नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें</span></div>
         </div>
     </div>
 
-    <div id="mainAppArea" style="display: none;">
-        <div class="header-title"><h1>हिंदी स्टेनो लैब</h1><p>ऑनलाइन स्टेनोग्राफी स्किल टेस्ट</p></div>
-
-        <div id="testArea">
-            <div id="studentDetailsBox" class="setup-box">
-                <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">टेस्ट सेटअप</h3>
-                <div class="readonly-info">
-                    <p><b>विद्यार्थी का नाम:</b> <span id="displayStudentName">लोड हो रहा है...</span></p>
-                    <p><b>सिस्टम रोल नंबर:</b> <span id="displayStudentRoll">लोड हो रहा है...</span></p>
-                    <p id="dataLoadingMsg" style="color: #d9534f; font-weight:bold;">⏳ सर्वर से डिक्टेशन लोड हो रहा है...</p>
-                </div>
-                
-                <label style="border:none; margin-top:0;">डिक्टेशन की गति (Speed) चुनें:</label>
-                <select id="speedSelect" class="input-field" disabled>
-                    <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
-                    <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
-                    <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
-                </select>
-
-                <button id="startTestBtn" class="btn" style="opacity: 0.5; cursor: not-allowed;" disabled onclick="startAudioSection()">टेस्ट शुरू करें</button>
-                <button class="btn" style="background: none; color: #0277bd; border: 2px solid #0277bd; margin-top: 10px;" onclick="showLeaderboardOnly()">🏆 सीधे लीडरबोर्ड देखें</button>
-            </div>
-
-            <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
-                <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें।</p>
-                <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।</audio>
-                <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">स्किप करें / सीधे टाइपिंग शुरू करें</button>
-            </div>
-
-            <div id="typingSection" style="display: none;">
-                <div class="timer" id="timerDisplay">समय शेष: लोड हो रहा है...</div>
-                <label style="border:none;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-                <p style="color:red; font-size:14px; margin-top:0;"><i>सख्त हिदायत: टेस्ट के दौरान कोई दूसरा टैब न खोलें!</i></p>
-                <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
-                <button class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
+    <div id="homeView" class="view-section">
+        <div class="setup-box" style="text-align:center; padding: 40px 20px;">
+            <h2 style="color:#0277bd; font-size: 28px; margin-bottom: 10px;">पोर्टल में आपका स्वागत है!</h2>
+            <p style="color:#666; font-size:16px;">ऊपर दिए गए मेनू (Steno Test) से अपना टेस्ट शुरू करें।</p>
+            
+            <div style="margin-top:40px; padding:30px; background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-left: 6px solid #0277bd; border-radius:12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <span style="font-size: 40px;">💡</span>
+                <h3 style="color:#01579b; font-style: italic; font-size: 22px; line-height: 1.5; margin-top: 10px;">
+                    "सफलता का पीछा करते रहो दोस्त,<br>कामयाब होगे।"
+                </h3>
             </div>
         </div>
+    </div>
 
+    <div id="dashboardView" class="view-section setup-box" style="border: 2px solid #17a2b8;">
+        <h2 style="color: #17a2b8; text-align: center; margin-top: 0; font-size: 26px;">📊 मेरा डैशबोर्ड</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">यहाँ आपके द्वारा दिए गए सभी टेस्ट्स का रिकॉर्ड मौजूद है।</p>
+        <div style="overflow-x: auto;">
+            <table class="data-table dashboard-table">
+                <thead><tr><th>दिनांक (Date)</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th><th>गलतियां</th></tr></thead>
+                <tbody id="dashboardData"><tr><td colspan="5" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="testView" class="view-section">
+        <div id="studentDetailsBox" class="setup-box">
+            <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">टेस्ट सेटअप</h3>
+            <p id="dataLoadingMsg" style="color: #d9534f; font-weight:bold; background: #ffeeba; padding:10px; border-radius:8px;">⏳ सर्वर से डिक्टेशन लोड हो रहा है...</p>
+            
+            <label style="border:none; margin-top:15px;">① डिक्टेशन की गति (Speed) चुनें:</label>
+            <select id="speedSelect" class="input-field" disabled onchange="updateTopicName()">
+                <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
+                <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
+                <option value="90">90 शब्द प्रति मिनट (90 WPM)</option>
+                <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
+            </select>
+
+            <label style="border:none; margin-top:10px;">② टॉपिक (Topic Name):</label>
+            <select id="topicSelect" class="input-field" disabled style="background:#f8f9fa;">
+                <option>लोड हो रहा है...</option>
+            </select>
+
+            <button id="startTestBtn" class="btn" style="opacity: 0.5; cursor: not-allowed;" disabled onclick="startAudioSection()">टेस्ट शुरू करें</button>
+        </div>
+
+        <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
+            <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें।</p>
+            <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।</audio>
+            <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="startTypingTest()">स्किप करें / सीधे टाइपिंग शुरू करें</button>
+        </div>
+
+        <div id="typingSection" style="display: none;">
+            <div class="timer" id="timerDisplay">समय शेष: लोड हो रहा है...</div>
+            <label style="border:none;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
+            <p style="color:red; font-size:14px; margin-top:0;"><i>सख्त हिदायत: टेस्ट के दौरान कोई दूसरा टैब न खोलें!</i></p>
+            <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
+            <button class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
+        </div>
+        
         <div id="resultBox" class="result-box">
             <h2 style="color: #0277bd; text-align: center; margin-top: 0;">हिंदी स्टेनो लैब</h2>
             <h3 style="color: #28a745; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
@@ -193,36 +219,41 @@
             </div>
             <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; display:none; background: #d4edda; padding: 10px; border-radius: 8px;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
 
-            <button class="btn btn-warning" onclick="showLeaderboard()">🏆 लीडरबोर्ड देखें</button>
-
-            <hr style="border-top: 1px solid #eee; margin: 20px 0;">
             <label style="border:none;">आपके अनुवाद का मूल्यांकन:</label>
             <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
             <div style="text-align: center;">
                 <button id="downloadPdfBtn" class="btn btn-info" style="width: auto;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
             </div>
         </div>
+    </div>
 
-        <div id="leaderboardBox" class="leaderboard-box">
-            <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 28px;">🏆 लीडरबोर्ड (All India Rank)</h2>
+    <div id="profileView" class="view-section setup-box">
+        <h2 style="color: #0277bd; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-top:0;">👤 विद्यार्थी प्रोफाइल</h2>
+        <div style="font-size: 18px; line-height: 2.5; max-width: 400px; margin: 20px auto;">
+            <p style="background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 10px;">
+                <b>① Mail ID:</b> <br><span id="profileEmail" style="color: #01579b; font-weight: bold;"></span>
+            </p>
+            <p style="background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 10px;">
+                <b>② Name:</b> <br><span id="profileName" style="color: #555;"></span>
+            </p>
+            <p style="background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 10px;">
+                <b>③ Roll No.:</b> <br><span id="profileRoll" style="color: #d9534f; font-weight: bold;"></span>
+            </p>
+            <button class="btn btn-danger" onclick="logoutUser()" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 16px;">सुरक्षित लॉगआउट करें</button>
+        </div>
+    </div>
+
+    <div id="leaderboardView" class="view-section setup-box" style="border: 2px solid #ffc107;">
+        <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 26px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">किसने कौनसी रैंक हासिल की, यहाँ देखें।</p>
+        <div style="overflow-x: auto;">
             <table class="data-table">
                 <thead><tr><th>रैंक</th><th>विद्यार्थी का नाम</th><th>Net Words</th><th>Accuracy</th></tr></thead>
                 <tbody id="leaderboardData"><tr><td colspan="4" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
             </table>
-            <button class="btn btn-info" onclick="goToHome()" style="margin-top: 20px;">वापस होम पर जाएँ</button>
         </div>
-
-        <div id="dashboardBox" class="dashboard-box">
-            <h2 style="color: #17a2b8; text-align: center; margin-top: 0; font-size: 28px;">📊 मेरा डैशबोर्ड (My History)</h2>
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">यहाँ आपके द्वारा दिए गए सभी टेस्ट्स का रिकॉर्ड मौजूद है।</p>
-            <table class="data-table dashboard-table">
-                <thead><tr><th>दिनांक (Date)</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th><th>गलतियां</th></tr></thead>
-                <tbody id="dashboardData"><tr><td colspan="5" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
-            </table>
-            <button class="btn btn-primary" onclick="goToHome()" style="margin-top: 20px;">वापस होम पर जाएँ / नया टेस्ट दें</button>
-        </div>
-
     </div>
+
 </div>
 
 <script>
@@ -254,19 +285,21 @@
             let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
             let userName = user.displayName || user.email.split('@')[0];
             currentUserData = { name: userName, roll: generatedRoll, email: user.email };
-            document.getElementById('displayStudentName').innerText = userName;
-            document.getElementById('displayStudentRoll').innerText = generatedRoll;
+            
+            // Profile Data Set
+            document.getElementById('profileEmail').innerText = currentUserData.email;
+            document.getElementById('profileName').innerText = currentUserData.name;
+            document.getElementById('profileRoll').innerText = currentUserData.roll;
             
             document.getElementById('authWrapper').style.display = 'none';
-            document.getElementById('mainAppArea').style.display = 'block';
-            document.getElementById('userProfile').style.display = 'flex';
-            document.getElementById('userEmailDisplay').innerText = userName;
+            document.getElementById('mainNavbar').style.display = 'flex';
             
             fetchDataFromGoogleSheet();
+            switchTab('home'); // लॉगिन होते ही Home Tab खुलेगा
         } else {
             document.getElementById('authWrapper').style.display = 'flex';
-            document.getElementById('mainAppArea').style.display = 'none';
-            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('mainNavbar').style.display = 'none';
+            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
         }
     });
 
@@ -281,7 +314,7 @@
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                 return userCredential.user.updateProfile({ displayName: name }).then(() => userCredential.user.sendEmailVerification());
             }).then(() => {
-                auth.signOut(); alert("✅ खाता बन गया! कृपया अपना ईमेल (इनबॉक्स या Spam फोल्डर) चेक करें और लिंक पर क्लिक करके वेरीफाई करें।"); toggleAuthMode();
+                auth.signOut(); alert("✅ खाता बन गया! कृपया अपना ईमेल चेक करें और लिंक पर क्लिक करके वेरीफाई करें।"); toggleAuthMode();
             }).catch(e => alert("एरर: " + e.message));
         } else {
             auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
@@ -301,13 +334,42 @@
     }
 
     // ==========================================
-    // 2. Google Sheet Fetching Data
+    // 🚀 NEW: SPA TAB SWITCHING LOGIC 🚀
+    // ==========================================
+    function switchTab(tabId) {
+        // 1. Hide all views
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        // 2. Remove active class from all nav buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // 3. Show selected view & active button
+        document.getElementById(tabId + 'View').classList.add('active');
+        document.getElementById('btn-' + tabId).classList.add('active');
+
+        // 4. Special functions to run when a tab opens
+        if(tabId === 'dashboard') renderDashboard();
+        if(tabId === 'leaderboard') renderLeaderboard();
+        if(tabId === 'test') {
+            // Reset test area if they navigate back
+            document.getElementById('testArea').style.display = 'block';
+            document.getElementById('studentDetailsBox').style.display = 'block';
+            document.getElementById('resultBox').style.display = 'none';
+        }
+    }
+
+    // ==========================================
+    // Google Sheet Fetching Data
     // ==========================================
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
     
     let adminSettingsData = null; 
     let globalLeaderboardData = null; 
-    let globalHistoryData = null; // 🚀 डैशबोर्ड के लिए हिस्ट्री
+    let globalHistoryData = null; 
     let resultChartInstance = null;
 
     function fetchDataFromGoogleSheet() {
@@ -319,6 +381,7 @@
             globalHistoryData = data.history; 
             
             document.getElementById('dataLoadingMsg').style.color = "green";
+            document.getElementById('dataLoadingMsg').style.background = "#d4edda";
             document.getElementById('dataLoadingMsg').innerText = "✅ डिक्टेशन और प्रोफाइल डेटा लोड हो गया!";
             document.getElementById('speedSelect').disabled = false;
             
@@ -326,18 +389,23 @@
             startBtn.disabled = false;
             startBtn.style.opacity = 1;
             startBtn.style.cursor = "pointer";
+
+            updateTopicName(); // 🚀 टॉपिक का नाम अपडेट करें
         })
         .catch(err => {
             document.getElementById('dataLoadingMsg').innerText = "❌ सर्वर से कनेक्ट नहीं हो पाया। कृपया पेज रिफ्रेश करें।";
         });
     }
 
-    function formatDriveLink(url) {
-        if(url && url.includes("drive.google.com/file/d/")) {
-            let fileId = url.split('/file/d/')[1].split('/')[0];
-            return `https://drive.google.com/uc?export=download&id=${fileId}`;
+    // 🚀 नया: Topic Name अपडेट करने का फंक्शन 🚀
+    function updateTopicName() {
+        let speed = document.getElementById('speedSelect').value;
+        let topicBox = document.getElementById('topicSelect');
+        if(adminSettingsData && adminSettingsData[speed]) {
+            topicBox.innerHTML = `<option>डिक्टेशन अभ्यास - ${speed} WPM</option>`;
+        } else {
+            topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`;
         }
-        return url;
     }
 
     // ==========================================
@@ -352,13 +420,12 @@
     function startAudioSection() {
         let speed = document.getElementById('speedSelect').value;
         if(!adminSettingsData || !adminSettingsData[speed]) {
-            alert(`तकनीकी त्रुटि: अभी ${speed} WPM का डिक्टेशन उपलब्ध नहीं है। कृपया एडमिन से संपर्क करें या कुछ समय बाद प्रयास करें।`); return;
+            alert(`तकनीकी त्रुटि: अभी ${speed} WPM का डिक्टेशन उपलब्ध नहीं है।`); return;
         }
 
         finalMasterText = adminSettingsData[speed].text;
-        let finalAudioLink = formatDriveLink(adminSettingsData[speed].audio);
+        let finalAudioLink = adminSettingsData[speed].audio; // Directly using GitHub link now
         
-        // 🚀 नया: Google Sheet से मंगाया हुआ स्मार्ट टाइमर 🚀
         let timeInMins = adminSettingsData[speed].timeMins || 60;
         totalDuration = timeInMins * 60; 
         timeLeft = totalDuration;
@@ -368,7 +435,7 @@
         document.getElementById('r_name').innerText = currentUserData.name;
         document.getElementById('r_testSpeed').innerText = speed + " WPM";
 
-        document.getElementById('testArea').children[0].style.display = 'none'; // hide setup
+        document.getElementById('studentDetailsBox').style.display = 'none';
         document.getElementById('audioSection').style.display = 'block';
 
         let audioPlayer = document.getElementById('dictationAudio');
@@ -380,7 +447,7 @@
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
         let stdArea = document.getElementById('studentText'); stdArea.focus();
-        updateTimer(); // तुरंत टाइमर दिखाएं
+        updateTimer(); 
         timerInterval = setInterval(updateTimer, 1000);
         stdArea.addEventListener('paste', e => { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
     }
@@ -405,8 +472,12 @@
         let tt = totalDuration - timeLeft;
         document.getElementById('r_timeTaken').innerText = `${Math.floor(tt / 60)} मिनट ${tt % 60} सेकंड`;
         calculateDetailedMistakes(finalMasterText, document.getElementById('studentText').value.trim(), tt / 60);
-        document.getElementById('testArea').style.display = 'none';
+        
+        document.getElementById('typingSection').style.display = 'none';
         document.getElementById('resultBox').style.display = 'block';
+        
+        // Scroll to top of result
+        window.scrollTo(0, 0);
     }
 
     function calculateDetailedMistakes(master, student, timeTakenMins) {
@@ -475,41 +546,19 @@
     }
 
     function downloadResultPDF() {
-        const btn = document.getElementById('downloadPdfBtn'); const lbBtns = document.querySelectorAll('.btn-warning');
-        btn.style.display = 'none'; lbBtns.forEach(b => b.style.display = 'none');
+        const btn = document.getElementById('downloadPdfBtn'); btn.style.display = 'none';
         let wasDarkMode = document.body.classList.contains('dark-mode'); if(wasDarkMode) document.body.classList.remove('dark-mode');
-        
         const element = document.getElementById('resultBox');
         const opt = { margin: [10, 10, 10, 10], filename: 'Hindi_Steno_Lab_Result.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-        
         html2pdf().set(opt).from(element).save().then(() => { 
-            btn.style.display = 'inline-block'; lbBtns.forEach(b => b.style.display = 'inline-block');
+            btn.style.display = 'inline-block'; 
             if(wasDarkMode) document.body.classList.add('dark-mode'); 
         });
     }
 
     // ==========================================
-    // 5. Views Management (Dashboard & Leaderboard)
+    // 5. Views Data Rendering
     // ==========================================
-    function hideAllBoxes() {
-        document.getElementById('testArea').style.display = 'none';
-        document.getElementById('resultBox').style.display = 'none';
-        document.getElementById('leaderboardBox').style.display = 'none';
-        document.getElementById('dashboardBox').style.display = 'none';
-    }
-
-    function goToHome() {
-        hideAllBoxes();
-        document.getElementById('studentText').value = ""; // Clear typing box
-        document.getElementById('testArea').style.display = 'block';
-        document.getElementById('studentDetailsBox').style.display = 'block';
-        document.getElementById('audioSection').style.display = 'none';
-        document.getElementById('typingSection').style.display = 'none';
-    }
-
-    function showLeaderboardOnly() { hideAllBoxes(); document.getElementById('leaderboardBox').style.display = 'block'; renderLeaderboard(); }
-    function showLeaderboard() { hideAllBoxes(); document.getElementById('leaderboardBox').style.display = 'block'; renderLeaderboard(); }
-
     function renderLeaderboard() {
         if (!globalLeaderboardData) { document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
         globalLeaderboardData.sort((a, b) => {
@@ -529,36 +578,20 @@
         document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
 
-    // 🚀 नया: स्टूडेंट डैशबोर्ड रेंडर करना 🚀
-    function showDashboard() {
-        hideAllBoxes(); 
-        document.getElementById('dashboardBox').style.display = 'block';
+    function renderDashboard() {
+        if (!globalHistoryData) { document.getElementById('dashboardData').innerHTML = "<tr><td colspan='5' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
         
-        if (!globalHistoryData) { 
-            document.getElementById('dashboardData').innerHTML = "<tr><td colspan='5' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; 
-        }
-
-        // सिर्फ उसी बच्चे का डेटा निकालें जिसने लॉगिन किया है
         let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email);
-        myHistory.reverse(); // सबसे नया टेस्ट सबसे ऊपर दिखाने के लिए
+        myHistory.reverse(); 
 
         let tableHtml = "";
         myHistory.forEach((attempt) => {
             let dateObj = new Date(attempt.date);
             let dateStr = dateObj.toLocaleDateString('en-IN') + " " + dateObj.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-            
-            tableHtml += `<tr>
-                <td>${dateStr}</td>
-                <td>${attempt.speed} WPM</td>
-                <td style="color:#0277bd; font-weight:bold;">${attempt.netWords}</td>
-                <td style="color:#28a745; font-weight:bold;">${parseFloat(attempt.accuracy).toFixed(2)}%</td>
-                <td style="color:#d9534f; font-weight:bold;">${attempt.mistakes}</td>
-            </tr>`;
+            tableHtml += `<tr><td>${dateStr}</td><td>${attempt.speed} WPM</td><td style="color:#0277bd; font-weight:bold;">${attempt.netWords}</td><td style="color:#28a745; font-weight:bold;">${parseFloat(attempt.accuracy).toFixed(2)}%</td><td style="color:#d9534f; font-weight:bold;">${attempt.mistakes}</td></tr>`;
         });
         
-        if(myHistory.length === 0) { 
-            tableHtml = "<tr><td colspan='5' style='text-align:center;'>आपने अभी तक कोई टेस्ट नहीं दिया है।</td></tr>"; 
-        }
+        if(myHistory.length === 0) { tableHtml = "<tr><td colspan='5' style='text-align:center;'>आपने अभी तक कोई टेस्ट नहीं दिया है।</td></tr>"; }
         document.getElementById('dashboardData').innerHTML = tableHtml;
     }
 </script>
