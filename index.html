@@ -79,6 +79,7 @@
         
         .chart-container { width: 100%; max-width: 320px; margin: 20px auto; text-align: center; }
 
+        /* Dark Mode */
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
         body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; }
         body.dark-mode .nav-btn { color: #aaa; } body.dark-mode .nav-btn:hover { background: #2a2a2a; color:#fff; }
@@ -143,14 +144,14 @@
         <p style="text-align: center; color: #666; margin-bottom: 20px;">यहाँ आपके द्वारा दिए गए सभी टेस्ट्स का रिकॉर्ड मौजूद है।</p>
         <div style="overflow-x: auto;">
             <table class="data-table dashboard-table">
-                <thead><tr><th>दिनांक (Date)</th><th>टॉपिक का नाम</th><th>Net Words</th><th>Accuracy</th><th>गलतियां</th></tr></thead>
+                <thead><tr><th>दिनांक (Date)</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th><th>गलतियां</th></tr></thead>
                 <tbody id="dashboardData"><tr><td colspan="5" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
             </table>
         </div>
     </div>
 
     <div id="testView" class="view-section">
-      <div id="studentDetailsBox" class="setup-box">
+        <div id="studentDetailsBox" class="setup-box">
             <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">टेस्ट सेटअप</h3>
             <p id="dataLoadingMsg" style="color: #d9534f; font-weight:bold; background: #ffeeba; padding:10px; border-radius:8px;">⏳ सर्वर से डिक्टेशन लोड हो रहा है...</p>
             
@@ -195,7 +196,7 @@
             <h3 style="color: #28a745; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
             
             <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 15px;">
-                <b>नाम:</b> <span id="r_name"></span> &nbsp;|&nbsp; <b>टॉपिक:</b> <span id="r_topicName" style="color:#01579b; font-weight:bold;"></span><br>
+                <b>नाम:</b> <span id="r_name"></span> &nbsp;|&nbsp; <b>टेस्ट स्पीड:</b> <span id="r_testSpeed"></span><br>
                 <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span></div>
             </div>
             
@@ -250,9 +251,12 @@
         <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 26px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
         <p style="text-align: center; color: #666; margin-bottom: 20px;">किसने कौनसी रैंक हासिल की, यहाँ देखें।</p>
         
-        <label style="border:none; margin-top:0;"><b>किस डिक्टेशन (Topic) का लीडरबोर्ड देखना है?</b></label>
-        <select id="leaderboardTopicSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fff3cd; color:#856404; font-weight:bold; border:2px solid #ffc107;">
-            <option value="">टॉपिक लोड हो रहे हैं...</option>
+        <label style="border:none; margin-top:0;"><b>किस डिक्टेशन का लीडरबोर्ड देखना है?</b></label>
+        <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fff3cd; color:#856404; font-weight:bold; border:2px solid #ffc107;">
+            <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
+            <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
+            <option value="90">90 शब्द प्रति मिनट (90 WPM)</option>
+            <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
         </select>
 
         <div style="overflow-x: auto;">
@@ -353,19 +357,15 @@
             document.getElementById('testArea').style.display = 'block';
             document.getElementById('studentDetailsBox').style.display = 'block';
             document.getElementById('resultBox').style.display = 'none';
-            document.getElementById('audioSection').style.display = 'none';
-            document.getElementById('typingSection').style.display = 'none';
+            document.getElementById('studentText').value = '';
         }
     }
 
-    // ==========================================
-    // Google Sheet Fetching Data
-    // ==========================================
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
     
-    let adminSettingsData = []; 
-    let globalLeaderboardData = []; 
-    let globalHistoryData = []; 
+    let adminSettingsData = null; 
+    let globalLeaderboardData = null; 
+    let globalHistoryData = null; 
     let resultChartInstance = null;
 
     function fetchDataFromGoogleSheet() {
@@ -380,7 +380,6 @@
             document.getElementById('dataLoadingMsg').style.background = "#d4edda";
             document.getElementById('dataLoadingMsg').innerText = "✅ डिक्टेशन और प्रोफाइल डेटा लोड हो गया!";
             document.getElementById('speedSelect').disabled = false;
-            document.getElementById('topicSelect').disabled = false;
             
             let startBtn = document.getElementById('startTestBtn');
             startBtn.disabled = false;
@@ -388,69 +387,37 @@
             startBtn.style.cursor = "pointer";
 
             updateTopicName(); 
-            populateLeaderboardDropdown();
         })
         .catch(err => {
             document.getElementById('dataLoadingMsg').innerText = "❌ सर्वर से कनेक्ट नहीं हो पाया। कृपया पेज रिफ्रेश करें।";
         });
     }
 
-    // 🚀 नया: Topic Name अपडेट करने का फंक्शन 🚀
     function updateTopicName() {
         let speed = document.getElementById('speedSelect').value;
         let topicBox = document.getElementById('topicSelect');
-        topicBox.innerHTML = "";
-        let topicsFound = false;
-
-        if(adminSettingsData && adminSettingsData.length > 0) {
-            adminSettingsData.forEach(item => {
-                if(item.speed == speed) {
-                    topicBox.innerHTML += `<option value="${item.topic}">${item.topic}</option>`;
-                    topicsFound = true;
-                }
-            });
-        }
-        if(!topicsFound) {
-            topicBox.innerHTML = `<option value="">कोई टॉपिक उपलब्ध नहीं</option>`;
+        if(adminSettingsData && adminSettingsData[speed]) {
+            topicBox.innerHTML = `<option>डिक्टेशन अभ्यास - ${speed} WPM</option>`;
+        } else {
+            topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`;
         }
     }
 
-    function populateLeaderboardDropdown() {
-        let select = document.getElementById('leaderboardTopicSelect');
-        let topics = new Set();
-        globalLeaderboardData.forEach(item => { if(item.topic) topics.add(item.topic); });
-        
-        select.innerHTML = "";
-        topics.forEach(t => { select.innerHTML += `<option value="${t}">${t}</option>`; });
-        
-        if(topics.size === 0) select.innerHTML = `<option value="">अभी कोई रिज़ल्ट नहीं है</option>`;
-    }
-
-    // ==========================================
-    // 3. Test & Timer Logic
-    // ==========================================
-    let finalMasterText = "";
-    let finalTopicName = "";
-    let totalDuration = 3600; let timeLeft = totalDuration; let timerInterval; let isTestRunning = false;
+    let finalMasterText = ""; let totalDuration = 3600; let timeLeft = totalDuration; let timerInterval; let isTestRunning = false;
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
     function requestFullScreen() { try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); } catch(e) {} }
 
     function startAudioSection() {
         let speed = document.getElementById('speedSelect').value;
-        let selectedTopic = document.getElementById('topicSelect').value;
-        
-        let dictationData = adminSettingsData.find(item => item.speed == speed && item.topic == selectedTopic);
-
-        if(!dictationData) {
-            alert(`तकनीकी त्रुटि: यह डिक्टेशन उपलब्ध नहीं है।`); return;
+        if(!adminSettingsData || !adminSettingsData[speed]) {
+            alert(`तकनीकी त्रुटि: अभी ${speed} WPM का डिक्टेशन उपलब्ध नहीं है।`); return;
         }
 
-        finalMasterText = dictationData.text;
-        finalTopicName = dictationData.topic;
-        let finalAudioLink = dictationData.audio; 
+        finalMasterText = adminSettingsData[speed].text;
+        let finalAudioLink = adminSettingsData[speed].audio; 
         
-        let timeInMins = dictationData.timeMins || 60;
+        let timeInMins = adminSettingsData[speed].timeMins || 60;
         totalDuration = timeInMins * 60; 
         timeLeft = totalDuration;
 
@@ -459,7 +426,7 @@
         requestFullScreen();
         document.getElementById('dictationAudio').src = finalAudioLink;
         document.getElementById('r_name').innerText = currentUserData.name;
-        document.getElementById('r_topicName').innerText = finalTopicName;
+        document.getElementById('r_testSpeed').innerText = speed + " WPM";
 
         document.getElementById('studentDetailsBox').style.display = 'none';
         document.getElementById('audioSection').style.display = 'block';
@@ -468,7 +435,7 @@
         if(audioPlayer) audioPlayer.onended = function() { startTypingTest(); };
     }
 
-   function startTypingTest() {
+    function startTypingTest() {
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
@@ -478,19 +445,26 @@
         
         stdArea.addEventListener('paste', e => { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
         
-        // 🚀 नया फीचर: Backspace Control Logic 🚀
+        // 🚀 Backspace ब्लॉक करने की सेटिंग 🚀
         stdArea.addEventListener('keydown', e => {
             let backspaceSetting = document.getElementById('backspaceSelect').value;
-            // अगर बैकस्पेस दबाया गया है और सेटिंग "off" है, तो उसे रोक दें
-            if (e.key === 'Backspace' && backspaceSetting === 'off') {
+            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') {
                 e.preventDefault();
             }
         });
     }
 
-    // ==========================================
-    // 4. Result Calculation
-    // ==========================================
+    document.addEventListener("visibilitychange", function() {
+        if (isTestRunning && document.visibilityState === 'hidden') { alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।"); submitTest(); }
+    });
+
+    function updateTimer() {
+        let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
+        document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
+        timeLeft--;
+    }
+
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
         try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
@@ -502,6 +476,8 @@
         document.getElementById('resultBox').style.display = 'block';
         
         document.getElementById('mainNavbar').style.display = 'flex';
+        document.getElementById('leaderboardSpeedSelect').value = document.getElementById('speedSelect').value;
+
         window.scrollTo(0, 0);
     }
 
@@ -551,14 +527,6 @@
 
         saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net);
         drawResultChart(net, actualErr);
-        
-        // 🚀 टेस्ट सबमिट होते ही लीडरबोर्ड को उसी टॉपिक पर सेट करें 🚀
-        let lbSelect = document.getElementById('leaderboardTopicSelect');
-        let options = Array.from(lbSelect.options);
-        if(!options.find(opt => opt.value === finalTopicName)) {
-            lbSelect.innerHTML += `<option value="${finalTopicName}">${finalTopicName}</option>`;
-        }
-        lbSelect.value = finalTopicName;
     }
 
     function drawResultChart(netWords, mistakes) {
@@ -572,13 +540,7 @@
     }
 
     function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
-        // 🚀 नया बदलाव: Payload में Topic Name भी भेजा जा रहा है 🚀
-        let dataPayload = { 
-            name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, 
-            speedTarget: document.getElementById('speedSelect').value, actualSpeedWPM: speedWPM, 
-            accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords,
-            topicName: finalTopicName 
-        };
+        let dataPayload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: document.getElementById('speedSelect').value, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords };
         fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(dataPayload) })
         .then(response => { document.getElementById('saveStatus').style.display = 'block'; })
         .catch(error => { console.error("Error saving data:", error); });
@@ -595,15 +557,11 @@
         });
     }
 
-    // ==========================================
-    // 5. Views Data Rendering
-    // ==========================================
     function renderLeaderboard() {
         if (!globalLeaderboardData) { document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
         
-        // 🚀 नया बदलाव: जो 'Topic' चुना गया है, सिर्फ उसका डेटा फिल्टर करें 🚀
-        let selectedTopic = document.getElementById('leaderboardTopicSelect').value;
-        let filteredData = globalLeaderboardData.filter(item => item.topic === selectedTopic);
+        let selectedSpeed = document.getElementById('leaderboardSpeedSelect').value;
+        let filteredData = globalLeaderboardData.filter(item => item.speed == selectedSpeed);
 
         filteredData.sort((a, b) => {
             let accA = parseFloat(a.accuracy) || 0; let accB = parseFloat(b.accuracy) || 0;
@@ -618,7 +576,7 @@
             let correctWords = student.netWords ? student.netWords : "0"; 
             tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
         });
-        if(filteredData.length === 0) { tableHtml = `<tr><td colspan='4' style='text-align:center;'>इस टॉपिक का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; }
+        if(filteredData.length === 0) { tableHtml = `<tr><td colspan='4' style='text-align:center;'>${selectedSpeed} WPM वाले डिक्टेशन का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; }
         document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
 
@@ -632,8 +590,7 @@
         myHistory.forEach((attempt) => {
             let dateObj = new Date(attempt.date);
             let dateStr = dateObj.toLocaleDateString('en-IN') + " " + dateObj.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-            // 🚀 डैशबोर्ड में अब टॉपिक का नाम भी दिखेगा 🚀
-            tableHtml += `<tr><td>${dateStr}</td><td>${attempt.topic}</td><td style="color:#0277bd; font-weight:bold;">${attempt.netWords}</td><td style="color:#28a745; font-weight:bold;">${parseFloat(attempt.accuracy).toFixed(2)}%</td><td style="color:#d9534f; font-weight:bold;">${attempt.mistakes}</td></tr>`;
+            tableHtml += `<tr><td>${dateStr}</td><td>${attempt.speed} WPM</td><td style="color:#0277bd; font-weight:bold;">${attempt.netWords}</td><td style="color:#28a745; font-weight:bold;">${parseFloat(attempt.accuracy).toFixed(2)}%</td><td style="color:#d9534f; font-weight:bold;">${attempt.mistakes}</td></tr>`;
         });
         
         if(myHistory.length === 0) { tableHtml = "<tr><td colspan='5' style='text-align:center;'>आपने अभी तक कोई टेस्ट नहीं दिया है।</td></tr>"; }
