@@ -406,17 +406,55 @@
         });
     }
 
-    function updateTopicName() {
+   function updateTopicName() {
         let speed = document.getElementById('speedSelect').value;
         let topicBox = document.getElementById('topicSelect');
-        let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == speed) : null;
+        
+        // 🚀 नया: उस स्पीड के 'सभी' डिक्टेशन ढूँढें (List banayein) 🚀
+        let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed) : [];
 
-        if(setting) {
-            let topicName = setting.topic ? setting.topic : `डिक्टेशन अभ्यास - ${speed} WPM`;
-            topicBox.innerHTML = `<option value="${topicName}">${topicName}</option>`;
+        topicBox.innerHTML = ""; // पुराना हटा दें
+        
+        if(matchingSettings.length > 0) {
+            matchingSettings.forEach(setting => {
+                let topicName = setting.topic ? setting.topic : `डिक्टेशन अभ्यास - ${speed} WPM`;
+                topicBox.innerHTML += `<option value="${topicName}">${topicName}</option>`;
+            });
         } else {
             topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`;
         }
+    }
+
+    function startAudioSection() {
+        let speed = document.getElementById('speedSelect').value;
+        let selectedTopic = document.getElementById('topicSelect').value; // 🚀 जो टॉपिक चुना है, उसे लें
+        
+        // 🚀 नया: स्पीड और टॉपिक दोनों मैच करें 🚀
+        let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == speed && item.topic == selectedTopic) : null;
+
+        if(!setting) {
+            alert(`तकनीकी त्रुटि: अभी यह डिक्टेशन उपलब्ध नहीं है।`); return;
+        }
+
+        finalMasterText = setting.text;
+        let finalAudioLink = setting.audio; 
+        
+        let timeInMins = setting.timeMins || 60;
+        totalDuration = timeInMins * 60; 
+        timeLeft = totalDuration;
+
+        document.getElementById('mainNavbar').style.display = 'none';
+
+        requestFullScreen();
+        document.getElementById('dictationAudio').src = finalAudioLink;
+        document.getElementById('r_name').innerText = currentUserData.name;
+        document.getElementById('r_testSpeed').innerText = speed + " WPM";
+
+        document.getElementById('studentDetailsBox').style.display = 'none';
+        document.getElementById('audioSection').style.display = 'block';
+
+        let audioPlayer = document.getElementById('dictationAudio');
+        if(audioPlayer) audioPlayer.onended = function() { startTypingTest(); };
     }
 
     let finalMasterText = ""; let totalDuration = 3600; let timeLeft = totalDuration; let timerInterval; let isTestRunning = false;
