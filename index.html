@@ -253,10 +253,7 @@
         
         <label style="border:none; margin-top:0;"><b>किस डिक्टेशन का लीडरबोर्ड देखना है?</b></label>
         <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fff3cd; color:#856404; font-weight:bold; border:2px solid #ffc107;">
-            <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
-            <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
-            <option value="90">90 शब्द प्रति मिनट (90 WPM)</option>
-            <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
+            <option>लोड हो रहा है...</option>
         </select>
 
         <div style="overflow-x: auto;">
@@ -345,7 +342,7 @@
         auth.sendPasswordResetEmail(email).then(() => alert("लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
 
-   function switchTab(tabId) {
+    function switchTab(tabId) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId + 'View').classList.add('active');
@@ -354,7 +351,6 @@
         if(tabId === 'dashboard') renderDashboard();
         if(tabId === 'leaderboard') renderLeaderboard();
         if(tabId === 'test') {
-            // 🚀 फिक्स: वापस टैब खोलने पर टेस्ट पेज एकदम नया हो जाएगा 🚀
             document.getElementById('studentDetailsBox').style.display = 'block';
             document.getElementById('audioSection').style.display = 'none';
             document.getElementById('typingSection').style.display = 'none';
@@ -363,8 +359,12 @@
         }
     }
 
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec";
-    
+    // ==========================================
+    // ⚠️ यहाँ अपनी असली Google Sheet वाली लिंक डालें! ⚠️
+    // ==========================================
+    const GOOGLE_SHEET_WEB_APP_URL = "YOUR_GOOGLE_SHEET_WEB_APP_URL_HERE"; 
+    // ==========================================
+
     let adminSettingsData = null; 
     let globalLeaderboardData = null; 
     let globalHistoryData = null; 
@@ -388,24 +388,30 @@
             startBtn.style.opacity = 1;
             startBtn.style.cursor = "pointer";
 
-           updateTopicName(); 
+            updateTopicName(); 
 
-            // 🚀 नया: लीडरबोर्ड ड्रॉपडाउन में अपने आप सारे टॉपिक आ जाएंगे 🚀
+            // लीडरबोर्ड ड्रॉपडाउन में अपने आप सारे टॉपिक भरना
             let lbSelect = document.getElementById('leaderboardSpeedSelect');
             lbSelect.innerHTML = "";
-            adminSettingsData.forEach(item => {
-                lbSelect.innerHTML += `<option value="${item.topic}">${item.speed} WPM - ${item.topic}</option>`;
-            });
+            if(adminSettingsData && adminSettingsData.length > 0) {
+                adminSettingsData.forEach(item => {
+                    lbSelect.innerHTML += `<option value="${item.topic}">${item.speed} WPM - ${item.topic}</option>`;
+                });
+            } else {
+                lbSelect.innerHTML = `<option>डेटा उपलब्ध नहीं</option>`;
+            }
+        })
+        .catch(err => {
+            document.getElementById('dataLoadingMsg').innerText = "❌ सर्वर से कनेक्ट नहीं हो पाया। कृपया पेज रिफ्रेश करें।";
+        });
+    }
 
     function updateTopicName() {
         let speed = document.getElementById('speedSelect').value;
         let topicBox = document.getElementById('topicSelect');
-        
-        // 🚀 नया बदलाव: शीट के नए डिज़ाइन (Array) में से डेटा ढूँढें
         let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == speed) : null;
 
         if(setting) {
-            // अगर शीट में टॉपिक का नाम है तो वो दिखाएं, नहीं तो डिफ़ॉल्ट नाम दिखाएं
             let topicName = setting.topic ? setting.topic : `डिक्टेशन अभ्यास - ${speed} WPM`;
             topicBox.innerHTML = `<option value="${topicName}">${topicName}</option>`;
         } else {
@@ -420,8 +426,6 @@
 
     function startAudioSection() {
         let speed = document.getElementById('speedSelect').value;
-        
-        // 🚀 नया बदलाव: शीट के नए डिज़ाइन (Array) में से डिक्टेशन ढूँढें
         let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == speed) : null;
 
         if(!setting) {
@@ -490,7 +494,12 @@
         document.getElementById('resultBox').style.display = 'block';
         
         document.getElementById('mainNavbar').style.display = 'flex';
-        document.getElementById('leaderboardSpeedSelect').value = document.getElementById('speedSelect').value;
+        
+        let currentTopic = document.getElementById('topicSelect').value;
+        let lbSelect = document.getElementById('leaderboardSpeedSelect');
+        if([...lbSelect.options].some(opt => opt.value === currentTopic)) {
+            lbSelect.value = currentTopic;
+        }
 
         window.scrollTo(0, 0);
     }
@@ -553,8 +562,8 @@
         });
     }
 
-  function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
-        let currentTopic = document.getElementById('topicSelect').value; // 🚀 टॉपिक का नाम लिया
+    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
+        let currentTopic = document.getElementById('topicSelect').value;
         let dataPayload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: document.getElementById('speedSelect').value, topic: currentTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords };
         fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(dataPayload) })
         .then(response => { document.getElementById('saveStatus').style.display = 'block'; })
@@ -576,7 +585,6 @@
         if (!globalLeaderboardData) { document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
         
         let selectedTopic = document.getElementById('leaderboardSpeedSelect').value;
-        // 🚀 फिक्स: अब लीडरबोर्ड स्पीड से नहीं, बल्कि "टॉपिक" के नाम से फिल्टर होगा 🚀
         let filteredData = globalLeaderboardData.filter(item => item.topic === selectedTopic);
 
         filteredData.sort((a, b) => {
@@ -593,16 +601,6 @@
             tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
         });
         if(filteredData.length === 0) { tableHtml = `<tr><td colspan='4' style='text-align:center;'>इस डिक्टेशन का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; }
-        document.getElementById('leaderboardData').innerHTML = tableHtml;
-    }
-
-        let tableHtml = "";
-        filteredData.forEach((student, index) => {
-            let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
-            let correctWords = student.netWords ? student.netWords : "0"; 
-            tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
-        });
-        if(filteredData.length === 0) { tableHtml = `<tr><td colspan='4' style='text-align:center;'>${selectedSpeed} WPM वाले डिक्टेशन का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; }
         document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
 
