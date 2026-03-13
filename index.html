@@ -346,11 +346,27 @@
     function startAudioSection() {
         let speed = document.getElementById('speedSelect').value;
         
-        // 🚀 नया: HTML से नहीं, सीधा Google Sheet के Admin डेटा से पैसेज उठाएं 🚀
+        // 🚀 नया प्रोफेशनल अलर्ट मैसेज 🚀
         if(!adminSettingsData || !adminSettingsData[speed]) {
-            alert(`तकनीकी त्रुटि: एडमिन ने अभी तक ${speed} WPM का डेटा अपलोड नहीं किया है! कृपया अपनी Google Sheet के 'Admin' पन्ने में डेटा डालें।`); return;
+            alert(`तकनीकी त्रुटि: अभी ${speed} WPM का डिक्टेशन उपलब्ध नहीं है। कृपया एडमिन से संपर्क करें या कुछ समय बाद प्रयास करें।`); 
+            return;
         }
 
+        finalMasterText = adminSettingsData[speed].text;
+        let rawAudioLink = adminSettingsData[speed].audio;
+        let finalAudioLink = formatDriveLink(rawAudioLink);
+
+        requestFullScreen();
+        document.getElementById('dictationAudio').src = finalAudioLink;
+        document.getElementById('r_name').innerText = currentUserData.name;
+        document.getElementById('r_testSpeed').innerText = speed + " WPM";
+
+        document.getElementById('studentDetailsBox').style.display = 'none';
+        document.getElementById('audioSection').style.display = 'block';
+
+        let audioPlayer = document.getElementById('dictationAudio');
+        if(audioPlayer) audioPlayer.onended = function() { startTypingTest(); };
+    }
         finalMasterText = adminSettingsData[speed].text;
         let rawAudioLink = adminSettingsData[speed].audio;
         let finalAudioLink = formatDriveLink(rawAudioLink);
