@@ -396,8 +396,14 @@
     function updateTopicName() {
         let speed = document.getElementById('speedSelect').value;
         let topicBox = document.getElementById('topicSelect');
-        if(adminSettingsData && adminSettingsData[speed]) {
-            topicBox.innerHTML = `<option>डिक्टेशन अभ्यास - ${speed} WPM</option>`;
+        
+        // 🚀 नया बदलाव: शीट के नए डिज़ाइन (Array) में से डेटा ढूँढें
+        let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == speed) : null;
+
+        if(setting) {
+            // अगर शीट में टॉपिक का नाम है तो वो दिखाएं, नहीं तो डिफ़ॉल्ट नाम दिखाएं
+            let topicName = setting.topic ? setting.topic : `डिक्टेशन अभ्यास - ${speed} WPM`;
+            topicBox.innerHTML = `<option value="${topicName}">${topicName}</option>`;
         } else {
             topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`;
         }
@@ -410,14 +416,18 @@
 
     function startAudioSection() {
         let speed = document.getElementById('speedSelect').value;
-        if(!adminSettingsData || !adminSettingsData[speed]) {
+        
+        // 🚀 नया बदलाव: शीट के नए डिज़ाइन (Array) में से डिक्टेशन ढूँढें
+        let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == speed) : null;
+
+        if(!setting) {
             alert(`तकनीकी त्रुटि: अभी ${speed} WPM का डिक्टेशन उपलब्ध नहीं है।`); return;
         }
 
-        finalMasterText = adminSettingsData[speed].text;
-        let finalAudioLink = adminSettingsData[speed].audio; 
+        finalMasterText = setting.text;
+        let finalAudioLink = setting.audio; 
         
-        let timeInMins = adminSettingsData[speed].timeMins || 60;
+        let timeInMins = setting.timeMins || 60;
         totalDuration = timeInMins * 60; 
         timeLeft = totalDuration;
 
