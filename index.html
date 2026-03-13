@@ -150,7 +150,7 @@
     </div>
 
     <div id="testView" class="view-section">
-        <div id="studentDetailsBox" class="setup-box">
+      <div id="studentDetailsBox" class="setup-box">
             <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">टेस्ट सेटअप</h3>
             <p id="dataLoadingMsg" style="color: #d9534f; font-weight:bold; background: #ffeeba; padding:10px; border-radius:8px;">⏳ सर्वर से डिक्टेशन लोड हो रहा है...</p>
             
@@ -162,9 +162,15 @@
                 <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
             </select>
 
-            <label style="border:none; margin-top:10px;">② टॉपिक (Topic Name) चुनें:</label>
-            <select id="topicSelect" class="input-field" disabled style="background:#e3f2fd; color:#01579b; font-weight:bold;">
+            <label style="border:none; margin-top:10px;">② टॉपिक (Topic Name):</label>
+            <select id="topicSelect" class="input-field" disabled style="background:#f8f9fa;">
                 <option>लोड हो रहा है...</option>
+            </select>
+
+            <label style="border:none; margin-top:10px;">③ बैकस्पेस (Backspace) सेटिंग:</label>
+            <select id="backspaceSelect" class="input-field" style="background:#e3f2fd; color:#01579b; font-weight:bold; border:2px solid #90caf9;">
+                <option value="on" selected>चालू रखें (Allow Backspace)</option>
+                <option value="off">बंद करें (Disable Backspace)</option>
             </select>
 
             <button id="startTestBtn" class="btn" style="opacity: 0.5; cursor: not-allowed;" disabled onclick="startAudioSection()">टेस्ट शुरू करें</button>
@@ -462,25 +468,24 @@
         if(audioPlayer) audioPlayer.onended = function() { startTypingTest(); };
     }
 
-    function startTypingTest() {
+   function startTypingTest() {
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
         let stdArea = document.getElementById('studentText'); stdArea.focus();
         updateTimer(); 
         timerInterval = setInterval(updateTimer, 1000);
+        
         stdArea.addEventListener('paste', e => { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
-    }
-
-    document.addEventListener("visibilitychange", function() {
-        if (isTestRunning && document.visibilityState === 'hidden') { alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।"); submitTest(); }
-    });
-
-    function updateTimer() {
-        let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
-        document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-        if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
-        timeLeft--;
+        
+        // 🚀 नया फीचर: Backspace Control Logic 🚀
+        stdArea.addEventListener('keydown', e => {
+            let backspaceSetting = document.getElementById('backspaceSelect').value;
+            // अगर बैकस्पेस दबाया गया है और सेटिंग "off" है, तो उसे रोक दें
+            if (e.key === 'Backspace' && backspaceSetting === 'off') {
+                e.preventDefault();
+            }
+        });
     }
 
     // ==========================================
