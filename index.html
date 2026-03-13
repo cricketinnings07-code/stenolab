@@ -14,14 +14,14 @@
         @font-face { font-family: 'Kruti Dev 010'; src: url('kruti.ttf') format('truetype'); }
 
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 15px; margin: 0; min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; position: relative; }
         
         .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 15px 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .top-header h1 { margin: 0; color: #0277bd; font-size: 26px; }
         .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        .navbar { display: flex; gap: 5px; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow-x: auto; }
-        .nav-btn { flex: 1; padding: 12px 15px; border: none; background: transparent; font-size: 15px; font-weight: bold; color: #555; cursor: pointer; border-radius: 8px; text-align: center; }
+        .navbar { display: flex; gap: 5px; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow-x: auto; white-space: nowrap; }
+        .nav-btn { flex: 1; padding: 12px 15px; border: none; background: transparent; font-size: 15px; font-weight: bold; color: #555; cursor: pointer; border-radius: 8px; text-align: center; transition: 0.3s; }
         .nav-btn.active { background: #0277bd; color: white; box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
 
         .view-section { display: none; animation: fadeInSlideUp 0.4s ease-out; }
@@ -39,31 +39,38 @@
         .input-field { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
         
         .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; }
+        .btn-info { background: #17a2b8; width: auto; }
         
-        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 8px; resize: vertical; line-height: 1.8; }
-        textarea.kruti-text { height: 150px; }
+        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 8px; resize: vertical; background-color: #fff; line-height: 1.8; }
+        textarea.kruti-text { height: 180px; }
         .kruti-readonly { background-color: #f8f9fa; border: 2px dashed #6c757d; min-height: 150px; height: auto; margin-bottom: 15px; }
         
         .timer { font-size: 24px; color: #d9534f; font-weight: bold; text-align: center; margin: 15px 0; background: #f8d7da; padding: 10px; border-radius: 8px; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .stat-item { padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 15px; font-weight: bold; border: 1px solid #eee; }
-        .stat-item span { float: right; color: #d9534f; }
+        .stat-item span { float: right; color: #d9534f; font-size: 16px; }
+        .stat-item.positive span { color: #28a745; }
         
         .official-box { background: #fff3cd; padding: 20px; border: 2px solid #ffc107; border-radius: 8px; margin-bottom: 20px; }
+        .official-box h4 { margin-top: 0; color: #856404; text-align: center; border-bottom: 1px solid #ffeeba; padding-bottom: 10px; }
+
         .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         .data-table th { background-color: #0277bd; color: white; }
         
-        .chart-container { width: 100%; max-width: 320px; margin: 20px auto; }
+        .chart-container { width: 100%; max-width: 320px; margin: 20px auto; text-align: center; }
 
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box { background: #1e1e1e; color: white; }
+        body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; color: white; border-color: #333; }
+        body.dark-mode .input-field { background: #2a2a2a; color: white; border-color: #444; }
+        body.dark-mode .kruti-text { background: #2a2a2a; color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    
     <div class="top-header">
         <h1>हिंदी स्टेनो लैब</h1>
         <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
@@ -79,86 +86,113 @@
 
     <div id="authWrapper" class="auth-wrapper">
         <div class="auth-box">
-            <h3 id="authTitle">लॉगिन करें</h3>
+            <h3 id="authTitle" style="text-align:center; color:#0277bd;">लॉगिन करें</h3>
             <div id="nameFieldContainer" style="display: none;">
-                <label>विद्यार्थी का पूरा नाम</label><input type="text" id="authName" class="auth-input">
+                <label>पूरा नाम</label><input type="text" id="authName" class="auth-input">
             </div>
-            <label>ईमेल आईडी</label><input type="email" id="authEmail" class="auth-input">
+            <label>ईमेल</label><input type="email" id="authEmail" class="auth-input">
             <label>पासवर्ड</label><input type="password" id="authPassword" class="auth-input">
             <button class="auth-btn-full" onclick="processAuth()">प्रवेश करें</button>
-            <div style="margin-top:15px; text-align:center; font-size:13px;" id="switchAuthText">नया खाता? <span onclick="toggleAuthMode()" style="color:#0277bd; cursor:pointer;">यहाँ क्लिक करें</span></div>
+            <p style="text-align:center; font-size:13px; margin-top:15px;">नया खाता? <span onclick="toggleAuthMode()" style="color:#0277bd; cursor:pointer; font-weight:bold;">यहाँ क्लिक करें</span></p>
         </div>
     </div>
 
     <div id="homeView" class="view-section">
-        <div class="setup-box" style="text-align:center;">
-            <h2>सफलता का पीछा करते रहिए दोस्त, कामयाब होंगे।</h2>
+        <div class="setup-box" style="text-align:center; padding:50px;">
+            <h2 style="color:#0277bd;">पोर्टल में आपका स्वागत है!</h2>
+            <div style="margin-top:30px; padding:20px; background:#e3f2fd; border-radius:12px; border-left:6px solid #0277bd;">
+                <h3>"सफलता का पीछा करते रहिए दोस्त, कामयाब होंगे।"</h3>
+            </div>
         </div>
     </div>
 
     <div id="dashboardView" class="view-section setup-box">
-        <h2>📊 मेरा डैशबोर्ड</h2>
-        <table class="data-table">
-            <thead><tr><th>दिनांक</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th></tr></thead>
-            <tbody id="dashboardData"></tbody>
-        </table>
+        <h2 style="color:#17a2b8;">📊 मेरा डैशबोर्ड</h2>
+        <div style="overflow-x:auto;">
+            <table class="data-table">
+                <thead><tr><th>दिनांक</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th></tr></thead>
+                <tbody id="dashboardData"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="testView" class="view-section">
         <div id="studentDetailsBox" class="setup-box">
-            <h3>टेस्ट सेटअप</h3>
+            <h3 style="color:#0277bd;">टेस्ट सेटअप</h3>
             <p id="dataLoadingMsg">⏳ डेटा लोड हो रहा है...</p>
-            <label>गति (Speed) चुनें:</label>
+            
+            <label>① डिक्टेशन स्पीड (Speed):</label>
             <select id="speedSelect" class="input-field" disabled onchange="updateTopicName()">
                 <option value="60">60 WPM</option>
                 <option value="80" selected>80 WPM</option>
                 <option value="90">90 WPM</option>
                 <option value="100">100 WPM</option>
             </select>
-            <label>टॉपिक चुनें:</label>
+
+            <label>② टॉपिक (Topic Name):</label>
             <select id="topicSelect" class="input-field" disabled></select>
-            <label>बैकस्पेस सेटिंग:</label>
-            <select id="backspaceSelect" class="input-field">
-                <option value="on">चालू</option>
-                <option value="off">बंद</option>
+
+            <label>③ बैकस्पेस (Backspace) सेटिंग:</label>
+            <select id="backspaceSelect" class="input-field" style="border:2px solid #0277bd;">
+                <option value="on">चालू रखें (Allow)</option>
+                <option value="off">बंद करें (Disable)</option>
             </select>
+
             <button id="startTestBtn" class="btn" disabled onclick="startAudioSection()">टेस्ट शुरू करें</button>
         </div>
 
         <div id="audioSection" style="display:none; text-align:center;">
+            <p style="color:red; font-weight:bold;">ऑडियो को ध्यान से सुनें और डिक्टेशन लिखें।</p>
             <audio id="dictationAudio" controls style="width:100%; margin:20px 0;"></audio>
-            <button class="btn" onclick="startTypingTest()">टाइपिंग शुरू करें</button>
+            <button class="btn" style="background:#f0ad4e;" onclick="startTypingTest()">टाइपिंग शुरू करें</button>
         </div>
 
         <div id="typingSection" style="display:none;">
             <div class="timer" id="timerDisplay">समय शेष: --:--</div>
-            <textarea id="studentText" class="kruti-text" placeholder="टाइप करें..."></textarea>
-            <button class="btn" onclick="submitTest()">सबमिट करें</button>
+            <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ अनुवाद टाइप करें..."></textarea>
+            <button class="btn" onclick="submitTest()">टेस्ट सबमिट करें</button>
         </div>
 
         <div id="resultBox" class="result-box">
-            <h2 style="text-align:center;">परीक्षा परिणाम</h2>
+            <h2 style="text-align:center; color:#0277bd;">परीक्षा परिणाम</h2>
+            <div style="text-align:center; border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:20px;">
+                <b>नाम:</b> <span id="r_name"></span> | <b>स्पीड:</b> <span id="r_testSpeed"></span>
+            </div>
+            
             <div class="chart-container"><canvas id="resultChart"></canvas></div>
-            <div class="stats-grid" id="resultStats"></div>
-            <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
-        </div>
-    </div>
 
-    <div id="profileView" class="view-section setup-box">
-        <h2>👤 प्रोफाइल</h2>
-        <p><b>ईमेल:</b> <span id="profileEmail"></span></p>
-        <p><b>नाम:</b> <span id="profileName"></span></p>
-        <button class="btn" style="background:#d9534f;" onclick="logoutUser()">लॉगआउट</button>
+            <div class="stats-grid">
+                <div class="stat-item">कुल शब्द: <span id="r_masterWords">0</span></div>
+                <div class="stat-item">छूटे शब्द: <span id="r_omissions">0</span></div>
+                <div class="stat-item">गलत शब्द: <span id="r_fullMistakes">0</span></div>
+                <div class="stat-item">अतिरिक्त शब्द: <span id="r_extraWords">0</span></div>
+            </div>
+
+            <div class="official-box">
+                <h4>आधिकारिक मूल्यांकन (5% Rule)</h4>
+                <div class="stats-grid" style="margin-bottom:0;">
+                    <div class="stat-item" style="border:none; background:none;">कुल गलतियां: <span id="r_actualMistakes">0</span></div>
+                    <div class="stat-item positive" style="border:none; background:none;">माफ (5%): <span id="r_allowedMistakes">0</span></div>
+                    <div class="stat-item" style="grid-column: span 2; background:#d4edda; text-align:center;">
+                        स्पीड: <b id="r_speed">0</b> | शुद्ध शब्द: <b id="r_netWords">0</b> | एक्यूरेसी: <b id="r_accuracy">0%</b>
+                    </div>
+                </div>
+            </div>
+            <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
+            <button class="btn btn-info" onclick="downloadResultPDF()">PDF डाउनलोड करें</button>
+        </div>
     </div>
 
     <div id="leaderboardView" class="view-section setup-box">
         <h2>🏆 लीडरबोर्ड</h2>
-        <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()"></select>
+        <label>डिक्टेशन चुनें:</label>
+        <select id="leaderboardTopicSelect" class="input-field" onchange="renderLeaderboard()"></select>
         <table class="data-table">
             <thead><tr><th>रैंक</th><th>नाम</th><th>Net Words</th><th>Accuracy</th></tr></thead>
             <tbody id="leaderboardData"></tbody>
         </table>
     </div>
+
 </div>
 
 <script>
@@ -174,23 +208,22 @@
     const auth = firebase.auth();
 
     // ⚠️ यहाँ अपनी असली Google Sheet वाली लिंक डालें! ⚠️
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "YOUR_GOOGLE_SHEET_WEB_APP_URL_HERE"; 
 
-    let isSignupMode = false;
     let currentUserData = {};
     let adminSettingsData = [];
     let globalLeaderboardData = [];
     let globalHistoryData = [];
+    let isSignupMode = false;
     let finalMasterText = "";
     let totalDuration = 0;
     let timeLeft = 0;
     let timerInterval;
+    let resultChartInstance = null;
 
     auth.onAuthStateChanged(user => {
         if (user && user.emailVerified) {
             currentUserData = { name: user.displayName, email: user.email };
-            document.getElementById('profileEmail').innerText = user.email;
-            document.getElementById('profileName').innerText = user.displayName;
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('mainNavbar').style.display = 'flex';
             fetchData();
@@ -208,28 +241,28 @@
     }
 
     function processAuth() {
-        const email = document.getElementById('authEmail').value;
-        const password = document.getElementById('authPassword').value;
-        if (isSignupMode) {
-            const name = document.getElementById('authName').value;
-            auth.createUserWithEmailAndPassword(email, password).then(res => {
-                res.user.updateProfile({displayName: name});
-                res.user.sendEmailVerification();
-                alert("ईमेल वेरीफाई करें!");
-                auth.signOut();
+        const e = document.getElementById('authEmail').value, p = document.getElementById('authPassword').value;
+        if(isSignupMode) {
+            const n = document.getElementById('authName').value;
+            auth.createUserWithEmailAndPassword(e, p).then(r => {
+                r.user.updateProfile({displayName: n});
+                r.user.sendEmailVerification();
+                alert("ईमेल वेरीफाई करें!"); auth.signOut();
             }).catch(err => alert(err.message));
         } else {
-            auth.signInWithEmailAndPassword(email, password).catch(err => alert(err.message));
+            auth.signInWithEmailAndPassword(e, p).catch(err => alert("लॉगिन फेल!"));
         }
     }
 
-    function switchTab(tabId) {
+    function switchTab(t) {
         document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId + 'View').classList.add('active');
-        document.getElementById('btn-' + tabId).classList.add('active');
-        if(tabId === 'test') {
+        document.getElementById(t + 'View').classList.add('active');
+        document.getElementById('btn-' + t).classList.add('active');
+        if(t === 'test') {
             document.getElementById('studentDetailsBox').style.display = 'block';
+            document.getElementById('audioSection').style.display = 'none';
+            document.getElementById('typingSection').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
         }
     }
@@ -239,32 +272,31 @@
             adminSettingsData = data.adminSettings;
             globalLeaderboardData = data.leaderboard;
             globalHistoryData = data.history;
-            document.getElementById('dataLoadingMsg').innerText = "✅ डेटा लोड हो गया!";
+            document.getElementById('dataLoadingMsg').innerText = "✅ डिक्टेशन लोड हो गए!";
             document.getElementById('speedSelect').disabled = false;
             document.getElementById('startTestBtn').disabled = false;
             updateTopicName();
-            const lbSelect = document.getElementById('leaderboardSpeedSelect');
-            lbSelect.innerHTML = adminSettingsData.map(i => `<option value="${i.topic}">${i.speed} WPM - ${i.topic}</option>`).join('');
+            const lb = document.getElementById('leaderboardTopicSelect');
+            lb.innerHTML = adminSettingsData.map(i => `<option value="${i.topic}">${i.speed} - ${i.topic}</option>`).join('');
         });
     }
 
     function updateTopicName() {
         const speed = document.getElementById('speedSelect').value;
-        const topics = adminSettingsData.filter(i => i.speed == speed);
-        const topicBox = document.getElementById('topicSelect');
-        topicBox.innerHTML = topics.map(t => `<option value="${t.topic}">${t.topic}</option>`).join('');
-        topicBox.disabled = false;
+        const matching = adminSettingsData.filter(i => i.speed == speed);
+        const box = document.getElementById('topicSelect');
+        box.innerHTML = matching.map(t => `<option value="${t.topic}">${t.topic}</option>`).join('');
+        box.disabled = false;
     }
 
     function startAudioSection() {
-        const speed = document.getElementById('speedSelect').value;
-        const topic = document.getElementById('topicSelect').value;
-        const setting = adminSettingsData.find(i => i.speed == speed && i.topic == topic);
-        if(!setting) return alert("उपलब्ध नहीं!");
-        finalMasterText = setting.text;
-        totalDuration = (setting.timeMins || 10) * 60;
+        const speed = document.getElementById('speedSelect').value, topic = document.getElementById('topicSelect').value;
+        const s = adminSettingsData.find(i => i.speed == speed && i.topic == topic);
+        if(!s) return alert("उपलब्ध नहीं!");
+        finalMasterText = s.text;
+        totalDuration = (s.timeMins || 10) * 60;
         timeLeft = totalDuration;
-        document.getElementById('dictationAudio').src = setting.audio;
+        document.getElementById('dictationAudio').src = s.audio;
         document.getElementById('studentDetailsBox').style.display = 'none';
         document.getElementById('audioSection').style.display = 'block';
         document.getElementById('mainNavbar').style.display = 'none';
@@ -273,14 +305,13 @@
     function startTypingTest() {
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
-        const area = document.getElementById('studentText');
-        area.focus();
+        const area = document.getElementById('studentText'); area.focus();
         area.addEventListener('keydown', e => {
             if(e.key === 'Backspace' && document.getElementById('backspaceSelect').value === 'off') e.preventDefault();
         });
         timerInterval = setInterval(() => {
-            let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-            document.getElementById('timerDisplay').innerText = `समय शेष: ${m}:${s < 10 ? '0'+s : s}`;
+            let m = Math.floor(timeLeft/60), s = timeLeft%60;
+            document.getElementById('timerDisplay').innerText = `समय शेष: ${m}:${s<10?'0'+s:s}`;
             if(timeLeft <= 0) submitTest();
             timeLeft--;
         }, 1000);
@@ -294,23 +325,96 @@
         calculateResult();
     }
 
+    // --- ADVANCED CALCULATION LOGIC ---
     function calculateResult() {
         const student = document.getElementById('studentText').value.trim();
         const mWords = finalMasterText.split(/\s+/).filter(w => w.length > 0);
         const sWords = student.split(/\s+/).filter(w => w.length > 0);
-        // (सरल कैलकुलेशन लॉजिक यहाँ है - पहले जैसा)
-        document.getElementById('displayEvaluatedText').innerText = student;
-        saveResult(0, 0, 0); // डमी डेटा सेव
+        
+        let dp = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
+        let path = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
+        for(let i=1;i<=mWords.length;i++){dp[i][0]=i;path[i][0]=2;} 
+        for(let j=1;j<=sWords.length;j++){dp[0][j]=j;path[0][j]=3;}
+
+        for(let i=1;i<=mWords.length;i++){
+            for(let j=1;j<=sWords.length;j++){
+                let cost = (mWords[i-1]===sWords[j-1]) ? 0 : 1;
+                let diag = dp[i-1][j-1]+cost, del = dp[i-1][j]+1, ins = dp[i][j-1]+1;
+                if(diag<=del && diag<=ins){dp[i][j]=diag;path[i][j]=1;}
+                else if(del<=ins){dp[i][j]=del;path[i][j]=2;}
+                else{dp[i][j]=ins;path[i][j]=3;}
+            }
+        }
+
+        let om=0, fm=0, ew=0, ci=mWords.length, cj=sWords.length, html=[];
+        while(ci>0 || cj>0) {
+            if(ci>0 && cj>0 && path[ci][cj]===1) {
+                if(mWords[ci-1]===sWords[cj-1]) html.unshift(`<span style="color:green;">${sWords[cj-1]}</span>`);
+                else { fm++; html.unshift(`<span style="color:red;">${sWords[cj-1]}</span> <small>(${mWords[ci-1]})</small>`); }
+                ci--; cj--;
+            } else if(ci>0 && (cj===0 || path[ci][cj]===2)){ om++; html.unshift(`<span style="color:red; text-decoration:line-through;">${mWords[ci-1]}</span>`); ci--; }
+            else { ew++; html.unshift(`<span style="color:blue; border-bottom:1px solid;">${sWords[cj-1]}</span>`); cj--; }
+        }
+
+        let totalErr = fm+om+ew, allowed = Math.round(mWords.length * 0.05);
+        let excess = totalErr > allowed ? totalErr - allowed : 0;
+        let net = mWords.length - excess; if(net<0) net=0;
+        let acc = (net/mWords.length)*100, wpm = Math.round(net / (totalDuration/60));
+
+        document.getElementById('r_name').innerText = currentUserData.name;
+        document.getElementById('r_masterWords').innerText = mWords.length;
+        document.getElementById('r_omissions').innerText = om;
+        document.getElementById('r_fullMistakes').innerText = fm;
+        document.getElementById('r_extraWords').innerText = ew;
+        document.getElementById('r_actualMistakes').innerText = totalErr;
+        document.getElementById('r_allowedMistakes').innerText = allowed;
+        document.getElementById('r_netWords').innerText = net;
+        document.getElementById('r_speed').innerText = wpm + " WPM";
+        document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
+        document.getElementById('displayEvaluatedText').innerHTML = html.join(' ');
+
+        drawChart(net, totalErr);
+        saveToSheet(wpm, acc, totalErr, net);
     }
 
-    function saveResult(wpm, acc, err) {
-        const payload = {
-            name: currentUserData.name, email: currentUserData.email,
+    function drawChart(n, e) {
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        if(resultChartInstance) resultChartInstance.destroy();
+        resultChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels: ['Net', 'Errors'], datasets: [{ data: [n, e], backgroundColor: ['#28a745', '#dc3545'] }] }
+        });
+    }
+
+    function saveToSheet(w, a, e, n) {
+        const p = { 
+            name: currentUserData.name, email: currentUserData.email, 
             speedTarget: document.getElementById('speedSelect').value,
             topic: document.getElementById('topicSelect').value,
-            netWords: 0, accuracy: acc
+            actualSpeedWPM: w, accuracy: a, totalMistakes: e, netWords: n
         };
-        fetch(GOOGLE_SHEET_WEB_APP_URL, {method:'POST', body: JSON.stringify(payload)});
+        fetch(GOOGLE_SHEET_WEB_APP_URL, {method:'POST', body: JSON.stringify(p)});
+    }
+
+    function renderLeaderboard() {
+        const t = document.getElementById('leaderboardTopicSelect').value;
+        const filtered = globalLeaderboardData.filter(i => i.topic === t);
+        filtered.sort((a,b) => b.accuracy - a.accuracy);
+        document.getElementById('leaderboardData').innerHTML = filtered.map((s,i) => 
+            `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.netWords}</td><td>${s.accuracy}%</td></tr>`
+        ).join('');
+    }
+
+    function renderDashboard() {
+        const my = globalHistoryData.filter(i => i.email === currentUserData.email).reverse();
+        document.getElementById('dashboardData').innerHTML = my.map(a => 
+            `<tr><td>${new Date(a.date).toLocaleDateString()}</td><td>${a.speed}</td><td>${a.netWords}</td><td>${a.accuracy}%</td></tr>`
+        ).join('');
+    }
+
+    function downloadResultPDF() {
+        const element = document.getElementById('resultBox');
+        html2pdf().from(element).save('Steno_Result.pdf');
     }
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
