@@ -417,18 +417,21 @@
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
     function requestFullScreen() { try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); } catch(e) {} }
 
-    function startAudioSection() {
+   function startAudioSection() {
         let speed = document.getElementById('speedSelect').value;
         if(!adminSettingsData || !adminSettingsData[speed]) {
             alert(`तकनीकी त्रुटि: अभी ${speed} WPM का डिक्टेशन उपलब्ध नहीं है।`); return;
         }
 
         finalMasterText = adminSettingsData[speed].text;
-        let finalAudioLink = adminSettingsData[speed].audio; // Directly using GitHub link now
+        let finalAudioLink = adminSettingsData[speed].audio; 
         
         let timeInMins = adminSettingsData[speed].timeMins || 60;
         totalDuration = timeInMins * 60; 
         timeLeft = totalDuration;
+
+        // 🚀 नया बदलाव: टेस्ट शुरू होते ही मेनू बार छुपा दें 🚀
+        document.getElementById('mainNavbar').style.display = 'none';
 
         requestFullScreen();
         document.getElementById('dictationAudio').src = finalAudioLink;
@@ -466,7 +469,7 @@
     // ==========================================
     // 4. Result Calculation
     // ==========================================
-    function submitTest() {
+   function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
         try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
         let tt = totalDuration - timeLeft;
@@ -476,6 +479,9 @@
         document.getElementById('typingSection').style.display = 'none';
         document.getElementById('resultBox').style.display = 'block';
         
+        // 🚀 नया बदलाव: टेस्ट सबमिट होते ही मेनू बार वापस ले आएं 🚀
+        document.getElementById('mainNavbar').style.display = 'flex';
+
         // Scroll to top of result
         window.scrollTo(0, 0);
     }
