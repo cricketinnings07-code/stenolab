@@ -345,7 +345,7 @@
         auth.sendPasswordResetEmail(email).then(() => alert("लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
 
-    function switchTab(tabId) {
+   function switchTab(tabId) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId + 'View').classList.add('active');
@@ -354,8 +354,10 @@
         if(tabId === 'dashboard') renderDashboard();
         if(tabId === 'leaderboard') renderLeaderboard();
         if(tabId === 'test') {
-            document.getElementById('testArea').style.display = 'block';
+            // 🚀 फिक्स: वापस टैब खोलने पर टेस्ट पेज एकदम नया हो जाएगा 🚀
             document.getElementById('studentDetailsBox').style.display = 'block';
+            document.getElementById('audioSection').style.display = 'none';
+            document.getElementById('typingSection').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
             document.getElementById('studentText').value = '';
         }
@@ -386,12 +388,14 @@
             startBtn.style.opacity = 1;
             startBtn.style.cursor = "pointer";
 
-            updateTopicName(); 
-        })
-        .catch(err => {
-            document.getElementById('dataLoadingMsg').innerText = "❌ सर्वर से कनेक्ट नहीं हो पाया। कृपया पेज रिफ्रेश करें।";
-        });
-    }
+           updateTopicName(); 
+
+            // 🚀 नया: लीडरबोर्ड ड्रॉपडाउन में अपने आप सारे टॉपिक आ जाएंगे 🚀
+            let lbSelect = document.getElementById('leaderboardSpeedSelect');
+            lbSelect.innerHTML = "";
+            adminSettingsData.forEach(item => {
+                lbSelect.innerHTML += `<option value="${item.topic}">${item.speed} WPM - ${item.topic}</option>`;
+            });
 
     function updateTopicName() {
         let speed = document.getElementById('speedSelect').value;
@@ -549,8 +553,9 @@
         });
     }
 
-    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
-        let dataPayload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: document.getElementById('speedSelect').value, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords };
+  function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
+        let currentTopic = document.getElementById('topicSelect').value; // 🚀 टॉपिक का नाम लिया
+        let dataPayload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: document.getElementById('speedSelect').value, topic: currentTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords };
         fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(dataPayload) })
         .then(response => { document.getElementById('saveStatus').style.display = 'block'; })
         .catch(error => { console.error("Error saving data:", error); });
@@ -570,8 +575,9 @@
     function renderLeaderboard() {
         if (!globalLeaderboardData) { document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
         
-        let selectedSpeed = document.getElementById('leaderboardSpeedSelect').value;
-        let filteredData = globalLeaderboardData.filter(item => item.speed == selectedSpeed);
+        let selectedTopic = document.getElementById('leaderboardSpeedSelect').value;
+        // 🚀 फिक्स: अब लीडरबोर्ड स्पीड से नहीं, बल्कि "टॉपिक" के नाम से फिल्टर होगा 🚀
+        let filteredData = globalLeaderboardData.filter(item => item.topic === selectedTopic);
 
         filteredData.sort((a, b) => {
             let accA = parseFloat(a.accuracy) || 0; let accB = parseFloat(b.accuracy) || 0;
@@ -579,6 +585,16 @@
             let wordsA = parseInt(a.netWords) || 0; let wordsB = parseInt(b.netWords) || 0;
             return wordsB - wordsA; 
         });
+
+        let tableHtml = "";
+        filteredData.forEach((student, index) => {
+            let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
+            let correctWords = student.netWords ? student.netWords : "0"; 
+            tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
+        });
+        if(filteredData.length === 0) { tableHtml = `<tr><td colspan='4' style='text-align:center;'>इस डिक्टेशन का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; }
+        document.getElementById('leaderboardData').innerHTML = tableHtml;
+    }
 
         let tableHtml = "";
         filteredData.forEach((student, index) => {
