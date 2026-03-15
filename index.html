@@ -11,87 +11,458 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        @font-face { font-family: 'Kruti Dev 010'; src: url('kruti.ttf') format('truetype'); }
+        @font-face { 
+            font-family: 'Kruti Dev 010'; 
+            src: url('kruti.ttf') format('truetype'); 
+        }
 
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 15px; transition: background-color 0.3s; margin: 0; min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; position: relative; transition: 0.3s; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: #f0f2f5; 
+            padding: 15px; 
+            transition: background-color 0.3s; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
         
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 15px 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .top-header h1 { margin: 0; color: #0277bd; font-size: 26px; }
-        .dark-mode-btn { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .dark-mode-btn:hover { background: #000; transform: translateY(-2px); }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            position: relative; 
+            transition: 0.3s; 
+        }
+        
+        .top-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 10px; 
+            padding: 15px 20px; 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        }
+        
+        .top-header h1 { 
+            margin: 0; 
+            color: #0277bd; 
+            font-size: 26px; 
+        }
+        
+        .dark-mode-btn { 
+            background: #333; 
+            color: #fff; 
+            border: none; 
+            padding: 8px 12px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: 0.3s; 
+        }
+        
+        .dark-mode-btn:hover { 
+            background: #000; 
+            transform: translateY(-2px); 
+        }
 
-        .navbar { display: flex; gap: 5px; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow-x: auto; white-space: nowrap; }
-        .nav-btn { flex: 1; padding: 12px 15px; border: none; background: transparent; font-size: 15px; font-weight: bold; color: #555; cursor: pointer; border-radius: 8px; transition: 0.3s; text-align: center; }
-        .nav-btn:hover { background: #f0f2f5; color: #0277bd; }
-        .nav-btn.active { background: #0277bd; color: white; box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); }
+        .navbar { 
+            display: flex; 
+            gap: 5px; 
+            background: #fff; 
+            padding: 10px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            margin-bottom: 20px; 
+            overflow-x: auto; 
+            white-space: nowrap; 
+        }
+        
+        .nav-btn { 
+            flex: 1; 
+            padding: 12px 15px; 
+            border: none; 
+            background: transparent; 
+            font-size: 15px; 
+            font-weight: bold; 
+            color: #555; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            transition: 0.3s; 
+            text-align: center; 
+        }
+        
+        .nav-btn:hover { 
+            background: #f0f2f5; 
+            color: #0277bd; 
+        }
+        
+        .nav-btn.active { 
+            background: #0277bd; 
+            color: white; 
+            box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); 
+        }
 
-        .view-section { display: none; animation: fadeInSlideUp 0.4s ease-out; }
-        .view-section.active { display: block; }
-        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section { 
+            display: none; 
+            animation: fadeInSlideUp 0.4s ease-out; 
+        }
+        
+        .view-section.active { 
+            display: block; 
+        }
+        
+        @keyframes fadeInSlideUp { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
-        .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 65vh; }
-        .auth-box { background: white; width: 100%; max-width: 380px; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .auth-box h3 { color: #0277bd; text-align: center; margin-top: 0; font-size: 24px; margin-bottom: 5px;}
-        .auth-box p { text-align: center; color: #777; font-size: 14px; margin-bottom: 25px; }
-        .auth-box label { font-size: 13px; font-weight: 600; margin-top: 10px; margin-bottom: 5px; color: #444; display: block; }
-        .auth-input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; box-sizing: border-box; transition: 0.3s; background: #fafafa; }
-        .auth-input:focus { border-color: #0277bd; background: #fff; outline: none; }
-        .forgot-link { display: block; text-align: right; color: #0277bd; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: -8px; margin-bottom: 20px; }
-        .auth-btn-full { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; margin-bottom: 15px; background: linear-gradient(135deg, #0277bd, #01579b); }
-        .switch-auth { text-align: center; font-size: 13px; color: #555; }
-        .switch-auth span { color: #0277bd; font-weight: bold; cursor: pointer; text-decoration: underline; }
+        .auth-wrapper { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 65vh; 
+        }
+        
+        .auth-box { 
+            background: white; 
+            width: 100%; 
+            max-width: 380px; 
+            padding: 35px 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+        }
+        
+        .auth-box h3 { 
+            color: #0277bd; 
+            text-align: center; 
+            margin-top: 0; 
+            font-size: 24px; 
+            margin-bottom: 5px;
+        }
+        
+        .auth-box p { 
+            text-align: center; 
+            color: #777; 
+            font-size: 14px; 
+            margin-bottom: 25px; 
+        }
+        
+        .auth-box label { 
+            font-size: 13px; 
+            font-weight: 600; 
+            margin-top: 10px; 
+            margin-bottom: 5px; 
+            color: #444; 
+            display: block; 
+        }
+        
+        .auth-input { 
+            width: 100%; 
+            padding: 12px 15px; 
+            margin-bottom: 15px; 
+            border: 1.5px solid #e0e0e0; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            box-sizing: border-box; 
+            transition: 0.3s; 
+            background: #fafafa; 
+        }
+        
+        .auth-input:focus { 
+            border-color: #0277bd; 
+            background: #fff; 
+            outline: none; 
+        }
+        
+        .forgot-link { 
+            display: block; 
+            text-align: right; 
+            color: #0277bd; 
+            font-size: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: -8px; 
+            margin-bottom: 20px; 
+        }
+        
+        .auth-btn-full { 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            color: white; 
+            margin-bottom: 15px; 
+            background: linear-gradient(135deg, #0277bd, #01579b); 
+        }
+        
+        .switch-auth { 
+            text-align: center; 
+            font-size: 13px; 
+            color: #555; 
+        }
+        
+        .switch-auth span { 
+            color: #0277bd; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-decoration: underline; 
+        }
 
-        .setup-box, .result-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .result-box { border: 2px solid #28a745; display: none; }
-        .readonly-info { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #b8daff; margin-bottom: 15px; }
-        .readonly-info p { margin: 5px 0; font-size: 15px; color: #0056b3; }
+        .setup-box, .result-box { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        }
         
-        .input-field { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: 0.3s;}
-        select.input-field { cursor: pointer; }
+        .result-box { 
+            border: 2px solid #28a745; 
+            display: none; 
+        }
         
-        .btn { display: inline-block; padding: 12px 20px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 8px; margin-top: 15px; width: 100%; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
-        .btn:hover { transform: translateY(-2px); }
-        .btn-info { background: #17a2b8; margin-top: 15px; }
-        .btn-danger { background: #dc3545; width: auto; font-size: 14px; }
+        .readonly-info { 
+            background: #e3f2fd; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #b8daff; 
+            margin-bottom: 15px; 
+        }
         
-        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 24px; width: 100%; padding: 15px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 8px; resize: vertical; background-color: #fff; line-height: 1.8; transition: 0.3s; }
-        textarea.kruti-text { height: 150px; }
-        .kruti-readonly { background-color: #f8f9fa; border: 2px dashed #6c757d; cursor: default; min-height: 150px; height: auto; margin-bottom: 15px; }
+        .readonly-info p { 
+            margin: 5px 0; 
+            font-size: 15px; 
+            color: #0056b3; 
+        }
         
-        .timer { font-size: 24px; color: #d9534f; font-weight: bold; text-align: center; margin: 15px 0; background: #f8d7da; padding: 10px; border-radius: 8px; border: 1px solid #f5c6cb;}
+        .input-field { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            border: 1.5px solid #e0e0e0; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 15px; 
+            transition: 0.3s;
+        }
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-item { padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 15px; font-weight: bold; border: 1px solid #eee; }
-        .stat-item span { float: right; color: #d9534f; font-size: 16px;}
-        .stat-item.positive span { color: #28a745; }
+        select.input-field { 
+            cursor: pointer; 
+        }
         
-        .official-box { background: #fff3cd; padding: 20px; border: 2px solid #ffc107; border-radius: 8px; margin-bottom: 20px; }
-        .official-box h4 { margin-top: 0; color: #856404; text-align: center; border-bottom: 1px solid #ffeeba; padding-bottom: 10px; }
+        .btn { 
+            display: inline-block; 
+            padding: 12px 20px; 
+            background: #5cb85c; 
+            color: white; 
+            border: none; 
+            font-size: 16px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            margin-top: 15px; 
+            width: 100%; 
+            font-weight: bold; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            transition: 0.3s; 
+        }
         
-        .color-legend { background: #e3f2fd; padding: 15px; border: 1px solid #b8daff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
-        .legend-item { display: inline-block; margin-right: 15px; margin-bottom: 5px; }
+        .btn:hover { 
+            transform: translateY(-2px); 
+        }
+        
+        .btn-info { 
+            background: #17a2b8; 
+            margin-top: 15px; 
+            width: auto;
+        }
+        
+        .btn-danger { 
+            background: #dc3545; 
+            width: auto; 
+            font-size: 14px; 
+        }
+        
+        .kruti-text { 
+            font-family: 'Kruti Dev 010', Arial, sans-serif; 
+            font-size: 24px; 
+            width: 100%; 
+            padding: 15px; 
+            box-sizing: border-box; 
+            border: 2px solid #ccc; 
+            border-radius: 8px; 
+            resize: vertical; 
+            background-color: #fff; 
+            line-height: 1.8; 
+            transition: 0.3s; 
+        }
+        
+        textarea.kruti-text { 
+            height: 150px; 
+        }
+        
+        .kruti-readonly { 
+            background-color: #f8f9fa; 
+            border: 2px dashed #6c757d; 
+            cursor: default; 
+            min-height: 150px; 
+            height: auto; 
+            margin-bottom: 15px; 
+        }
+        
+        .timer { 
+            font-size: 24px; 
+            color: #d9534f; 
+            font-weight: bold; 
+            text-align: center; 
+            margin: 15px 0; 
+            background: #f8d7da; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #f5c6cb;
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            margin-bottom: 20px; 
+        }
+        
+        .stat-item { 
+            padding: 12px; 
+            background: #f8f9fa; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            font-weight: bold; 
+            border: 1px solid #eee; 
+        }
+        
+        .stat-item span { 
+            float: right; 
+            color: #d9534f; 
+            font-size: 16px;
+        }
+        
+        .stat-item.positive span { 
+            color: #28a745; 
+        }
+        
+        .official-box { 
+            background: #fff3cd; 
+            padding: 20px; 
+            border: 2px solid #ffc107; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+        }
+        
+        .official-box h4 { 
+            margin-top: 0; 
+            color: #856404; 
+            text-align: center; 
+            border-bottom: 1px solid #ffeeba; 
+            padding-bottom: 10px; 
+        }
+        
+        .color-legend { 
+            background: #e3f2fd; 
+            padding: 15px; 
+            border: 1px solid #b8daff; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            font-size: 14px; 
+        }
+        
+        .legend-item { 
+            display: inline-block; 
+            margin-right: 15px; 
+            margin-bottom: 5px; 
+        }
 
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px; }
-        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        .data-table th { background-color: #0277bd; color: white; font-weight: bold; border-radius: 4px 4px 0 0; }
-        .dashboard-table th { background-color: #17a2b8; }
+        .data-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+            font-size: 15px; 
+        }
         
-        .chart-container { width: 100%; max-width: 320px; margin: 20px auto; text-align: center; }
+        .data-table th, .data-table td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
+        }
+        
+        .data-table th { 
+            background-color: #0277bd; 
+            color: white; 
+            font-weight: bold; 
+            border-radius: 4px 4px 0 0; 
+        }
+        
+        .dashboard-table th { 
+            background-color: #17a2b8; 
+        }
+        
+        .chart-container { 
+            width: 100%; 
+            max-width: 320px; 
+            margin: 20px auto; 
+            text-align: center; 
+        }
 
         /* Dark Mode */
-        body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; }
-        body.dark-mode .nav-btn { color: #aaa; } body.dark-mode .nav-btn:hover { background: #2a2a2a; color:#fff; }
+        body.dark-mode { 
+            background-color: #121212; 
+            color: #e0e0e0; 
+        }
+        body.dark-mode .top-header, 
+        body.dark-mode .navbar, 
+        body.dark-mode .auth-box, 
+        body.dark-mode .setup-box, 
+        body.dark-mode .result-box { 
+            background: #1e1e1e; 
+            border-color: #333; 
+        }
+        body.dark-mode .nav-btn { color: #aaa; } 
+        body.dark-mode .nav-btn:hover { background: #2a2a2a; color:#fff; }
         body.dark-mode .nav-btn.active { background: #01579b; color: #fff; }
-        body.dark-mode .input-field, body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
-        body.dark-mode .kruti-text { background: #2a2a2a; color: #fff; border-color: #444; }
-        body.dark-mode .stat-item, body.dark-mode .data-table tr:hover { background: #2a2a2a; border-color: #333; }
-        body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
-        body.dark-mode .color-legend, body.dark-mode .readonly-info { background: #1a2a3a; border-color: #0f4c81; color:#fff;}
-        body.dark-mode .readonly-info p { color: #4fc3f7; }
+        body.dark-mode .input-field, 
+        body.dark-mode .auth-input { 
+            background: #2a2a2a; 
+            border-color: #444; 
+            color: #fff; 
+        }
+        body.dark-mode .kruti-text { 
+            background: #2a2a2a; 
+            color: #fff; 
+            border-color: #444; 
+        }
+        body.dark-mode .stat-item, 
+        body.dark-mode .data-table tr:hover { 
+            background: #2a2a2a; 
+            border-color: #333; 
+        }
+        body.dark-mode .official-box { 
+            background: #3a3212; 
+            border-color: #856404; 
+        }
+        body.dark-mode .color-legend, 
+        body.dark-mode .readonly-info { 
+            background: #1a2a3a; 
+            border-color: #0f4c81; 
+            color:#fff;
+        }
+        body.dark-mode .readonly-info p { 
+            color: #4fc3f7; 
+        }
 
-        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } .navbar { overflow-x: scroll; } .nav-btn { padding: 10px; font-size: 14px;} }
+        @media (max-width: 600px) { 
+            .stats-grid { grid-template-columns: 1fr; } 
+            .navbar { overflow-x: scroll; } 
+            .nav-btn { padding: 10px; font-size: 14px;} 
+        }
     </style>
 </head>
 <body>
@@ -261,4 +632,538 @@
                 <thead><tr><th>रैंक</th><th>विद्यार्थी का नाम</th><th>Net Words</th><th>Accuracy</th></tr></thead>
                 <tbody id="leaderboardData"><tr><td colspan="4" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
             </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // 1. Firebase Config Setup
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
+      authDomain: "hindi-steno-lab-1.firebaseapp.com",
+      projectId: "hindi-steno-lab-1",
+      storageBucket: "hindi-steno-lab-1.firebasestorage.app",
+      messagingSenderId: "752963570462",
+      appId: "1:752963570462:web:718d84f4fb4a3321d3d70f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    let isSignupMode = false;
+    let currentUserData = { name: "", roll: "", email: "" };
+
+    // ==========================================
+    // 2. Authentication (Login / Signup)
+    // ==========================================
+    function toggleAuthMode() {
+        isSignupMode = !isSignupMode;
+        document.getElementById('authTitle').innerText = isSignupMode ? "नया खाता बनाएं" : "लॉगिन करें";
+        document.getElementById('nameFieldContainer').style.display = isSignupMode ? "block" : "none";
+        document.getElementById('forgotPwdLink').style.display = isSignupMode ? "none" : "block";
+        document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
+    }
+
+    auth.onAuthStateChanged((user) => {
+        if (user && user.emailVerified) {
+            let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
+            let userName = user.displayName || user.email.split('@')[0];
+            currentUserData = { name: userName, roll: generatedRoll, email: user.email };
             
+            document.getElementById('profileEmail').innerText = currentUserData.email;
+            document.getElementById('profileName').innerText = currentUserData.name;
+            document.getElementById('profileRoll').innerText = currentUserData.roll;
+            
+            document.getElementById('authWrapper').style.display = 'none';
+            document.getElementById('mainNavbar').style.display = 'flex';
+            
+            fetchDataFromGoogleSheet();
+            switchTab('home'); 
+        } else {
+            document.getElementById('authWrapper').style.display = 'flex';
+            document.getElementById('mainNavbar').style.display = 'none';
+            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+        }
+    });
+
+    function processAuth() {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        const name = document.getElementById('authName') ? document.getElementById('authName').value.trim() : "";
+        
+        if(!email || !password) return alert("कृपया ईमेल और पासवर्ड डालें!");
+
+        if(isSignupMode) {
+            if(!name) return alert("खाता बनाने के लिए पूरा नाम डालना ज़रूरी है!");
+            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+                return userCredential.user.updateProfile({ displayName: name }).then(() => userCredential.user.sendEmailVerification());
+            }).then(() => {
+                auth.signOut(); 
+                alert("✅ खाता बन गया! कृपया अपना ईमेल चेक करें और लिंक पर क्लिक करके वेरीफाई करें।"); 
+                toggleAuthMode();
+            }).catch(e => alert("एरर: " + e.message));
+        } else {
+            auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
+                if (!userCredential.user.emailVerified) {
+                    userCredential.user.sendEmailVerification().then(() => {
+                        auth.signOut(); 
+                        alert("⚠️ आपका ईमेल वेरीफाई नहीं है! हमने आपके ईमेल पर 'नया लिंक' भेजा है। कृपया वेरीफाई करें।");
+                    });
+                }
+            }).catch(e => alert("❌ लॉगिन फेल: ईमेल या पासवर्ड गलत है।"));
+        }
+    }
+    
+    function logoutUser() { 
+        auth.signOut(); 
+        location.reload(); 
+    }
+    
+    function resetPassword() {
+        const email = document.getElementById('authEmail').value.trim();
+        if(!email) return alert("पासवर्ड रीसेट के लिए पहले अपना ईमेल दर्ज करें।");
+        auth.sendPasswordResetEmail(email)
+            .then(() => alert("लिंक भेज दिया गया है!"))
+            .catch(e => alert(e.message));
+    }
+
+    // ==========================================
+    // 3. Tab Navigation Logic
+    // ==========================================
+    function switchTab(tabId) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId + 'View').classList.add('active');
+        document.getElementById('btn-' + tabId).classList.add('active');
+
+        if(tabId === 'dashboard') renderDashboard();
+        if(tabId === 'leaderboard') renderLeaderboard();
+        if(tabId === 'test') {
+            document.getElementById('studentDetailsBox').style.display = 'block';
+            document.getElementById('audioSection').style.display = 'none';
+            document.getElementById('typingSection').style.display = 'none';
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('studentText').value = '';
+        }
+    }
+
+    // ==========================================
+    // ⚠️ 4. यहाँ अपनी असली Google Sheet वाली लिंक डालें! ⚠️
+    // ==========================================
+    const GOOGLE_SHEET_WEB_APP_URL = "YOUR_GOOGLE_SHEET_WEB_APP_URL_HERE"; 
+    // ==========================================
+
+    let adminSettingsData = null; 
+    let globalLeaderboardData = null; 
+    let globalHistoryData = null; 
+    let resultChartInstance = null;
+    let finalMasterText = ""; 
+    let totalDuration = 3600; 
+    let timeLeft = totalDuration; 
+    let timerInterval; 
+    let isTestRunning = false;
+
+    // ==========================================
+    // 5. Google Sheet Fetch Data Logic
+    // ==========================================
+    function fetchDataFromGoogleSheet() {
+        fetch(GOOGLE_SHEET_WEB_APP_URL)
+        .then(response => response.json())
+        .then(data => {
+            adminSettingsData = data.adminSettings;
+            globalLeaderboardData = data.leaderboard;
+            globalHistoryData = data.history; 
+            
+            document.getElementById('dataLoadingMsg').style.color = "green";
+            document.getElementById('dataLoadingMsg').style.background = "#d4edda";
+            document.getElementById('dataLoadingMsg').innerText = "✅ डिक्टेशन और प्रोफाइल डेटा लोड हो गया!";
+            document.getElementById('speedSelect').disabled = false;
+            
+            let startBtn = document.getElementById('startTestBtn');
+            startBtn.disabled = false;
+            startBtn.style.opacity = 1;
+            startBtn.style.cursor = "pointer";
+
+            updateTopicName(); 
+
+            let lbSelect = document.getElementById('leaderboardSpeedSelect');
+            lbSelect.innerHTML = "";
+            if(adminSettingsData && adminSettingsData.length > 0) {
+                adminSettingsData.forEach(item => {
+                    lbSelect.innerHTML += `<option value="${item.topic}">${item.speed} WPM - ${item.topic}</option>`;
+                });
+            } else {
+                lbSelect.innerHTML = `<option>डेटा उपलब्ध नहीं</option>`;
+            }
+        })
+        .catch(err => {
+            document.getElementById('dataLoadingMsg').innerText = "❌ सर्वर से कनेक्ट नहीं हो पाया। कृपया पेज रिफ्रेश करें।";
+        });
+    }
+
+    function updateTopicName() {
+        let speed = document.getElementById('speedSelect').value;
+        let topicBox = document.getElementById('topicSelect');
+        
+        // उस स्पीड के सभी डिक्टेशन फ़िल्टर करें
+        let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed) : [];
+
+        topicBox.innerHTML = ""; 
+        
+        if(matchingSettings.length > 0) {
+            matchingSettings.forEach(setting => {
+                let topicName = setting.topic ? setting.topic : `डिक्टेशन अभ्यास - ${speed} WPM`;
+                topicBox.innerHTML += `<option value="${topicName}">${topicName}</option>`;
+            });
+            topicBox.disabled = false;
+        } else {
+            topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`;
+            topicBox.disabled = true;
+        }
+    }
+
+    // ==========================================
+    // 6. Audio and Typing Test Controls
+    // ==========================================
+    function toggleDarkMode() { 
+        document.body.classList.toggle('dark-mode'); 
+    }
+    
+    function requestFullScreen() { 
+        try { 
+            var e = document.documentElement; 
+            if (e.requestFullscreen) e.requestFullscreen(); 
+            else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); 
+        } catch(e) {} 
+    }
+
+    function startAudioSection() {
+        let speed = document.getElementById('speedSelect').value;
+        let selectedTopic = document.getElementById('topicSelect').value; 
+        
+        // स्पीड और टॉपिक दोनों मैच करें
+        let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == speed && item.topic == selectedTopic) : null;
+
+        if(!setting) {
+            alert(`तकनीकी त्रुटि: यह डिक्टेशन उपलब्ध नहीं है।`); 
+            return;
+        }
+
+        finalMasterText = setting.text;
+        let finalAudioLink = setting.audio; 
+        
+        let timeInMins = setting.timeMins || 60;
+        totalDuration = timeInMins * 60; 
+        timeLeft = totalDuration;
+
+        document.getElementById('mainNavbar').style.display = 'none';
+
+        requestFullScreen();
+        document.getElementById('dictationAudio').src = finalAudioLink;
+        document.getElementById('r_name').innerText = currentUserData.name;
+        document.getElementById('r_testSpeed').innerText = speed + " WPM";
+
+        document.getElementById('studentDetailsBox').style.display = 'none';
+        document.getElementById('audioSection').style.display = 'block';
+
+        let audioPlayer = document.getElementById('dictationAudio');
+        if(audioPlayer) {
+            audioPlayer.onended = function() { startTypingTest(); };
+        }
+    }
+
+    function startTypingTest() {
+        document.getElementById('audioSection').style.display = 'none';
+        document.getElementById('typingSection').style.display = 'block';
+        isTestRunning = true; 
+        
+        let stdArea = document.getElementById('studentText'); 
+        stdArea.focus();
+        updateTimer(); 
+        timerInterval = setInterval(updateTimer, 1000);
+        
+        // पेस्टिंग ब्लॉक करें
+        stdArea.addEventListener('paste', e => { 
+            e.preventDefault(); 
+            alert("पेस्ट करना वर्जित है!"); 
+        });
+        
+        // बैकस्पेस ब्लॉक करने की सेटिंग
+        stdArea.addEventListener('keydown', e => {
+            let backspaceSetting = document.getElementById('backspaceSelect').value;
+            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') {
+                e.preventDefault();
+            }
+        });
+    }
+
+    // चीटिंग रोकने के लिए टैब बदलने पर टेस्ट अपने आप सबमिट हो जाएगा
+    document.addEventListener("visibilitychange", function() {
+        if (isTestRunning && document.visibilityState === 'hidden') { 
+            alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।"); 
+            submitTest(); 
+        }
+    });
+
+    function updateTimer() {
+        let m = Math.floor(timeLeft / 60); 
+        let s = timeLeft % 60;
+        document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        if (timeLeft <= 0) { 
+            clearInterval(timerInterval); 
+            submitTest(); 
+        }
+        timeLeft--;
+    }
+
+    // ==========================================
+    // 7. Result Evaluation & DP Algorithm (5% Rule)
+    // ==========================================
+    function submitTest() {
+        isTestRunning = false; 
+        clearInterval(timerInterval);
+        
+        try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
+        
+        let tt = totalDuration - timeLeft;
+        document.getElementById('r_timeTaken').innerText = `${Math.floor(tt / 60)} मिनट ${tt % 60} सेकंड`;
+        
+        calculateDetailedMistakes(finalMasterText, document.getElementById('studentText').value.trim(), tt / 60);
+        
+        document.getElementById('typingSection').style.display = 'none';
+        document.getElementById('resultBox').style.display = 'block';
+        
+        // टेस्ट सबमिट होने पर मेनू बार वापस लाएं
+        document.getElementById('mainNavbar').style.display = 'flex';
+        
+        // लीडरबोर्ड को उसी टॉपिक पर सेट करें जिसका टेस्ट दिया है
+        let currentTopic = document.getElementById('topicSelect').value;
+        let lbSelect = document.getElementById('leaderboardSpeedSelect');
+        if([...lbSelect.options].some(opt => opt.value === currentTopic)) {
+            lbSelect.value = currentTopic;
+        }
+
+        window.scrollTo(0, 0);
+    }
+
+    function calculateDetailedMistakes(master, student, timeTakenMins) {
+        let mWords = master.split(/\s+/).filter(w => w.length > 0);
+        let sWords = student.split(/\s+/).filter(w => w.length > 0);
+        
+        let dp = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
+        let path = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
+        
+        for(let i=1; i<=mWords.length; i++){ dp[i][0] = i; path[i][0] = 2; } 
+        for(let j=1; j<=sWords.length; j++){ dp[0][j] = j; path[0][j] = 3; }
+        
+        for(let i=1; i<=mWords.length; i++){
+            for(let j=1; j<=sWords.length; j++){
+                let cost = (mWords[i-1] === sWords[j-1]) ? 0 : (mWords[i-1].replace(/[,\|]/g,'') === sWords[j-1].replace(/[,\|]/g,'') ? 0.5 : 1);
+                let diag = dp[i-1][j-1] + cost; 
+                let del = dp[i-1][j] + 1; 
+                let ins = dp[i][j-1] + 1;
+                
+                if(diag <= del && diag <= ins){
+                    dp[i][j] = diag; path[i][j] = 1;
+                } else if(del <= ins){
+                    dp[i][j] = del; path[i][j] = 2;
+                } else {
+                    dp[i][j] = ins; path[i][j] = 3;
+                }
+            }
+        }
+        
+        let om=0, hm=0, fm=0, ew=0, currI=mWords.length, currJ=sWords.length, diffHtml=[]; 
+        
+        while(currI>0 || currJ>0) {
+            if(currI>0 && currJ>0 && path[currI][currJ]===1) {
+                let w1=mWords[currI-1], w2=sWords[currJ-1];
+                if(w1===w2) {
+                    diffHtml.unshift(`<span style="color:#28a745;">${w2}</span>`);
+                } else {
+                    let cwHtml=` <span style="color:#28a745;font-family:Arial;">(</span><span style="color:#28a745;">${w1}</span><span style="color:#28a745;font-family:Arial;">)</span>`;
+                    if(w1.replace(/[,\|]/g,'') === w2.replace(/[,\|]/g,'')){
+                        hm++; 
+                        diffHtml.unshift(`<span style="color:#fd7e14;">${w2}</span>`+cwHtml);
+                    } else {
+                        fm++; 
+                        diffHtml.unshift(`<span style="color:#dc3545;">${w2}</span>`+cwHtml);
+                    }
+                }
+                currI--; currJ--;
+            } else if(currI>0 && (currJ===0 || path[currI][currJ]===2)) {
+                om++; 
+                diffHtml.unshift(`<span style="color:#dc3545;text-decoration:line-through;">${mWords[currI-1]}</span>`); 
+                currI--;
+            } else if(currJ>0 && (currI===0 || path[currI][currJ]===3)) {
+                ew++; 
+                diffHtml.unshift(`<span style="color:#dc3545;border-bottom:2px solid #dc3545;">${sWords[currJ-1]}</span>`); 
+                currJ--;
+            }
+        }
+        
+        let tw = mWords.length;
+        let totalErr = fm + ew + om;
+        let actualErr = totalErr + (hm/2);
+        let allowed = (sWords.length===0) ? 0 : Math.round(tw * 0.05);
+        let excess = actualErr > allowed ? actualErr - allowed : 0;
+        
+        let net = tw - excess; 
+        if(net > sWords.length) net = sWords.length; 
+        if(net < 0) net = 0;
+        
+        let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0;
+        let wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
+
+        document.getElementById('r_masterWords').innerText = tw; 
+        document.getElementById('r_omissions').innerText = om;
+        document.getElementById('r_fullMistakes').innerText = fm; 
+        document.getElementById('r_extraWords').innerText = ew;
+        document.getElementById('r_actualMistakes').innerText = actualErr; 
+        document.getElementById('r_allowedMistakes').innerText = allowed;
+        document.getElementById('r_excessMistakes').innerText = excess;
+        document.getElementById('r_netWords').innerText = net;
+        document.getElementById('r_speed').innerText = wpm + " WPM";
+        document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
+        document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
+
+        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net);
+        drawResultChart(net, actualErr);
+    }
+
+    function drawResultChart(netWords, mistakes) {
+        let ctx = document.getElementById('resultChart').getContext('2d');
+        if(resultChartInstance) resultChartInstance.destroy();
+        
+        resultChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: { 
+                labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
+                datasets: [{ 
+                    data: [netWords, mistakes], 
+                    backgroundColor: ['#28a745', '#dc3545'], 
+                    borderWidth: 2, 
+                    borderColor: '#ffffff' 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                plugins: { 
+                    legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } 
+                } 
+            }
+        });
+    }
+
+    // ==========================================
+    // 8. Output Functions (Save, Download, Data Display)
+    // ==========================================
+    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
+        let currentTopic = document.getElementById('topicSelect').value;
+        let dataPayload = { 
+            name: currentUserData.name, 
+            rollNumber: currentUserData.roll, 
+            email: currentUserData.email, 
+            speedTarget: document.getElementById('speedSelect').value, 
+            topic: currentTopic, 
+            actualSpeedWPM: speedWPM, 
+            accuracy: accuracy, 
+            totalMistakes: totalMistakes, 
+            netWords: netWords 
+        };
+        
+        fetch(GOOGLE_SHEET_WEB_APP_URL, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+            body: JSON.stringify(dataPayload) 
+        })
+        .then(response => { 
+            document.getElementById('saveStatus').style.display = 'block'; 
+        })
+        .catch(error => { 
+            console.error("Error saving data:", error); 
+        });
+    }
+
+    function downloadResultPDF() {
+        const btn = document.getElementById('downloadPdfBtn'); 
+        btn.style.display = 'none';
+        
+        let wasDarkMode = document.body.classList.contains('dark-mode'); 
+        if(wasDarkMode) document.body.classList.remove('dark-mode');
+        
+        const element = document.getElementById('resultBox');
+        const opt = { 
+            margin: [10, 10, 10, 10], 
+            filename: 'Hindi_Steno_Lab_Result.pdf', 
+            image: { type: 'jpeg', quality: 0.98 }, 
+            html2canvas: { scale: 2 }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+        };
+        
+        html2pdf().set(opt).from(element).save().then(() => { 
+            btn.style.display = 'inline-block'; 
+            if(wasDarkMode) document.body.classList.add('dark-mode'); 
+        });
+    }
+
+    function renderLeaderboard() {
+        if (!globalLeaderboardData) { 
+            document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; 
+            return; 
+        }
+        
+        let selectedTopic = document.getElementById('leaderboardSpeedSelect').value;
+        let filteredData = globalLeaderboardData.filter(item => item.topic === selectedTopic);
+
+        filteredData.sort((a, b) => {
+            let accA = parseFloat(a.accuracy) || 0; 
+            let accB = parseFloat(b.accuracy) || 0;
+            if (accB !== accA) return accB - accA; 
+            
+            let wordsA = parseInt(a.netWords) || 0; 
+            let wordsB = parseInt(b.netWords) || 0;
+            return wordsB - wordsA; 
+        });
+
+        let tableHtml = "";
+        filteredData.forEach((student, index) => {
+            let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
+            let correctWords = student.netWords ? student.netWords : "0"; 
+            tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
+        });
+        
+        if(filteredData.length === 0) { 
+            tableHtml = `<tr><td colspan='4' style='text-align:center;'>इस डिक्टेशन का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; 
+        }
+        document.getElementById('leaderboardData').innerHTML = tableHtml;
+    }
+
+    function renderDashboard() {
+        if (!globalHistoryData) { 
+            document.getElementById('dashboardData').innerHTML = "<tr><td colspan='5' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; 
+            return; 
+        }
+        
+        let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email);
+        myHistory.reverse(); 
+
+        let tableHtml = "";
+        myHistory.forEach((attempt) => {
+            let dateObj = new Date(attempt.date);
+            let dateStr = dateObj.toLocaleDateString('en-IN') + " " + dateObj.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+            tableHtml += `<tr><td>${dateStr}</td><td>${attempt.speed} WPM</td><td style="color:#0277bd; font-weight:bold;">${attempt.netWords}</td><td style="color:#28a745; font-weight:bold;">${parseFloat(attempt.accuracy).toFixed(2)}%</td><td style="color:#d9534f; font-weight:bold;">${attempt.mistakes}</td></tr>`;
+        });
+        
+        if(myHistory.length === 0) { 
+            tableHtml = "<tr><td colspan='5' style='text-align:center;'>आपने अभी तक कोई टेस्ट नहीं दिया है।</td></tr>"; 
+        }
+        document.getElementById('dashboardData').innerHTML = tableHtml;
+    }
+</script>
+
+</body>
+</html>
