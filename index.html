@@ -43,7 +43,22 @@
             transition: all 0.3s ease;
         }
         
-        .top-header h1 { 
+        /* 🚀 लोगो और टाइटल अब क्लिकेबल होम बटन है 🚀 */
+        .brand-link {
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .brand-link:hover {
+            opacity: 0.8;
+            transform: scale(1.02);
+        }
+
+        .brand-link h1 { 
             margin: 0; 
             color: #0277bd; 
             font-size: 28px; 
@@ -94,17 +109,8 @@
             text-align: center; 
         }
         
-        .nav-btn:hover { 
-            background: #f0f4f8; 
-            color: #0277bd; 
-        }
-        
-        .nav-btn.active { 
-            background: #0277bd; 
-            color: white; 
-            box-shadow: 0 4px 12px rgba(2, 119, 189, 0.4); 
-            transform: translateY(-2px);
-        }
+        .nav-btn:hover { background: #f0f4f8; color: #0277bd; }
+        .nav-btn.active { background: #0277bd; color: white; box-shadow: 0 4px 12px rgba(2, 119, 189, 0.4); transform: translateY(-2px); }
 
         .view-section { 
             display: none; 
@@ -112,170 +118,55 @@
             opacity: 0;
             transform: translateY(20px);
         }
-        
-        .view-section.active { 
-            display: block; 
-        }
-        
-        @keyframes fadeInSlideUp { 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        .view-section.active { display: block; }
+        @keyframes fadeInSlideUp { to { opacity: 1; transform: translateY(0); } }
 
-        .auth-wrapper { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 65vh; 
-        }
-        
-        .auth-box { 
-            background: white; 
-            width: 100%; 
-            max-width: 400px; 
-            padding: 40px 35px; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
-        }
-        
-        .auth-box h3 { 
-            color: #0277bd; 
-            text-align: center; 
-            margin-top: 0; 
-            font-size: 26px; 
-            margin-bottom: 5px;
-        }
-        
-        .auth-box p { 
-            text-align: center; 
-            color: #777; 
-            font-size: 14px; 
-            margin-bottom: 30px; 
-        }
-        
-        .auth-box label { 
-            font-size: 13px; 
-            font-weight: bold; 
-            margin-top: 10px; 
-            margin-bottom: 8px; 
-            color: #444; 
-            display: block; 
-        }
-        
-        .auth-input { 
-            width: 100%; 
-            padding: 14px 15px; 
-            margin-bottom: 20px; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 10px; 
-            font-size: 15px; 
-            box-sizing: border-box; 
-            transition: all 0.3s ease; 
-            background: #fafafa; 
-        }
-        
-        .auth-input:focus { 
-            border-color: #0277bd; 
-            background: #fff; 
-            outline: none; 
-            box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1);
-        }
-        
-        .forgot-link { 
-            display: block; 
-            text-align: right; 
-            color: #0277bd; 
-            font-size: 13px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            margin-top: -10px; 
-            margin-bottom: 25px; 
-            transition: 0.3s;
-        }
+        .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 65vh; }
+        .auth-box { background: white; width: 100%; max-width: 400px; padding: 40px 35px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .auth-box h3 { color: #0277bd; text-align: center; margin-top: 0; font-size: 26px; margin-bottom: 5px; }
+        .auth-box p { text-align: center; color: #777; font-size: 14px; margin-bottom: 30px; }
+        .auth-box label { font-size: 13px; font-weight: bold; margin-top: 10px; margin-bottom: 8px; color: #444; display: block; }
+        .auth-input { width: 100%; padding: 14px 15px; margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; box-sizing: border-box; transition: all 0.3s ease; background: #fafafa; }
+        .auth-input:focus { border-color: #0277bd; background: #fff; outline: none; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); }
+        .forgot-link { display: block; text-align: right; color: #0277bd; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: -10px; margin-bottom: 25px; transition: 0.3s; }
         .forgot-link:hover { color: #01579b; text-decoration: underline; }
-        
-        .auth-btn-full { 
-            width: 100%; 
-            padding: 14px; 
-            border: none; 
-            border-radius: 10px; 
-            font-size: 16px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            color: white; 
-            margin-bottom: 20px; 
-            background: linear-gradient(135deg, #0277bd, #01579b); 
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 15px rgba(2, 119, 189, 0.3);
-        }
+        .auth-btn-full { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; color: white; margin-bottom: 20px; background: linear-gradient(135deg, #0277bd, #01579b); transition: all 0.3s ease; box-shadow: 0 6px 15px rgba(2, 119, 189, 0.3); }
         .auth-btn-full:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(2, 119, 189, 0.4); }
-        
         .switch-auth { text-align: center; font-size: 14px; color: #555; }
         .switch-auth span { color: #0277bd; font-weight: bold; cursor: pointer; text-decoration: underline; }
 
-        .setup-box, .result-box { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 16px; 
-            margin-bottom: 25px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
-            transition: all 0.3s ease;
-        }
-        
+        .setup-box, .result-box { background: white; padding: 30px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: all 0.3s ease; }
         .result-box { border: 2px solid #28a745; display: none; }
-        
-        .input-field { 
-            width: 100%; 
-            padding: 14px; 
-            margin-bottom: 20px; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 10px; 
-            box-sizing: border-box; 
-            font-size: 15px; 
-            transition: all 0.3s ease;
-        }
+        .input-field { width: 100%; padding: 14px; margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; font-size: 15px; transition: all 0.3s ease; }
         .input-field:focus { border-color: #0277bd; outline: none; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); }
         select.input-field { cursor: pointer; background-color: #fff; }
         
-        .btn { 
-            display: inline-block; 
-            padding: 14px 25px; 
-            background: #5cb85c; 
-            color: white; 
-            border: none; 
-            font-size: 16px; 
-            cursor: pointer; 
-            border-radius: 10px; 
-            margin-top: 15px; 
-            width: 100%; 
-            font-weight: bold; 
-            box-shadow: 0 6px 15px rgba(92, 184, 92, 0.3); 
-            transition: all 0.3s ease; 
-        }
+        .btn { display: inline-block; padding: 14px 25px; background: #5cb85c; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 10px; margin-top: 15px; width: 100%; font-weight: bold; box-shadow: 0 6px 15px rgba(92, 184, 92, 0.3); transition: all 0.3s ease; }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(92, 184, 92, 0.4); }
         .btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
         .btn-info { background: #17a2b8; margin-top: 15px; width: auto; box-shadow: 0 6px 15px rgba(23, 162, 184, 0.3); }
         .btn-danger { background: #dc3545; width: auto; font-size: 15px; box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3); }
         
-        .kruti-text { 
-            font-family: 'Kruti Dev 010', Arial, sans-serif; 
-            font-size: 26px; 
-            width: 100%; 
-            padding: 20px; 
-            box-sizing: border-box; 
-            border: 2px solid #ccc; 
-            border-radius: 12px; 
-            resize: vertical; 
-            background-color: #fff; 
-            line-height: 1.8; 
-            transition: all 0.3s ease; 
-        }
+        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 26px; width: 100%; padding: 20px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 12px; resize: vertical; background-color: #fff; line-height: 1.8; transition: all 0.3s ease; }
         .kruti-text:focus { border-color: #0277bd; outline: none; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); }
         textarea.kruti-text { height: 180px; }
         .kruti-readonly { background-color: #f8f9fa; border: 2px dashed #6c757d; cursor: default; min-height: 150px; height: auto; margin-bottom: 20px; }
         
         .timer { font-size: 26px; color: #d9534f; font-weight: bold; text-align: center; margin: 20px 0; background: #f8d7da; padding: 15px; border-radius: 10px; border: 2px solid #f5c6cb; letter-spacing: 1px;}
         
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        /* 🚀 चार्ट को दाईं ओर छोटा दिखाने का नया लेआउट 🚀 */
+        .result-layout-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        @media (max-width: 768px) {
+            .result-layout-wrapper { grid-template-columns: 1fr; }
+        }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .stat-item { padding: 15px; background: #f8f9fa; border-radius: 10px; font-size: 16px; font-weight: bold; border: 1px solid #eee; transition: all 0.3s ease; }
         .stat-item:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .stat-item span { float: right; color: #d9534f; font-size: 18px;}
@@ -290,9 +181,6 @@
         .data-table tr:hover { background-color: #f8f9fa; }
         .dashboard-table th { background-color: #17a2b8; }
         
-        .chart-container { width: 100%; max-width: 350px; margin: 25px auto; text-align: center; }
-
-        /* 🚀 NEW: Social/Contact Buttons Styling 🚀 */
         .social-btn { display: flex; align-items: center; justify-content: center; padding: 14px; margin-bottom: 12px; border-radius: 10px; color: white; text-decoration: none; font-weight: bold; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .social-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); color: white; }
         .btn-yt { background: #ff0000; }
@@ -300,7 +188,6 @@
         .btn-wa { background: #25d366; }
         .btn-mail { background: #ea4335; }
 
-        /* Dark Mode */
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
         body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
         body.dark-mode .nav-btn { color: #aaa; } body.dark-mode .nav-btn:hover { background: #2a2a2a; color:#fff; }
@@ -318,21 +205,19 @@
 
 <div class="container">
     
-   <div class="top-header">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <img src="logo.png" alt="हिंदी स्टेनो लैब लोगो" style="width: 55px; height: 55px; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            <h1 style="margin: 0; color: #0277bd; font-size: 28px; letter-spacing: 0.5px;">हिंदी स्टेनो लैब</h1>
-        </div>
+    <div class="top-header">
+        <a class="brand-link" onclick="switchTab('home')">
+            <img src="logo.png" alt="हिंदी स्टेनो लैब" style="width: 55px; height: 55px; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <h1>हिंदी स्टेनो लैब</h1>
+        </a>
         <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
     </div>
 
     <div id="mainNavbar" class="navbar" style="display:none;">
-        <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">🏠 Home</button>
         <button class="nav-btn" id="btn-dashboard" onclick="switchTab('dashboard')">📊 Dashboard</button>
-        <button class="nav-btn" id="btn-test" onclick="switchTab('test')">✍️ Steno Test</button>
+        <button class="nav-btn active" id="btn-test" onclick="switchTab('test')">✍️ Steno Test</button>
         <button class="nav-btn" id="btn-leaderboard" onclick="switchTab('leaderboard')">🏆 Leaderboard</button>
         <button class="nav-btn" id="btn-profile" onclick="switchTab('profile')">👤 Profile</button>
-        <button class="nav-btn" id="btn-contact" onclick="switchTab('contact')">📞 Contact</button>
     </div>
 
     <div id="authWrapper" class="auth-wrapper">
@@ -350,15 +235,26 @@
     </div>
 
     <div id="homeView" class="view-section">
-        <div class="setup-box" style="text-align:center; padding: 50px 20px;">
+        <div class="setup-box" style="text-align:center; padding: 40px 20px; border-bottom: 2px solid #eee;">
             <h2 style="color:#0277bd; font-size: 32px; margin-bottom: 10px;">पोर्टल में आपका स्वागत है!</h2>
-            <p style="color:#666; font-size:18px;">ऊपर दिए गए मेनू (Steno Test) से अपना टेस्ट शुरू करें।</p>
+            <p style="color:#666; font-size:18px;">ऊपर दिए गए मेनू से टेस्ट देना शुरू करें।</p>
             
-            <div style="margin-top:40px; padding:35px; background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-left: 8px solid #0277bd; border-radius:16px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: 0.3s;">
+            <div style="margin-top:30px; margin-bottom: 30px; padding:35px; background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-left: 8px solid #0277bd; border-radius:16px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: 0.3s;">
                 <span style="font-size: 50px;">💡</span>
                 <h3 style="color:#01579b; font-style: italic; font-size: 24px; line-height: 1.6; margin-top: 15px;">
                     "सफलता का पीछा करते रहो दोस्त,<br>कामयाब होगे।"
                 </h3>
+            </div>
+        </div>
+
+        <div class="setup-box" style="margin-top:20px; text-align:center;">
+            <h3 style="color: #0277bd; margin-bottom: 20px; font-size: 24px;">📞 हमसे संपर्क करें</h3>
+            <div style="max-width: 450px; margin: 0 auto;">
+                <p style="color:#666; margin-bottom: 20px; font-size: 15px;">किसी भी सहायता, सुझाव या जानकारी के लिए जुड़ें:</p>
+                <a href="mailto:YOUR_EMAIL@gmail.com" class="social-btn btn-mail">📧 ईमेल: YOUR_EMAIL@gmail.com</a>
+                <a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="social-btn btn-wa">💬 WhatsApp: +91 XXXXXXXXXX</a>
+                <a href="YOUR_YT_LINK" target="_blank" class="social-btn btn-yt">▶️ YouTube Channel</a>
+                <a href="YOUR_INSTA_LINK" target="_blank" class="social-btn btn-insta">📸 Instagram Profile</a>
             </div>
         </div>
     </div>
@@ -424,13 +320,20 @@
                 <div style="margin-top:10px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span></div>
             </div>
             
-            <div class="chart-container"><canvas id="resultChart"></canvas></div>
-
-            <div class="stats-grid">
-                <div class="stat-item positive">कुल शब्द: <span id="r_masterWords">0</span></div>
-                <div class="stat-item">छूटे हुए शब्द: <span id="r_omissions">0</span></div>
-                <div class="stat-item">स्पेलिंग/गलत शब्द: <span id="r_fullMistakes">0</span></div>
-                <div class="stat-item">अतिरिक्त शब्द: <span id="r_extraWords">0</span></div>
+            <div class="result-layout-wrapper">
+                <div class="stats-grid">
+                    <div class="stat-item positive">कुल शब्द: <span id="r_masterWords">0</span></div>
+                    <div class="stat-item">छूटे हुए शब्द: <span id="r_omissions">0</span></div>
+                    <div class="stat-item">स्पेलिंग/गलत शब्द: <span id="r_fullMistakes">0</span></div>
+                    <div class="stat-item">अतिरिक्त शब्द: <span id="r_extraWords">0</span></div>
+                </div>
+                
+                <div style="text-align:center; padding: 10px; background: #fafafa; border-radius: 12px; border: 1px solid #eee;">
+                    <b style="color: #555; font-size: 14px; display: block; margin-bottom: 5px;">परिणाम आरेख (WPM)</b>
+                    <div style="width: 100%; max-width: 160px; margin: 0 auto;">
+                        <canvas id="resultChart"></canvas>
+                    </div>
+                </div>
             </div>
 
             <div class="official-box">
@@ -488,24 +391,9 @@
         </div>
     </div>
 
-    <div id="contactView" class="view-section setup-box">
-        <h2 style="color: #0277bd; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-top:0; font-size: 26px;">📞 हमसे संपर्क करें</h2>
-        <div style="max-width: 450px; margin: 30px auto; text-align:center;">
-            <p style="color:#666; margin-bottom: 30px; font-size: 16px;">किसी भी सहायता, सुझाव या जानकारी के लिए नीचे दिए गए माध्यमों से बेझिझक जुड़ें:</p>
-            
-            <a href="mailto:YOUR_EMAIL@gmail.com" class="social-btn btn-mail">📧 ईमेल: YOUR_EMAIL@gmail.com</a>
-            <a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="social-btn btn-wa">💬 WhatsApp: +91 XXXXXXXXXX</a>
-            <a href="YOUR_YT_LINK" target="_blank" class="social-btn btn-yt">▶️ YouTube Channel</a>
-            <a href="YOUR_INSTA_LINK" target="_blank" class="social-btn btn-insta">📸 Instagram Profile</a>
-            </div>
-    </div>
-
 </div>
 
 <script>
-    // ==========================================
-    // 1. Firebase Config Setup
-    // ==========================================
     const firebaseConfig = {
       apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
       authDomain: "hindi-steno-lab-1.firebaseapp.com",
@@ -520,9 +408,6 @@
     let isSignupMode = false;
     let currentUserData = { name: "", roll: "", email: "" };
 
-    // ==========================================
-    // 2. Authentication (Login / Signup)
-    // ==========================================
     function toggleAuthMode() {
         isSignupMode = !isSignupMode;
         document.getElementById('authTitle').innerText = isSignupMode ? "नया खाता बनाएं" : "लॉगिन करें";
@@ -586,20 +471,18 @@
     function resetPassword() {
         const email = document.getElementById('authEmail').value.trim();
         if(!email) return alert("पासवर्ड रीसेट के लिए पहले अपना ईमेल दर्ज करें।");
-        auth.sendPasswordResetEmail(email)
-            .then(() => alert("लिंक भेज दिया गया है!"))
-            .catch(e => alert(e.message));
+        auth.sendPasswordResetEmail(email).then(() => alert("लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
 
-    // ==========================================
-    // 3. Tab Navigation Logic (Updated for Contact)
-    // ==========================================
     function switchTab(tabId) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         
         document.getElementById(tabId + 'View').classList.add('active');
-        document.getElementById('btn-' + tabId).classList.add('active');
+        
+        // अगर बटन है तो उसे एक्टिव करें (होम के लिए कोई बटन नहीं है)
+        let btn = document.getElementById('btn-' + tabId);
+        if(btn) btn.classList.add('active');
 
         if(tabId === 'dashboard') renderDashboard();
         if(tabId === 'leaderboard') renderLeaderboard();
@@ -613,7 +496,7 @@
     }
 
     // ==========================================
-    // ⚠️ 4. यहाँ अपनी असली Google Sheet वाली लिंक डालें! ⚠️
+    // ⚠️ यहाँ अपनी असली Google Sheet वाली लिंक डालें! ⚠️
     // ==========================================
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec"; 
     // ==========================================
@@ -628,9 +511,6 @@
     let timerInterval; 
     let isTestRunning = false;
 
-    // ==========================================
-    // 5. Google Sheet Fetch Data Logic
-    // ==========================================
     function fetchDataFromGoogleSheet() {
         fetch(GOOGLE_SHEET_WEB_APP_URL)
         .then(response => response.json())
@@ -656,7 +536,6 @@
             lbSelect.innerHTML = "";
             if(adminSettingsData && adminSettingsData.length > 0) {
                 adminSettingsData.forEach(item => {
-                    // अगर आपने शीट में 'Date' कॉलम डाला है, तो आप यहाँ उसे दिखा सकते हैं
                     let displayName = item.date ? `[${item.date}] ${item.speed} WPM - ${item.topic}` : `${item.speed} WPM - ${item.topic}`;
                     lbSelect.innerHTML += `<option value="${item.topic}">${displayName}</option>`;
                 });
@@ -673,18 +552,14 @@
         let speed = document.getElementById('speedSelect').value;
         let topicBox = document.getElementById('topicSelect');
         
-        // उस स्पीड के सारे डिक्टेशन ढूँढें
         let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed) : [];
 
         topicBox.innerHTML = ""; 
         
         if(matchingSettings.length > 0) {
-            // 🚀 लिस्ट को उल्टा (Reverse) करें, ताकि सबसे नया टेस्ट (नीचे वाली Row) सबसे ऊपर दिखे 🚀
             matchingSettings.reverse().forEach(setting => {
                 let displayDate = setting.date ? `[${setting.date}] ` : "";
                 let topicName = setting.topic ? setting.topic : `अभ्यास - ${speed} WPM`;
-                
-                // ड्रॉपडाउन में डेट और टॉपिक का नाम दिखाएं
                 topicBox.innerHTML += `<option value="${setting.topic}">${displayDate}${topicName}</option>`;
             });
             topicBox.disabled = false;
@@ -694,9 +569,6 @@
         }
     }
 
-    // ==========================================
-    // 6. Audio and Typing Test Controls
-    // ==========================================
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
     
     function requestFullScreen() { 
@@ -779,9 +651,6 @@
         timeLeft--;
     }
 
-    // ==========================================
-    // 7. Result Evaluation & DP Algorithm (5% Rule)
-    // ==========================================
     function submitTest() {
         isTestRunning = false; 
         clearInterval(timerInterval);
@@ -893,9 +762,6 @@
         });
     }
 
-    // ==========================================
-    // 8. Output Functions (Save, Download, Data Display)
-    // ==========================================
     function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
         let currentTopic = document.getElementById('topicSelect').value;
         let dataPayload = { 
