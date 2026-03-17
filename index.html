@@ -43,7 +43,6 @@
             transition: all 0.3s ease;
         }
         
-        /* 🚀 लोगो और टाइटल अब क्लिकेबल होम बटन है 🚀 */
         .brand-link {
             display: flex; 
             align-items: center; 
@@ -154,7 +153,6 @@
         
         .timer { font-size: 26px; color: #d9534f; font-weight: bold; text-align: center; margin: 20px 0; background: #f8d7da; padding: 15px; border-radius: 10px; border: 2px solid #f5c6cb; letter-spacing: 1px;}
         
-        /* 🚀 चार्ट को दाईं ओर छोटा दिखाने का नया लेआउट 🚀 */
         .result-layout-wrapper {
             display: grid;
             grid-template-columns: 2fr 1.2fr;
@@ -288,12 +286,6 @@
                 <option>लोड हो रहा है...</option>
             </select>
 
-            <label style="border:none; margin-top:10px;">③ बैकस्पेस (Backspace) सेटिंग:</label>
-            <select id="backspaceSelect" class="input-field" style="background:#e3f2fd; color:#01579b; font-weight:bold; border:2px solid #90caf9;">
-                <option value="on" selected>चालू रखें (Allow Backspace)</option>
-                <option value="off">बंद करें (Disable Backspace)</option>
-            </select>
-
             <button id="startTestBtn" class="btn" style="opacity: 0.5; cursor: not-allowed; padding: 16px; font-size: 18px;" disabled onclick="startAudioSection()">टेस्ट शुरू करें 🚀</button>
         </div>
 
@@ -305,8 +297,21 @@
 
         <div id="typingSection" style="display: none; padding: 25px; background: white; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
             <div class="timer" id="timerDisplay">समय शेष: लोड हो रहा है...</div>
-            <label style="border:none; font-size: 18px;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-            <p style="color:red; font-size:15px; margin-top:5px; margin-bottom: 15px;"><i>सख्त हिदायत: टेस्ट के दौरान कोई दूसरा टैब न खोलें!</i></p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+                <div>
+                    <label style="border:none; font-size: 18px;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
+                    <p style="color:red; font-size:14px; margin-top:5px; margin-bottom: 0;"><i>सख्त हिदायत: टेस्ट के दौरान कोई दूसरा टैब न खोलें!</i></p>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 6px 12px; border-radius: 8px; border: 1px solid #90caf9; text-align: center;">
+                    <label style="font-size: 12px; font-weight: bold; color: #01579b; margin-bottom: 3px; display: block;">Backspace</label>
+                    <select id="backspaceToggle" style="padding: 4px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; font-weight: bold; background: white; color: #333; cursor: pointer; outline: none;">
+                        <option value="on" selected>ON (चालू)</option>
+                        <option value="off">OFF (बंद)</option>
+                    </select>
+                </div>
+            </div>
             <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
             <button class="btn" style="padding: 16px; font-size: 18px;" onclick="submitTest()">टेस्ट सबमिट करें</button>
         </div>
@@ -479,8 +484,6 @@
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         
         document.getElementById(tabId + 'View').classList.add('active');
-        
-        // अगर बटन है तो उसे एक्टिव करें (होम के लिए कोई बटन नहीं है)
         let btn = document.getElementById('btn-' + tabId);
         if(btn) btn.classList.add('active');
 
@@ -628,8 +631,9 @@
             alert("पेस्ट करना वर्जित है!"); 
         });
         
+        // 🚀 नया बैकस्पेस स्विच लॉजिक 🚀
         stdArea.addEventListener('keydown', e => {
-            let backspaceSetting = document.getElementById('backspaceSelect').value;
+            let backspaceSetting = document.getElementById('backspaceToggle').value;
             if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') {
                 e.preventDefault();
             }
