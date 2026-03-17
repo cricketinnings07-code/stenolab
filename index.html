@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
+    <title>हिंदी स्टेनो लैब </title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -301,7 +301,7 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
                 <div>
                     <label style="border:none; font-size: 18px;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-                    <p style="color:red; font-size:14px; margin-top:5px; margin-bottom: 0;"><i>सख्त हिदायत: टेस्ट के दौरान कोई दूसरा टैब न खोलें!</i></p>
+                    <p style="color:red; font-size:14px; margin-top:5px; margin-bottom: 0;"><i>सख्त हिदायत: नेविगेशन बटन लॉक हैं, आप कर्सर को पीछे नहीं ले जा सकते!</i></p>
                 </div>
                 
                 <div style="background: #e3f2fd; padding: 6px 12px; border-radius: 8px; border: 1px solid #90caf9; text-align: center;">
@@ -312,6 +312,7 @@
                     </select>
                 </div>
             </div>
+
             <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
             <button class="btn" style="padding: 16px; font-size: 18px;" onclick="submitTest()">टेस्ट सबमिट करें</button>
         </div>
@@ -630,9 +631,32 @@
             e.preventDefault(); 
             alert("पेस्ट करना वर्जित है!"); 
         });
+
+        // 🚀 नया: कर्सर हमेशा अंत में रखने का फंक्शन 🚀
+        function lockCursorToEnd() {
+            setTimeout(() => {
+                stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length;
+            }, 0);
+        }
+
+        // माउस क्लिक या सेलेक्ट करने पर कर्सर अंत में चला जाएगा
+        stdArea.addEventListener('click', lockCursorToEnd);
+        stdArea.addEventListener('select', lockCursorToEnd);
+        stdArea.addEventListener('focus', lockCursorToEnd);
         
-        // 🚀 नया बैकस्पेस स्विच लॉजिक 🚀
+        // 🚀 नया नेविगेशन लॉक और बैकस्पेस लॉजिक 🚀
         stdArea.addEventListener('keydown', e => {
+            // 1. Arrow Keys (नेविगेशन) और Home/End बटन ब्लॉक करें
+            const blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
+            if (blockedKeys.includes(e.key)) {
+                e.preventDefault();
+                return;
+            }
+
+            // 2. टाइपिंग या बैकस्पेस से पहले भी कर्सर को अंत में लॉक करें
+            lockCursorToEnd();
+
+            // 3. बैकस्पेस की सेटिंग चेक करें
             let backspaceSetting = document.getElementById('backspaceToggle').value;
             if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') {
                 e.preventDefault();
