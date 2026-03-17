@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>हिंदी स्टेनो लैब </title>
+    <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -23,6 +23,9 @@
             transition: background-color 0.4s ease; 
             margin: 0; 
             min-height: 100vh; 
+            /* Text Selection Block for strict anti-cheat outside input */
+            user-select: none; 
+            -webkit-user-select: none;
         }
         
         .container { 
@@ -32,91 +35,41 @@
         }
         
         .top-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 15px; 
-            padding: 15px 25px; 
-            background: #ffffff; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05); 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 15px; padding: 15px 25px; background: #ffffff; 
+            border-radius: 12px; box-shadow: 0 8px 15px rgba(0,0,0,0.05); 
             transition: all 0.3s ease;
         }
         
         .brand-link {
-            display: flex; 
-            align-items: center; 
-            gap: 15px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: 0.3s;
+            display: flex; align-items: center; gap: 15px;
+            text-decoration: none; cursor: pointer; transition: 0.3s;
         }
-        
-        .brand-link:hover {
-            opacity: 0.8;
-            transform: scale(1.02);
-        }
-
-        .brand-link h1 { 
-            margin: 0; 
-            color: #0277bd; 
-            font-size: 28px; 
-            letter-spacing: 0.5px;
-        }
+        .brand-link:hover { opacity: 0.8; transform: scale(1.02); }
+        .brand-link h1 { margin: 0; color: #0277bd; font-size: 28px; letter-spacing: 0.5px; }
         
         .dark-mode-btn { 
-            background: #333; 
-            color: #fff; 
-            border: none; 
-            padding: 10px 15px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: all 0.3s ease; 
+            background: #333; color: #fff; border: none; padding: 10px 15px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        
-        .dark-mode-btn:hover { 
-            background: #000; 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
+        .dark-mode-btn:hover { background: #000; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
 
         .navbar { 
-            display: flex; 
-            gap: 8px; 
-            background: #fff; 
-            padding: 12px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05); 
-            margin-bottom: 25px; 
-            overflow-x: auto; 
-            white-space: nowrap; 
+            display: flex; gap: 8px; background: #fff; padding: 12px; 
+            border-radius: 12px; box-shadow: 0 8px 15px rgba(0,0,0,0.05); 
+            margin-bottom: 25px; overflow-x: auto; white-space: nowrap; 
         }
         
         .nav-btn { 
-            flex: 1; 
-            padding: 12px 15px; 
-            border: none; 
-            background: transparent; 
-            font-size: 15px; 
-            font-weight: bold; 
-            color: #555; 
-            cursor: pointer; 
-            border-radius: 8px; 
-            transition: all 0.3s ease; 
-            text-align: center; 
+            flex: 1; padding: 12px 15px; border: none; background: transparent; 
+            font-size: 15px; font-weight: bold; color: #555; cursor: pointer; 
+            border-radius: 8px; transition: all 0.3s ease; text-align: center; 
         }
-        
         .nav-btn:hover { background: #f0f4f8; color: #0277bd; }
         .nav-btn.active { background: #0277bd; color: white; box-shadow: 0 4px 12px rgba(2, 119, 189, 0.4); transform: translateY(-2px); }
 
-        .view-section { 
-            display: none; 
-            animation: fadeInSlideUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; 
-            opacity: 0;
-            transform: translateY(20px);
-        }
+        .view-section { display: none; animation: fadeInSlideUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; opacity: 0; transform: translateY(20px); }
         .view-section.active { display: block; }
         @keyframes fadeInSlideUp { to { opacity: 1; transform: translateY(0); } }
 
@@ -146,23 +99,21 @@
         .btn-info { background: #17a2b8; margin-top: 15px; width: auto; box-shadow: 0 6px 15px rgba(23, 162, 184, 0.3); }
         .btn-danger { background: #dc3545; width: auto; font-size: 15px; box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3); }
         
-        .kruti-text { font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 26px; width: 100%; padding: 20px; box-sizing: border-box; border: 2px solid #ccc; border-radius: 12px; resize: vertical; background-color: #fff; line-height: 1.8; transition: all 0.3s ease; }
+        .kruti-text { 
+            font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 26px; width: 100%; padding: 20px; 
+            box-sizing: border-box; border: 2px solid #ccc; border-radius: 12px; resize: vertical; 
+            background-color: #fff; line-height: 1.8; transition: all 0.3s ease;
+            user-select: text; /* Allow selection inside textarea only */
+            -webkit-user-select: text;
+        }
         .kruti-text:focus { border-color: #0277bd; outline: none; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); }
         textarea.kruti-text { height: 180px; }
         .kruti-readonly { background-color: #f8f9fa; border: 2px dashed #6c757d; cursor: default; min-height: 150px; height: auto; margin-bottom: 20px; }
         
         .timer { font-size: 26px; color: #d9534f; font-weight: bold; text-align: center; margin: 20px 0; background: #f8d7da; padding: 15px; border-radius: 10px; border: 2px solid #f5c6cb; letter-spacing: 1px;}
         
-        .result-layout-wrapper {
-            display: grid;
-            grid-template-columns: 2fr 1.2fr;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        @media (max-width: 768px) {
-            .result-layout-wrapper { grid-template-columns: 1fr; }
-        }
+        .result-layout-wrapper { display: grid; grid-template-columns: 2fr 1.2fr; gap: 20px; align-items: center; margin-bottom: 25px; }
+        @media (max-width: 768px) { .result-layout-wrapper { grid-template-columns: 1fr; } }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .stat-item { padding: 15px; background: #f8f9fa; border-radius: 10px; font-size: 16px; font-weight: bold; border: 1px solid #eee; transition: all 0.3s ease; }
@@ -195,8 +146,6 @@
         body.dark-mode .stat-item, body.dark-mode .data-table th, body.dark-mode .data-table td { border-color: #333; }
         body.dark-mode .stat-item, body.dark-mode .data-table tr:hover { background: #2a2a2a; }
         body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
-
-        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } .navbar { overflow-x: scroll; } .nav-btn { padding: 10px; font-size: 14px;} }
     </style>
 </head>
 <body>
@@ -298,10 +247,10 @@
         <div id="typingSection" style="display: none; padding: 25px; background: white; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
             <div class="timer" id="timerDisplay">समय शेष: लोड हो रहा है...</div>
             
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
                 <div>
                     <label style="border:none; font-size: 18px;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-                    <p style="color:red; font-size:14px; margin-top:5px; margin-bottom: 0;"><i>सख्त हिदायत: नेविगेशन बटन लॉक हैं, आप कर्सर को पीछे नहीं ले जा सकते!</i></p>
+                    <p style="color:red; font-size:14px; margin-top:5px; margin-bottom: 0;"><i>सख्त हिदायत: नेविगेशन लॉक है। पेज रीफ्रेश होने पर डेटा सुरक्षित (Auto-Save) रहेगा!</i></p>
                 </div>
                 
                 <div style="background: #e3f2fd; padding: 6px 12px; border-radius: 8px; border: 1px solid #90caf9; text-align: center;">
@@ -314,6 +263,11 @@
             </div>
 
             <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
+            
+            <div style="text-align: right; margin-top: 8px; margin-bottom: 15px;">
+                <span style="font-size: 15px; color: #555; font-weight: bold; background: #e3f2fd; padding: 5px 12px; border-radius: 6px; border: 1px solid #90caf9;">कुल टाइप किए गए शब्द: <span id="liveWordCount" style="color: #d9534f; font-size: 18px;">0</span></span>
+            </div>
+
             <button class="btn" style="padding: 16px; font-size: 18px;" onclick="submitTest()">टेस्ट सबमिट करें</button>
         </div>
         
@@ -400,6 +354,18 @@
 </div>
 
 <script>
+    // 🚀 1. सख्त एंटी-चीट (Strict Anti-Cheat Global Script) 🚀
+    document.addEventListener('contextmenu', e => e.preventDefault()); // Right Click Block
+    document.addEventListener('copy', e => { e.preventDefault(); alert("🚫 कॉपी करना सख्त मना है!"); }); // Copy Block
+    document.addEventListener('cut', e => { e.preventDefault(); alert("🚫 कट करना सख्त मना है!"); }); // Cut Block
+    document.addEventListener('keydown', e => {
+        // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u'))) {
+            e.preventDefault();
+            alert("🚫 डेवलपर टूल्स का उपयोग करना मना है!");
+        }
+    });
+
     const firebaseConfig = {
       apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
       authDomain: "hindi-steno-lab-1.firebaseapp.com",
@@ -413,6 +379,7 @@
 
     let isSignupMode = false;
     let currentUserData = { name: "", roll: "", email: "" };
+    let autoSaveKey = ""; // Auto-save variable
 
     function toggleAuthMode() {
         isSignupMode = !isSignupMode;
@@ -427,6 +394,7 @@
             let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
             let userName = user.displayName || user.email.split('@')[0];
             currentUserData = { name: userName, roll: generatedRoll, email: user.email };
+            autoSaveKey = "steno_autosave_" + currentUserData.email; // Generate unique key for auto-save
             
             document.getElementById('profileEmail').innerText = currentUserData.email;
             document.getElementById('profileName').innerText = currentUserData.name;
@@ -496,6 +464,7 @@
             document.getElementById('typingSection').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
             document.getElementById('studentText').value = '';
+            document.getElementById('liveWordCount').innerText = '0';
         }
     }
 
@@ -617,50 +586,57 @@
         }
     }
 
+    // 🚀 2. ऑटो-सेव और वर्ड काउंटर का लॉजिक 🚀
+    function updateLiveWordCount() {
+        let stdArea = document.getElementById('studentText');
+        let words = stdArea.value.trim().split(/\s+/).filter(w => w.length > 0);
+        document.getElementById('liveWordCount').innerText = words.length;
+    }
+
     function startTypingTest() {
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
         
         let stdArea = document.getElementById('studentText'); 
+        
+        // 🚀 ऑटो-सेव: अगर पुराना डेटा लोकल स्टोरेज में है, तो उसे वापस लाएँ
+        if(localStorage.getItem(autoSaveKey)) {
+            stdArea.value = localStorage.getItem(autoSaveKey);
+            updateLiveWordCount();
+        }
+
         stdArea.focus();
         updateTimer(); 
         timerInterval = setInterval(updateTimer, 1000);
         
-        stdArea.addEventListener('paste', e => { 
-            e.preventDefault(); 
-            alert("पेस्ट करना वर्जित है!"); 
+        // पेस्टिंग ब्लॉक करें
+        stdArea.addEventListener('paste', e => { e.preventDefault(); alert("🚫 पेस्ट करना वर्जित है!"); });
+
+        // 🚀 लाइव वर्ड काउंटर और ऑटो-सेव इवेंट 🚀
+        stdArea.addEventListener('input', function() {
+            localStorage.setItem(autoSaveKey, stdArea.value); // सेव करें
+            updateLiveWordCount(); // काउंटर बढ़ाएं
         });
 
-        // 🚀 नया: कर्सर हमेशा अंत में रखने का फंक्शन 🚀
+        // कर्सर हमेशा अंत में रखने का फंक्शन
         function lockCursorToEnd() {
-            setTimeout(() => {
-                stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length;
-            }, 0);
+            setTimeout(() => { stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length; }, 0);
         }
 
-        // माउस क्लिक या सेलेक्ट करने पर कर्सर अंत में चला जाएगा
         stdArea.addEventListener('click', lockCursorToEnd);
         stdArea.addEventListener('select', lockCursorToEnd);
         stdArea.addEventListener('focus', lockCursorToEnd);
         
-        // 🚀 नया नेविगेशन लॉक और बैकस्पेस लॉजिक 🚀
+        // नेविगेशन लॉक और बैकस्पेस लॉजिक
         stdArea.addEventListener('keydown', e => {
-            // 1. Arrow Keys (नेविगेशन) और Home/End बटन ब्लॉक करें
             const blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
-            if (blockedKeys.includes(e.key)) {
-                e.preventDefault();
-                return;
-            }
+            if (blockedKeys.includes(e.key)) { e.preventDefault(); return; }
 
-            // 2. टाइपिंग या बैकस्पेस से पहले भी कर्सर को अंत में लॉक करें
             lockCursorToEnd();
 
-            // 3. बैकस्पेस की सेटिंग चेक करें
             let backspaceSetting = document.getElementById('backspaceToggle').value;
-            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') {
-                e.preventDefault();
-            }
+            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') { e.preventDefault(); }
         });
     }
 
@@ -689,6 +665,9 @@
         document.getElementById('r_timeTaken').innerText = `${Math.floor(tt / 60)} मिनट ${tt % 60} सेकंड`;
         
         calculateDetailedMistakes(finalMasterText, document.getElementById('studentText').value.trim(), tt / 60);
+        
+        // 🚀 टेस्ट सबमिट होते ही ऑटो-सेव क्लियर करें ताकि अगले टेस्ट में ना दिखे 🚀
+        localStorage.removeItem(autoSaveKey);
         
         document.getElementById('typingSection').style.display = 'none';
         document.getElementById('resultBox').style.display = 'block';
