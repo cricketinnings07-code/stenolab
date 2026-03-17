@@ -16,7 +16,7 @@
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; padding: 0; 
             transition: background-color 0.4s ease; margin: 0; min-height: 100vh; 
-            user-select: none; -webkit-user-select: none; /* Anti-cheat */
+            user-select: none; -webkit-user-select: none; 
         }
         
         .main-pad { padding: 15px; }
@@ -81,6 +81,7 @@
         .btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
         .btn-info { background: #17a2b8; margin-top: 15px; width: auto; box-shadow: 0 6px 15px rgba(23, 162, 184, 0.3); }
         .btn-danger { background: #dc3545; width: auto; font-size: 15px; box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3); }
+        .btn-whatsapp { background: #25d366; margin-top: 15px; width: auto; box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3); color: white; }
         
         .kruti-text { 
             font-family: 'Kruti Dev 010', Arial, sans-serif; font-size: 26px; width: 100%; padding: 20px; 
@@ -129,7 +130,6 @@
         body.dark-mode .stat-item, body.dark-mode .data-table tr:hover { background: #2a2a2a; }
         body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
 
-        /* 🚀 Modal Styles 🚀 */
         .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
         .modal-content { background:#fff; max-width:550px; width: 90%; padding:30px; border-radius:16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: fadeInSlideUp 0.4s ease forwards; }
         body.dark-mode .modal-content { background: #1e1e1e; color: #fff; border: 1px solid #444; }
@@ -202,7 +202,12 @@
 
     <div id="dashboardView" class="view-section setup-box" style="border: 2px solid #17a2b8;">
         <h2 style="color: #17a2b8; text-align: center; margin-top: 0; font-size: 28px;">📊 मेरा डैशबोर्ड</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 16px;">यहाँ आपके द्वारा दिए गए सभी टेस्ट्स का रिकॉर्ड मौजूद है।</p>
+        <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 16px;">आपकी पिछली परफॉरमेंस (Accuracy) का रिकॉर्ड:</p>
+        
+        <div style="width: 100%; max-width: 700px; margin: 0 auto 30px auto; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;">
+            <canvas id="progressLineChart"></canvas>
+        </div>
+
         <div style="overflow-x: auto;">
             <table class="data-table dashboard-table">
                 <thead><tr><th>दिनांक (Date)</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th><th>गलतियां</th></tr></thead>
@@ -336,15 +341,17 @@
 
             <label style="border:none; font-size: 18px;">आपके अनुवाद का मूल्यांकन:</label>
             <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
-            <div style="text-align: center;">
-                <button id="downloadPdfBtn" class="btn btn-info" style="padding: 12px 25px;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें ⬇️</button>
+            
+            <div style="text-align: center; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                <button id="downloadPdfBtn" class="btn btn-info" style="padding: 12px 25px; margin-top:0;" onclick="downloadResultPDF()">⬇️ PDF डाउनलोड करें</button>
+                <button id="shareWAbtn" class="btn btn-whatsapp" style="padding: 12px 25px; margin-top:0;" onclick="shareOnWhatsApp()">📲 WhatsApp पर शेयर करें</button>
             </div>
         </div>
     </div>
 
     <div id="leaderboardView" class="view-section setup-box" style="border: 2px solid #ffc107;">
         <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 28px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 16px;">किसने कौनसी रैंक हासिल की, यहाँ देखें。</p>
+        <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 16px;">किसने कौनसी रैंक हासिल की, यहाँ देखें।</p>
         
         <label style="border:none; margin-top:0; font-size: 16px;"><b>किस डिक्टेशन का लीडरबोर्ड देखना है?</b></label>
         <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fff3cd; color:#856404; font-weight:bold; border:2px solid #ffc107;">
@@ -376,7 +383,9 @@
     </div>
 
 </div>
-</div> <div id="instructionsModal" class="modal-overlay">
+</div>
+
+<div id="instructionsModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="color:#d9534f; margin-top:0; font-size: 24px; border-bottom: 2px solid #eee; padding-bottom: 10px;">📋 परीक्षा निर्देश (Instructions)</h3>
         <ul style="text-align:left; line-height:1.8; color:#444; font-size: 16px; padding-left: 20px;">
@@ -398,14 +407,12 @@
 </div>
 
 <script>
-    // 📱 Mobile Warning Checker
     window.onload = function() {
         if(window.innerWidth <= 768) {
             document.getElementById('mobileWarning').style.display = 'block';
         }
     };
 
-    // 🛡️ Anti-Cheat Global Script 🛡️
     document.addEventListener('contextmenu', e => e.preventDefault()); 
     document.addEventListener('copy', e => { e.preventDefault(); alert("🚫 कॉपी करना सख्त मना है!"); }); 
     document.addEventListener('cut', e => { e.preventDefault(); alert("🚫 कट करना सख्त मना है!"); }); 
@@ -531,13 +538,13 @@
 
     // ==========================================
     // ⚠️ यहाँ अपनी असली Google Sheet वाली लिंक डालें! ⚠️
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "YOUR_GOOGLE_SHEET_WEB_APP_URL_HERE"; 
     // ==========================================
 
-    let adminSettingsData = null, globalLeaderboardData = null, globalHistoryData = null, resultChartInstance = null;
+    let adminSettingsData = null, globalLeaderboardData = null, globalHistoryData = null, resultChartInstance = null, dashboardLineChart = null;
     let finalMasterText = "", totalDuration = 3600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
     let currentTestSpeed = "", currentTestTopic = "";
-    let readingTimerInterval, readingTimeLeft = 300; // 5 Mins
+    let readingTimerInterval, readingTimeLeft = 300; 
 
     function fetchDataFromGoogleSheet() {
         fetch(GOOGLE_SHEET_WEB_APP_URL).then(res => res.json()).then(data => {
@@ -586,7 +593,6 @@
         localStorage.setItem(autoSaveKey, JSON.stringify(testState));
     }
 
-    // 🚀 Instructions Modal Logic 🚀
     function showInstructions() {
         document.getElementById('agreeCheckbox').checked = false;
         document.getElementById('proceedBtn').disabled = true;
@@ -628,11 +634,10 @@
         startReadingTime();
     }
 
-    // 🚀 Reading Time Logic 🚀
     function startReadingTime() {
         document.getElementById('audioSection').style.display = 'none';
         document.getElementById('readingSection').style.display = 'block';
-        readingTimeLeft = 300; // 5 Mins Default
+        readingTimeLeft = 300; 
         updateReadingTimerDisplay();
         readingTimerInterval = setInterval(() => {
             readingTimeLeft--;
@@ -649,7 +654,7 @@
     function skipReadingTime() {
         clearInterval(readingTimerInterval);
         document.getElementById('readingSection').style.display = 'none';
-        startTypingTestFromResume(); // Proceed to typing
+        startTypingTestFromResume(); 
     }
 
     function resumeTest() {
@@ -686,7 +691,6 @@
         }
     }
 
-    // 🚀 Exam Noise Toggle 🚀
     function toggleNoise() {
         let noiseAudio = document.getElementById('examNoiseAudio');
         let state = document.getElementById('noiseToggle').value;
@@ -738,7 +742,7 @@
 
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
-        document.getElementById('examNoiseAudio').pause(); // 🚀 Stop noise on submit
+        document.getElementById('examNoiseAudio').pause(); 
         try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
         
         let tt = totalDuration - timeLeft;
@@ -811,11 +815,21 @@
     }
 
     function downloadResultPDF() {
-        const btn = document.getElementById('downloadPdfBtn'); btn.style.display = 'none';
+        const btn = document.getElementById('downloadPdfBtn'); 
+        const waBtn = document.getElementById('shareWAbtn');
+        btn.style.display = 'none'; waBtn.style.display = 'none';
         let wasDarkMode = document.body.classList.contains('dark-mode'); if(wasDarkMode) document.body.classList.remove('dark-mode');
         const element = document.getElementById('resultBox');
         const opt = { margin: [10, 10, 10, 10], filename: 'Hindi_Steno_Lab_Result.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-        html2pdf().set(opt).from(element).save().then(() => { btn.style.display = 'inline-block'; if(wasDarkMode) document.body.classList.add('dark-mode'); });
+        html2pdf().set(opt).from(element).save().then(() => { btn.style.display = 'inline-block'; waBtn.style.display = 'inline-block'; if(wasDarkMode) document.body.classList.add('dark-mode'); });
+    }
+
+    // 🚀 नया: WhatsApp शेयर फंक्शन 🚀
+    function shareOnWhatsApp() {
+        let speed = document.getElementById('r_speed').innerText;
+        let acc = document.getElementById('r_accuracy').innerText;
+        let msg = `मैंने 'हिंदी स्टेनो लैब' पर ${speed} की स्पीड और ${acc} एक्यूरेसी के साथ डिक्टेशन पास की है! 🏆\n\nआप भी अपनी तैयारी यहाँ चेक करें: [यहाँ अपनी वेबसाइट का लिंक डालें]`;
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function renderLeaderboard() {
@@ -835,7 +849,41 @@
 
     function renderDashboard() {
         if (!globalHistoryData) { document.getElementById('dashboardData').innerHTML = "<tr><td colspan='5' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; return; }
-        let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email); myHistory.reverse(); 
+        let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email); 
+        
+        // 🚀 नया: प्रोग्रेस लाइन चार्ट (Line Chart) 🚀
+        let chartData = [...myHistory]; // chronological for chart
+        let labels = chartData.map(a => new Date(a.date).toLocaleDateString('en-IN').substring(0,5)); // e.g. "16/03"
+        let accData = chartData.map(a => parseFloat(a.accuracy));
+        
+        let ctxLine = document.getElementById('progressLineChart').getContext('2d');
+        if(dashboardLineChart) dashboardLineChart.destroy();
+        
+        if(chartData.length > 0) {
+            dashboardLineChart = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Accuracy (%)',
+                        data: accData,
+                        borderColor: '#0277bd',
+                        backgroundColor: 'rgba(2, 119, 189, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffc107',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: false, min: 50, max: 100 } } }
+            });
+        } else {
+            // अगर कोई डेटा नहीं है, तो खाली चार्ट
+            dashboardLineChart = new Chart(ctxLine, { type: 'line', data: { labels: ['No Data'], datasets: [{ label: 'Accuracy (%)', data: [0] }] } });
+        }
+
+        myHistory.reverse(); // For table showing latest first
         let tableHtml = "";
         myHistory.forEach((attempt) => {
             let dateObj = new Date(attempt.date); let dateStr = dateObj.toLocaleDateString('en-IN') + " " + dateObj.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
