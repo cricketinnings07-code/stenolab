@@ -15,7 +15,6 @@
     <style>
         @font-face { font-family: 'Kruti Dev 010'; src: url('kruti.ttf') format('truetype'); }
 
-        /* 🚀 Custom Sleek Scrollbar 🚀 */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -177,6 +176,11 @@
     <span style="float: right; cursor: pointer; margin-right: 15px; font-size: 18px;" onclick="this.parentElement.style.display='none'"><i class="fas fa-times"></i></span>
 </div>
 
+<div id="demoBanner" style="background: #f59e0b; color: #fff; text-align: center; padding: 12px; font-weight: bold; font-size: 16px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    ⚠️ आप अभी 'फ्री डेमो मोड' में हैं। आपका रिज़ल्ट सेव नहीं होगा। 
+    <button onclick="exitDemoMode()" style="margin-left: 10px; padding: 5px 12px; background: #fff; color: #f59e0b; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">लॉगिन करें</button>
+</div>
+
 <div class="main-pad">
 <div class="container">
     
@@ -209,6 +213,14 @@
             <span class="forgot-link" id="forgotPwdLink" onclick="resetPassword()">पासवर्ड भूल गए?</span>
             <button class="auth-btn-full" id="mainAuthBtn" onclick="processAuth()"><i class="fas fa-sign-in-alt"></i> लॉगिन करें</button>
             <div class="switch-auth" id="switchAuthText">नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें</span></div>
+            
+            <div style="margin-top: 25px; border-top: 1px solid #eef2f5; padding-top: 20px; text-align: center;">
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 12px; font-weight: 600;">पहली बार वेबसाइट पर आए हैं?</p>
+                <button class="btn" style="background: #f59e0b; color: white; width: 100%; margin-top: 0; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);" onclick="startDemoMode()">
+                    <i class="fas fa-play-circle"></i> फ्री डेमो टेस्ट दें (बिना लॉगिन)
+                </button>
+            </div>
+
         </div>
     </div>
 
@@ -313,7 +325,6 @@
                 </div>
                 
                 <div style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
-                    
                     <button class="btn" style="margin:0; padding: 6px 14px; background: #f8fafc; color: #0284c7; border: 1px solid #bae6fd; box-shadow:none; border-radius: 8px; font-size: 13px;" onclick="document.getElementById('cheatSheetModal').style.display='flex'">
                         <i class="fas fa-lightbulb" style="color:#f59e0b;"></i> Alt-Codes
                     </button>
@@ -495,12 +506,9 @@
 
 <script>
     window.onload = function() {
-        if(window.innerWidth <= 768) {
-            document.getElementById('mobileWarning').style.display = 'block';
-        }
+        if(window.innerWidth <= 768) { document.getElementById('mobileWarning').style.display = 'block'; }
     };
 
-    // 🛡️ Anti-Cheat 🛡️
     document.addEventListener('contextmenu', e => e.preventDefault()); 
     document.addEventListener('copy', e => { e.preventDefault(); alert("🚫 कॉपी करना सख्त मना है!"); }); 
     document.addEventListener('cut', e => { e.preventDefault(); alert("🚫 कट करना सख्त मना है!"); }); 
@@ -524,6 +532,7 @@
     let isSignupMode = false;
     let currentUserData = { name: "", roll: "", email: "" };
     let autoSaveKey = ""; 
+    let isDemoMode = false; // 🚀 New: Demo Mode Flag
 
     function toggleAuthMode() {
         isSignupMode = !isSignupMode;
@@ -533,8 +542,53 @@
         document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
     }
 
+    // 🚀 NEW: Free Demo Mode Logic 🚀
+    function startDemoMode() {
+        isDemoMode = true;
+        currentUserData = { name: "डेमो स्टूडेंट (Guest)", roll: "DEMO-001", email: "demo@guest.com" };
+        autoSaveKey = "steno_autosave_demo"; 
+        
+        document.getElementById('authWrapper').style.display = 'none';
+        document.getElementById('mainNavbar').style.display = 'flex';
+        
+        // Hide Dashboard & Profile in Demo
+        document.getElementById('btn-dashboard').style.display = 'none';
+        document.getElementById('btn-profile').style.display = 'none';
+        
+        document.getElementById('demoBanner').style.display = 'block';
+        
+        fetchDataFromGoogleSheet();
+        switchTab('test'); 
+    }
+
+    function exitDemoMode() {
+        isDemoMode = false;
+        document.getElementById('authWrapper').style.display = 'flex';
+        document.getElementById('mainNavbar').style.display = 'none';
+        document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+        document.getElementById('demoBanner').style.display = 'none';
+        
+        // Reset hiding of Dashboard & Profile
+        document.getElementById('btn-dashboard').style.display = '';
+        document.getElementById('btn-profile').style.display = '';
+        
+        if(isTestRunning) {
+            isTestRunning = false;
+            clearInterval(timerInterval);
+            clearInterval(readingTimerInterval);
+            document.getElementById('dictationAudio').pause();
+            document.getElementById('examNoiseAudio').pause();
+            try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
+        }
+    }
+
     auth.onAuthStateChanged((user) => {
         if (user && user.emailVerified) {
+            isDemoMode = false; // Turn off demo mode
+            document.getElementById('demoBanner').style.display = 'none';
+            document.getElementById('btn-dashboard').style.display = '';
+            document.getElementById('btn-profile').style.display = '';
+
             let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
             let userName = user.displayName || user.email.split('@')[0];
             currentUserData = { name: userName, roll: generatedRoll, email: user.email };
@@ -550,9 +604,11 @@
             fetchDataFromGoogleSheet();
             switchTab('home'); 
         } else {
-            document.getElementById('authWrapper').style.display = 'flex';
-            document.getElementById('mainNavbar').style.display = 'none';
-            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+            if(!isDemoMode) {
+                document.getElementById('authWrapper').style.display = 'flex';
+                document.getElementById('mainNavbar').style.display = 'none';
+                document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+            }
         }
     });
 
@@ -670,7 +726,6 @@
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
     function requestFullScreen() { try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); } catch(e) {} }
 
-    // 🚀 Strict Full Screen Event Listener 🚀
     document.addEventListener('fullscreenchange', () => {
         if (isTestRunning && !document.fullscreenElement) {
             document.getElementById('fullScreenWarningModal').style.display = 'flex';
@@ -896,14 +951,27 @@
         document.getElementById('r_excessMistakes').innerText = excess; document.getElementById('r_netWords').innerText = net;
         document.getElementById('r_speed').innerText = wpm + " WPM"; document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
         document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
-        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net); drawResultChart(net, actualErr);
+        
+        drawResultChart(net, actualErr);
 
-        // 🚀 NEW: Confetti Effect for >95% Accuracy 🚀
-        if (acc >= 95) {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#10b981', '#f59e0b', '#0284c7'] });
-            document.getElementById('saveStatus').innerHTML = "<i class='fas fa-star'></i> शानदार! आपकी तैयारी बेहतरीन है!<br><span style='font-size:15px; font-weight:normal;'>आपका रिज़ल्ट सुरक्षित कर लिया गया है।</span>";
+        // 🚀 NEW: Check if Demo Mode 🚀
+        if (isDemoMode) {
+            let saveBox = document.getElementById('saveStatus');
+            saveBox.style.display = 'block';
+            saveBox.style.background = '#fffbeb';
+            saveBox.style.color = '#b45309';
+            saveBox.style.borderColor = '#fde68a';
+            saveBox.innerHTML = "<i class='fas fa-info-circle'></i> <b>डेमो मोड:</b> आपका रिज़ल्ट सेव नहीं किया गया है। अपना स्कोर लीडरबोर्ड पर लाने के लिए कृपया लॉगिन करें!";
+            
+            if (acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#f59e0b', '#0284c7'] });
         } else {
-            document.getElementById('saveStatus').innerHTML = "<i class='fas fa-cloud-upload-alt'></i> आपका रिज़ल्ट सुरक्षित कर लिया गया है!";
+            saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net); 
+            if (acc >= 95) {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#10b981', '#f59e0b', '#0284c7'] });
+                document.getElementById('saveStatus').innerHTML = "<i class='fas fa-star'></i> शानदार! आपकी तैयारी बेहतरीन है!<br><span style='font-size:15px; font-weight:normal;'>आपका रिज़ल्ट सुरक्षित कर लिया गया है।</span>";
+            } else {
+                document.getElementById('saveStatus').innerHTML = "<i class='fas fa-cloud-upload-alt'></i> आपका रिज़ल्ट सुरक्षित कर लिया गया है!";
+            }
         }
     }
 
