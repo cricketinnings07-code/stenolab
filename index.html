@@ -14,11 +14,12 @@
         @font-face { font-family: 'Kruti Dev 010'; src: url('kruti.ttf') format('truetype'); }
 
         body { 
-            font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; padding: 15px; 
+            font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; padding: 0; 
             transition: background-color 0.4s ease; margin: 0; min-height: 100vh; 
             user-select: none; -webkit-user-select: none; /* Anti-cheat */
         }
         
+        .main-pad { padding: 15px; }
         .container { max-width: 900px; margin: 0 auto; position: relative; }
         
         .top-header { 
@@ -69,7 +70,7 @@
         .switch-auth { text-align: center; font-size: 14px; color: #555; }
         .switch-auth span { color: #0277bd; font-weight: bold; cursor: pointer; text-decoration: underline; }
 
-        .setup-box, .result-box { background: white; padding: 30px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: all 0.3s ease; }
+        .setup-box, .result-box, .reading-box { background: white; padding: 30px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: all 0.3s ease; }
         .result-box { border: 2px solid #28a745; display: none; }
         .input-field { width: 100%; padding: 14px; margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; font-size: 15px; transition: all 0.3s ease; }
         .input-field:focus { border-color: #0277bd; outline: none; box-shadow: 0 0 0 4px rgba(2, 119, 189, 0.1); }
@@ -119,7 +120,7 @@
         .btn-mail { background: #ea4335; }
 
         body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+        body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .reading-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
         body.dark-mode .nav-btn { color: #aaa; } body.dark-mode .nav-btn:hover { background: #2a2a2a; color:#fff; }
         body.dark-mode .nav-btn.active { background: #01579b; color: #fff; }
         body.dark-mode .input-field, body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
@@ -127,10 +128,22 @@
         body.dark-mode .stat-item, body.dark-mode .data-table th, body.dark-mode .data-table td { border-color: #333; }
         body.dark-mode .stat-item, body.dark-mode .data-table tr:hover { background: #2a2a2a; }
         body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
+
+        /* 🚀 Modal Styles 🚀 */
+        .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(5px); }
+        .modal-content { background:#fff; max-width:550px; width: 90%; padding:30px; border-radius:16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: fadeInSlideUp 0.4s ease forwards; }
+        body.dark-mode .modal-content { background: #1e1e1e; color: #fff; border: 1px solid #444; }
+
     </style>
 </head>
 <body>
 
+<div id="mobileWarning" style="background: #ff9800; color: #000; text-align: center; padding: 12px; font-weight: bold; font-size: 15px; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    ⚠️ बेहतरीन टाइपिंग अनुभव और कीबोर्ड सपोर्ट के लिए कृपया इसे PC या Laptop पर खोलें।
+    <span style="float: right; cursor: pointer; margin-right: 15px; font-size: 18px;" onclick="this.parentElement.style.display='none'">✖</span>
+</div>
+
+<div class="main-pad">
 <div class="container">
     
     <div class="top-header">
@@ -206,7 +219,7 @@
                 <p style="margin: 0 0 15px 0; font-size: 15px; color: #666;">पिछला टेस्ट बीच में बंद हो गया था। आपका सारा टाइप किया हुआ मैटर सुरक्षित है। आप चाहें तो टेस्ट वहीं से शुरू कर सकते हैं।</p>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <button class="btn" style="margin-top: 0; width: auto; background: #ffc107; color: #000; border: 1px solid #e0a800;" onclick="resumeTest()">▶️ टेस्ट वहीं से शुरू करें</button>
-                    <button class="btn btn-danger" style="margin-top: 0; width: auto;" onclick="discardPendingTest()">🗑️ अधूरा टेस्ट डिलीट करें (नया दें)</button>
+                    <button class="btn btn-danger" style="margin-top: 0; width: auto;" onclick="discardPendingTest()">🗑️ अधूरा टेस्ट डिलीट करें</button>
                 </div>
             </div>
 
@@ -227,31 +240,49 @@
                     <option>लोड हो रहा है...</option>
                 </select>
 
-                <button id="startTestBtn" class="btn" style="opacity: 0.5; cursor: not-allowed; padding: 16px; font-size: 18px;" disabled onclick="startAudioSection()">टेस्ट शुरू करें 🚀</button>
+                <button id="startTestBtn" class="btn" style="opacity: 0.5; cursor: not-allowed; padding: 16px; font-size: 18px;" disabled onclick="showInstructions()">टेस्ट शुरू करें 🚀</button>
             </div>
         </div>
 
         <div id="audioSection" style="text-align: center; margin-bottom: 25px; display: none; padding: 30px; background: white; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
             <p style="color: #d9534f; font-weight: bold; font-size: 20px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें।</p>
             <audio id="dictationAudio" controls style="width: 100%; margin-top: 20px; outline: none;"></audio>
-            <button class="btn" style="background: #f0ad4e; margin-top: 25px; width: auto;" onclick="startTypingTest()">स्किप करें / सीधे टाइपिंग शुरू करें</button>
+            <button class="btn" style="background: #f0ad4e; margin-top: 25px; width: auto;" onclick="skipAudio()">स्किप करें / सीधे रीडिंग शुरू करें</button>
+        </div>
+
+        <div id="readingSection" class="reading-box" style="display:none; text-align:center;">
+            <h3 style="color:#0277bd; font-size: 24px; margin-top:0;">📖 रीडिंग टाइम (Reading Time)</h3>
+            <p style="color:#666; font-size:16px;">डिक्टेशन समाप्त हो गई है। अब अपने स्टेनो नोट्स (Shorthand) को पढ़ने और अनुवाद की तैयारी करने का समय है।</p>
+            <div class="timer" id="readingTimerDisplay" style="background: #e3f2fd; color: #01579b; border-color: #90caf9;">समय शेष: 05:00</div>
+            <button class="btn btn-info" onclick="skipReadingTime()" style="padding: 14px 25px; font-size: 16px;">स्किप करें और टाइपिंग शुरू करें ➔</button>
         </div>
 
         <div id="typingSection" style="display: none; padding: 25px; background: white; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);">
             <div class="timer" id="timerDisplay">समय शेष: लोड हो रहा है...</div>
             
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
                 <div>
                     <label style="border:none; font-size: 18px;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
                     <p style="color:red; font-size:14px; margin-top:5px; margin-bottom: 0;"><i>सख्त हिदायत: नेविगेशन लॉक है। पेज रीफ्रेश होने पर डेटा सुरक्षित (Auto-Save) रहेगा!</i></p>
                 </div>
                 
-                <div style="background: #e3f2fd; padding: 6px 12px; border-radius: 8px; border: 1px solid #90caf9; text-align: center;">
-                    <label style="font-size: 12px; font-weight: bold; color: #01579b; margin-bottom: 3px; display: block;">Backspace</label>
-                    <select id="backspaceToggle" style="padding: 4px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; font-weight: bold; background: white; color: #333; cursor: pointer; outline: none;" onchange="saveTestState()">
-                        <option value="on" selected>ON (चालू)</option>
-                        <option value="off">OFF (बंद)</option>
-                    </select>
+                <div style="display: flex; gap: 10px;">
+                    <div style="background: #fff3cd; padding: 6px 12px; border-radius: 8px; border: 1px solid #ffeeba; text-align: center;">
+                        <label style="font-size: 12px; font-weight: bold; color: #856404; margin-bottom: 3px; display: block;">एग्जाम शोर</label>
+                        <select id="noiseToggle" style="padding: 4px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; font-weight: bold; background: white; color: #333; cursor: pointer; outline: none;" onchange="toggleNoise()">
+                            <option value="off" selected>OFF (शांत)</option>
+                            <option value="on">ON (शोर)</option>
+                        </select>
+                        <audio id="examNoiseAudio" loop src="keyboard_noise.mp3"></audio>
+                    </div>
+
+                    <div style="background: #e3f2fd; padding: 6px 12px; border-radius: 8px; border: 1px solid #90caf9; text-align: center;">
+                        <label style="font-size: 12px; font-weight: bold; color: #01579b; margin-bottom: 3px; display: block;">Backspace</label>
+                        <select id="backspaceToggle" style="padding: 4px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; font-weight: bold; background: white; color: #333; cursor: pointer; outline: none;" onchange="saveTestState()">
+                            <option value="on" selected>ON (चालू)</option>
+                            <option value="off">OFF (बंद)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -313,7 +344,7 @@
 
     <div id="leaderboardView" class="view-section setup-box" style="border: 2px solid #ffc107;">
         <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 28px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 16px;">किसने कौनसी रैंक हासिल की, यहाँ देखें।</p>
+        <p style="text-align: center; color: #666; margin-bottom: 25px; font-size: 16px;">किसने कौनसी रैंक हासिल की, यहाँ देखें。</p>
         
         <label style="border:none; margin-top:0; font-size: 16px;"><b>किस डिक्टेशन का लीडरबोर्ड देखना है?</b></label>
         <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fff3cd; color:#856404; font-weight:bold; border:2px solid #ffc107;">
@@ -345,9 +376,36 @@
     </div>
 
 </div>
+</div> <div id="instructionsModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 style="color:#d9534f; margin-top:0; font-size: 24px; border-bottom: 2px solid #eee; padding-bottom: 10px;">📋 परीक्षा निर्देश (Instructions)</h3>
+        <ul style="text-align:left; line-height:1.8; color:#444; font-size: 16px; padding-left: 20px;">
+            <li>यह टेस्ट बिल्कुल असली <b>SSC / Court</b> परीक्षा के पैटर्न पर आधारित है।</li>
+            <li>डिक्टेशन के बाद आपको अपने नोट्स पढ़ने के लिए <b>5 मिनट का रीडिंग टाइम</b> दिया जाएगा।</li>
+            <li><b>5% छूट (Margin):</b> कुल शब्दों का 5% गलतियां माफ की जाएंगी।</li>
+            <li><b>Navigation Lock:</b> आप माउस या Arrow Keys से पीछे जाकर गलती नहीं सुधार सकते।</li>
+            <li><b>Anti-Cheat:</b> टेस्ट के दौरान कॉपी-पेस्ट करना या किसी दूसरे टैब में जाना सख्त मना है। ऐसा करने पर टेस्ट अपने-आप सबमिट हो जाएगा।</li>
+        </ul>
+        <label style="display:flex; align-items:center; gap:12px; margin-top:25px; cursor:pointer; background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #90caf9;">
+            <input type="checkbox" id="agreeCheckbox" onchange="document.getElementById('proceedBtn').disabled = !this.checked;" style="width:22px; height:22px; cursor:pointer;">
+            <b style="color:#0277bd; font-size: 16px;">मैंने सभी निर्देश पढ़ और समझ लिए हैं।</b>
+        </label>
+        <div style="text-align:right; margin-top:25px;">
+            <button class="btn btn-danger" style="width:auto; margin-right:15px; padding: 12px 20px; font-size: 15px;" onclick="closeInstructions()">रद्द करें</button>
+            <button id="proceedBtn" class="btn" style="width:auto; padding: 12px 25px; font-size: 16px;" disabled onclick="acceptInstructionsAndStart()">आगे बढ़ें ➔</button>
+        </div>
+    </div>
+</div>
 
 <script>
-    // Anti-Cheat Global Script
+    // 📱 Mobile Warning Checker
+    window.onload = function() {
+        if(window.innerWidth <= 768) {
+            document.getElementById('mobileWarning').style.display = 'block';
+        }
+    };
+
+    // 🛡️ Anti-Cheat Global Script 🛡️
     document.addEventListener('contextmenu', e => e.preventDefault()); 
     document.addEventListener('copy', e => { e.preventDefault(); alert("🚫 कॉपी करना सख्त मना है!"); }); 
     document.addEventListener('cut', e => { e.preventDefault(); alert("🚫 कट करना सख्त मना है!"); }); 
@@ -434,7 +492,6 @@
         auth.sendPasswordResetEmail(email).then(() => alert("लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
 
-    // 🚀 चेक करें कि कोई अधूरा टेस्ट है या नहीं 🚀
     function checkPendingTest() {
         if(!autoSaveKey) return;
         let savedStateStr = localStorage.getItem(autoSaveKey);
@@ -460,15 +517,15 @@
         if(tabId === 'test') {
             document.getElementById('studentDetailsBox').style.display = 'block';
             document.getElementById('audioSection').style.display = 'none';
+            document.getElementById('readingSection').style.display = 'none';
             document.getElementById('typingSection').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
             
-            // अगर पुराना अधूरा टेस्ट नहीं है, तो बॉक्स खाली करें
             if(!localStorage.getItem(autoSaveKey)) {
                 document.getElementById('studentText').value = '';
                 document.getElementById('liveWordCount').innerText = '0';
             }
-            checkPendingTest(); // 🚀 पेंडिंग बैनर चेक करें
+            checkPendingTest();
         }
     }
 
@@ -480,6 +537,7 @@
     let adminSettingsData = null, globalLeaderboardData = null, globalHistoryData = null, resultChartInstance = null;
     let finalMasterText = "", totalDuration = 3600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
     let currentTestSpeed = "", currentTestTopic = "";
+    let readingTimerInterval, readingTimeLeft = 300; // 5 Mins
 
     function fetchDataFromGoogleSheet() {
         fetch(GOOGLE_SHEET_WEB_APP_URL).then(res => res.json()).then(data => {
@@ -517,20 +575,28 @@
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
     function requestFullScreen() { try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); } catch(e) {} }
 
-    // 🚀 हर सेकंड या टाइपिंग पर टेस्ट की पूरी जानकारी सेव करना 🚀
     function saveTestState() {
         if(!isTestRunning) return;
         let stdArea = document.getElementById('studentText');
         let testState = {
-            speed: currentTestSpeed,
-            topic: currentTestTopic,
-            text: stdArea.value,
-            timeLeft: timeLeft,
-            totalDuration: totalDuration,
-            masterText: finalMasterText,
+            speed: currentTestSpeed, topic: currentTestTopic, text: stdArea.value,
+            timeLeft: timeLeft, totalDuration: totalDuration, masterText: finalMasterText,
             backspace: document.getElementById('backspaceToggle').value
         };
         localStorage.setItem(autoSaveKey, JSON.stringify(testState));
+    }
+
+    // 🚀 Instructions Modal Logic 🚀
+    function showInstructions() {
+        document.getElementById('agreeCheckbox').checked = false;
+        document.getElementById('proceedBtn').disabled = true;
+        document.getElementById('instructionsModal').style.display = 'flex';
+    }
+    function closeInstructions() { document.getElementById('instructionsModal').style.display = 'none'; }
+    
+    function acceptInstructionsAndStart() {
+        closeInstructions();
+        startAudioSection();
     }
 
     function startAudioSection() {
@@ -553,20 +619,46 @@
         document.getElementById('audioSection').style.display = 'block';
 
         let audioPlayer = document.getElementById('dictationAudio');
-        if(audioPlayer) audioPlayer.onended = function() { startTypingTest(); };
+        if(audioPlayer) audioPlayer.onended = function() { startReadingTime(); };
     }
 
-    // 🚀 अधूरा टेस्ट वापस शुरू करने का फंक्शन (Resume Test) 🚀
+    function skipAudio() {
+        let audioPlayer = document.getElementById('dictationAudio');
+        if(audioPlayer) audioPlayer.pause();
+        startReadingTime();
+    }
+
+    // 🚀 Reading Time Logic 🚀
+    function startReadingTime() {
+        document.getElementById('audioSection').style.display = 'none';
+        document.getElementById('readingSection').style.display = 'block';
+        readingTimeLeft = 300; // 5 Mins Default
+        updateReadingTimerDisplay();
+        readingTimerInterval = setInterval(() => {
+            readingTimeLeft--;
+            updateReadingTimerDisplay();
+            if(readingTimeLeft <= 0) { skipReadingTime(); }
+        }, 1000);
+    }
+    
+    function updateReadingTimerDisplay() {
+        let m = Math.floor(readingTimeLeft / 60); let s = readingTimeLeft % 60;
+        document.getElementById('readingTimerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+    }
+
+    function skipReadingTime() {
+        clearInterval(readingTimerInterval);
+        document.getElementById('readingSection').style.display = 'none';
+        startTypingTestFromResume(); // Proceed to typing
+    }
+
     function resumeTest() {
         let savedStateStr = localStorage.getItem(autoSaveKey);
         if(!savedStateStr) return;
         
         let savedState = JSON.parse(savedStateStr);
-        currentTestSpeed = savedState.speed;
-        currentTestTopic = savedState.topic;
-        finalMasterText = savedState.masterText;
-        totalDuration = savedState.totalDuration;
-        timeLeft = savedState.timeLeft;
+        currentTestSpeed = savedState.speed; currentTestTopic = savedState.topic;
+        finalMasterText = savedState.masterText; totalDuration = savedState.totalDuration; timeLeft = savedState.timeLeft;
         
         document.getElementById('backspaceToggle').value = savedState.backspace || 'on';
         document.getElementById('r_name').innerText = currentUserData.name;
@@ -577,14 +669,14 @@
         updateLiveWordCount();
 
         document.getElementById('studentDetailsBox').style.display = 'none';
-        document.getElementById('audioSection').style.display = 'none'; // ऑडियो स्किप
+        document.getElementById('audioSection').style.display = 'none'; 
+        document.getElementById('readingSection').style.display = 'none'; 
         document.getElementById('mainNavbar').style.display = 'none';
         
         requestFullScreen();
-        startTypingTestFromResume(); // सीधे टाइपिंग चालू करें
+        startTypingTestFromResume(); 
     }
 
-    // 🚀 अधूरा टेस्ट डिलीट करने का फंक्शन 🚀
     function discardPendingTest() {
         if(confirm("क्या आप पक्का यह अधूरा टेस्ट डिलीट करके नया टेस्ट देना चाहते हैं? (आपका टाइप किया हुआ मैटर मिट जाएगा)")) {
             localStorage.removeItem(autoSaveKey);
@@ -594,10 +686,15 @@
         }
     }
 
-    function startTypingTest() { startTypingTestFromResume(); }
+    // 🚀 Exam Noise Toggle 🚀
+    function toggleNoise() {
+        let noiseAudio = document.getElementById('examNoiseAudio');
+        let state = document.getElementById('noiseToggle').value;
+        if(state === 'on') { noiseAudio.play().catch(e=>console.log(e)); } 
+        else { noiseAudio.pause(); }
+    }
 
     function startTypingTestFromResume() {
-        document.getElementById('audioSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
         
@@ -605,15 +702,11 @@
         stdArea.focus();
         updateTimer(); 
         timerInterval = setInterval(updateTimer, 1000);
-        
-        saveTestState(); // शुरू होते ही एक बार सेव करें
+        saveTestState(); 
 
         stdArea.addEventListener('paste', e => { e.preventDefault(); alert("🚫 पेस्ट करना वर्जित है!"); });
 
-        stdArea.addEventListener('input', function() {
-            saveTestState();
-            updateLiveWordCount();
-        });
+        stdArea.addEventListener('input', function() { saveTestState(); updateLiveWordCount(); });
 
         function lockCursorToEnd() { setTimeout(() => { stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length; }, 0); }
         stdArea.addEventListener('click', lockCursorToEnd);
@@ -638,13 +731,14 @@
     function updateTimer() {
         let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
         document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-        saveTestState(); // हर सेकंड टाइमर सेव करें
+        saveTestState(); 
         if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
         timeLeft--;
     }
 
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
+        document.getElementById('examNoiseAudio').pause(); // 🚀 Stop noise on submit
         try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
         
         let tt = totalDuration - timeLeft;
@@ -652,7 +746,6 @@
         
         calculateDetailedMistakes(finalMasterText, document.getElementById('studentText').value.trim(), tt / 60);
         
-        // 🚀 टेस्ट पूरा होते ही पेंडिंग डेटा डिलीट कर दें 🚀
         localStorage.removeItem(autoSaveKey);
         
         document.getElementById('typingSection').style.display = 'none';
