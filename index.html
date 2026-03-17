@@ -284,11 +284,7 @@
                 
                 <label style="border:none; margin-top:25px; font-size: 15px;">① डिक्टेशन की गति (Speed) चुनें:</label>
                 <select id="speedSelect" class="input-field" disabled onchange="updateTopicName()">
-                    <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
-                    <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
-                    <option value="90">90 शब्द प्रति मिनट (90 WPM)</option>
-                    <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
-                </select>
+                    </select>
 
                 <label style="border:none; margin-top:10px; font-size: 15px;">② टॉपिक (Topic Name):</label>
                 <select id="topicSelect" class="input-field" disabled>
@@ -532,7 +528,7 @@
     let isSignupMode = false;
     let currentUserData = { name: "", roll: "", email: "" };
     let autoSaveKey = ""; 
-    let isDemoMode = false; // 🚀 New: Demo Mode Flag
+    let isDemoMode = false;
 
     function toggleAuthMode() {
         isSignupMode = !isSignupMode;
@@ -542,8 +538,21 @@
         document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
     }
 
-    // 🚀 NEW: Free Demo Mode Logic 🚀
+    function setSpeedDropdown() {
+        let speedSelect = document.getElementById('speedSelect');
+        if (isDemoMode) {
+            speedSelect.innerHTML = '<option value="70">70 शब्द प्रति मिनट (70 WPM)</option><option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>';
+        } else {
+            speedSelect.innerHTML = '<option value="60">60 शब्द प्रति मिनट (60 WPM)</option><option value="70">70 शब्द प्रति मिनट (70 WPM)</option><option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option><option value="90">90 शब्द प्रति मिनट (90 WPM)</option><option value="100">100 शब्द प्रति मिनट (100 WPM)</option>';
+        }
+    }
+
     function startDemoMode() {
+        if(localStorage.getItem('demo_test_taken') === 'true') {
+            alert("⚠️ आप अपना एक फ्री डेमो टेस्ट पूरा कर चुके हैं। आगे और डिक्टेशन देने के लिए कृपया अपना अकाउंट बनाएं या लॉगिन करें!");
+            return;
+        }
+
         isDemoMode = true;
         currentUserData = { name: "डेमो स्टूडेंट (Guest)", roll: "DEMO-001", email: "demo@guest.com" };
         autoSaveKey = "steno_autosave_demo"; 
@@ -551,12 +560,12 @@
         document.getElementById('authWrapper').style.display = 'none';
         document.getElementById('mainNavbar').style.display = 'flex';
         
-        // Hide Dashboard & Profile in Demo
         document.getElementById('btn-dashboard').style.display = 'none';
         document.getElementById('btn-profile').style.display = 'none';
         
         document.getElementById('demoBanner').style.display = 'block';
         
+        setSpeedDropdown();
         fetchDataFromGoogleSheet();
         switchTab('test'); 
     }
@@ -568,7 +577,6 @@
         document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
         document.getElementById('demoBanner').style.display = 'none';
         
-        // Reset hiding of Dashboard & Profile
         document.getElementById('btn-dashboard').style.display = '';
         document.getElementById('btn-profile').style.display = '';
         
@@ -584,7 +592,7 @@
 
     auth.onAuthStateChanged((user) => {
         if (user && user.emailVerified) {
-            isDemoMode = false; // Turn off demo mode
+            isDemoMode = false; 
             document.getElementById('demoBanner').style.display = 'none';
             document.getElementById('btn-dashboard').style.display = '';
             document.getElementById('btn-profile').style.display = '';
@@ -601,6 +609,7 @@
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('mainNavbar').style.display = 'flex';
             
+            setSpeedDropdown();
             fetchDataFromGoogleSheet();
             switchTab('home'); 
         } else {
@@ -682,7 +691,7 @@
 
     // ==========================================
     // ⚠️ यहाँ अपनी असली Google Sheet वाली लिंक डालें! ⚠️
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "YOUR_GOOGLE_SHEET_WEB_APP_URL_HERE"; 
     // ==========================================
 
     let adminSettingsData = null, globalLeaderboardData = null, globalHistoryData = null, resultChartInstance = null, dashboardLineChart = null;
@@ -914,6 +923,11 @@
         let lbSelect = document.getElementById('leaderboardSpeedSelect');
         if([...lbSelect.options].some(opt => opt.value === currentTestTopic)) { lbSelect.value = currentTestTopic; }
         window.scrollTo(0, 0);
+
+        // 🚀 NEW: Mark Demo Test as Taken 🚀
+        if (isDemoMode) {
+            localStorage.setItem('demo_test_taken', 'true');
+        }
     }
 
     function calculateDetailedMistakes(master, student, timeTakenMins) {
@@ -954,14 +968,13 @@
         
         drawResultChart(net, actualErr);
 
-        // 🚀 NEW: Check if Demo Mode 🚀
         if (isDemoMode) {
             let saveBox = document.getElementById('saveStatus');
             saveBox.style.display = 'block';
             saveBox.style.background = '#fffbeb';
             saveBox.style.color = '#b45309';
             saveBox.style.borderColor = '#fde68a';
-            saveBox.innerHTML = "<i class='fas fa-info-circle'></i> <b>डेमो मोड:</b> आपका रिज़ल्ट सेव नहीं किया गया है। अपना स्कोर लीडरबोर्ड पर लाने के लिए कृपया लॉगिन करें!";
+            saveBox.innerHTML = "<i class='fas fa-info-circle'></i> <b>डेमो समाप्त:</b> आपका फ्री डेमो पूरा हुआ। रिज़ल्ट सेव करने और रोज़ाना नए टेस्ट देने के लिए अभी अपना अकाउंट बनाएं!";
             
             if (acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#f59e0b', '#0284c7'] });
         } else {
