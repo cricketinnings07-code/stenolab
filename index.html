@@ -284,7 +284,12 @@
                 
                 <label style="border:none; margin-top:25px; font-size: 15px;">① डिक्टेशन की गति (Speed) चुनें:</label>
                 <select id="speedSelect" class="input-field" disabled onchange="updateTopicName()">
-                    </select>
+                    <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
+                    <option value="70">70 शब्द प्रति मिनट (70 WPM)</option>
+                    <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
+                    <option value="90">90 शब्द प्रति मिनट (90 WPM)</option>
+                    <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
+                </select>
 
                 <label style="border:none; margin-top:10px; font-size: 15px;">② टॉपिक (Topic Name):</label>
                 <select id="topicSelect" class="input-field" disabled>
@@ -501,10 +506,12 @@
 </div>
 
 <script>
+    // 📱 Mobile Warning Check
     window.onload = function() {
         if(window.innerWidth <= 768) { document.getElementById('mobileWarning').style.display = 'block'; }
     };
 
+    // 🛡️ Anti-Cheat Global Script 🛡️
     document.addEventListener('contextmenu', e => e.preventDefault()); 
     document.addEventListener('copy', e => { e.preventDefault(); alert("🚫 कॉपी करना सख्त मना है!"); }); 
     document.addEventListener('cut', e => { e.preventDefault(); alert("🚫 कट करना सख्त मना है!"); }); 
@@ -528,7 +535,7 @@
     let isSignupMode = false;
     let currentUserData = { name: "", roll: "", email: "" };
     let autoSaveKey = ""; 
-    let isDemoMode = false;
+    let isDemoMode = false; 
 
     function toggleAuthMode() {
         isSignupMode = !isSignupMode;
@@ -538,6 +545,7 @@
         document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
     }
 
+    // 🚀 DEMO MODE: Speed Dropdown Logic 🚀
     function setSpeedDropdown() {
         let speedSelect = document.getElementById('speedSelect');
         if (isDemoMode) {
@@ -548,6 +556,7 @@
     }
 
     function startDemoMode() {
+        // 🚀 Check if demo was already taken 🚀
         if(localStorage.getItem('demo_test_taken') === 'true') {
             alert("⚠️ आप अपना एक फ्री डेमो टेस्ट पूरा कर चुके हैं। आगे और डिक्टेशन देने के लिए कृपया अपना अकाउंट बनाएं या लॉगिन करें!");
             return;
@@ -704,9 +713,13 @@
             adminSettingsData = data.adminSettings; globalLeaderboardData = data.leaderboard; globalHistoryData = data.history; 
             document.getElementById('dataLoadingMsg').style.color = "#059669"; document.getElementById('dataLoadingMsg').style.background = "#d1fae5";
             document.getElementById('dataLoadingMsg').innerHTML = "<i class='fas fa-check-circle'></i> डिक्टेशन सफलतापूर्वक लोड हो गया!";
+            
+            setSpeedDropdown(); // 🚀 Refresh speeds based on mode 🚀
             document.getElementById('speedSelect').disabled = false;
+
             let startBtn = document.getElementById('startTestBtn'); startBtn.disabled = false; startBtn.style.opacity = 1; startBtn.style.cursor = "pointer";
             updateTopicName(); 
+            
             let lbSelect = document.getElementById('leaderboardSpeedSelect'); lbSelect.innerHTML = "";
             if(adminSettingsData && adminSettingsData.length > 0) {
                 adminSettingsData.forEach(item => {
@@ -722,14 +735,24 @@
         let topicBox = document.getElementById('topicSelect');
         let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed) : [];
         topicBox.innerHTML = ""; 
+        
         if(matchingSettings.length > 0) {
+            // 🚀 DEMO MODE: LIMIT TO EXACTLY 1 DICTATION 🚀
+            if (isDemoMode) {
+                matchingSettings = [matchingSettings[matchingSettings.length - 1]]; // Only latest dictation
+            }
+
             matchingSettings.reverse().forEach(setting => {
                 let displayDate = setting.date ? `[${setting.date}] ` : "";
                 let topicName = setting.topic ? setting.topic : `अभ्यास - ${speed} WPM`;
-                topicBox.innerHTML += `<option value="${setting.topic}">${displayDate}${topicName}</option>`;
+                let demoText = isDemoMode ? " (फ्री डेमो)" : "";
+                topicBox.innerHTML += `<option value="${setting.topic}">${displayDate}${topicName}${demoText}</option>`;
             });
             topicBox.disabled = false;
-        } else { topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`; topicBox.disabled = true; }
+        } else { 
+            topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`; 
+            topicBox.disabled = true; 
+        }
     }
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
