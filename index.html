@@ -100,7 +100,13 @@
         .cat-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; background: #fff; font-weight: bold; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .cat-btn.active { border-color: #4f46e5; background: #eef2ff; color: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15); }
 
+        /* 🚀 Premium Server Loader CSS 🚀 */
         #fullScreenLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter: blur(10px); }
+        .server-box { position: relative; display: inline-block; margin-bottom: 25px; }
+        .server-icon { font-size: 70px; color: #4f46e5; animation: pulseServer 1.5s ease-in-out infinite alternate; text-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
+        .sync-spinner { position: absolute; bottom: -5px; right: -15px; font-size: 28px; color: #10b981; background: #fff; border-radius: 50%; padding: 4px; animation: spin 1s linear infinite; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid #e2e8f0; }
+        @keyframes pulseServer { 0% { transform: translateY(0); color: #4f46e5; } 100% { transform: translateY(-8px); color: #6366f1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
@@ -111,9 +117,12 @@
 </div>
 
 <div id="fullScreenLoader">
-    <i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: #4f46e5; margin-bottom: 20px;"></i>
-    <h2 style="color: #312e81; font-weight: 800; margin-bottom: 5px;">खाता सत्यापित किया जा रहा है...</h2>
-    <p style="color: #ef4444; font-weight: bold;">(Checking Subscription Status)</p>
+    <div class="server-box">
+        <i class="fas fa-server server-icon"></i>
+        <i class="fas fa-sync-alt sync-spinner"></i>
+    </div>
+    <h2 style="color: #312e81; font-weight: 800; margin-bottom: 5px; font-size: 24px;">सुरक्षित सर्वर से कनेक्ट हो रहा है...</h2>
+    <p id="dynamicLoaderText" style="color: #ef4444; font-weight: bold; font-size: 15px; background: #fee2e2; padding: 8px 25px; border-radius: 50px; margin-top: 15px; border: 1px solid #fca5a5; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);"><i class="fas fa-wifi"></i> डेटाबेस सिंक किया जा रहा है...</p>
 </div>
 
 <div class="main-pad">
@@ -345,8 +354,6 @@
 
     let currentUserData = { name: "", roll: "", email: "" };
     let currentCategory = "SSC"; 
-    
-    // 🚀 NEW: Auto Save Variable 🚀
     let autoSaveKey = "";
 
     // ==========================================
@@ -359,9 +366,17 @@
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('fullScreenLoader').style.display = 'flex'; 
             
+            // 🚀 स्मार्ट सर्वर लोडिंग इफ़ेक्ट 🚀
+            let loadText = document.getElementById('dynamicLoaderText');
+            let loadTimer1 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-shield-alt'></i> VIP सिक्योरिटी चेक की जा रही है..."; }, 1500);
+            let loadTimer2 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-database'></i> क्लाउड से डिक्टेशन लोड हो रहे हैं..."; }, 3500);
+            let loadTimer3 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-tachometer-alt'></i> बस थोड़ा सा इंतज़ार, पोर्टल तैयार है..."; }, 6000);
+
             let noCacheUrl = GOOGLE_SHEET_WEB_APP_URL + "?t=" + new Date().getTime();
 
             fetch(noCacheUrl).then(res => res.json()).then(data => {
+                clearTimeout(loadTimer1); clearTimeout(loadTimer2); clearTimeout(loadTimer3);
+
                 let approvedUsers = data.approvedUsers || [];
                 let userEmail = user.email.toLowerCase();
 
@@ -371,7 +386,6 @@
                     let userName = user.displayName || user.email.split('@')[0];
                     currentUserData = { name: userName, roll: generatedRoll, email: user.email };
                     
-                    // 🚀 SET AUTOSAVE KEY 🚀
                     autoSaveKey = "steno_autosave_" + currentUserData.email;
 
                     document.getElementById('mainNavbar').style.display = 'flex';
@@ -402,6 +416,7 @@
                     alert("⚠️ आपका खाता स्वीकृत (Approved) नहीं है या सब्सक्रिप्शन खत्म हो गया है। कृपया एडमिन से संपर्क करें।");
                 }
             }).catch(e => {
+                clearTimeout(loadTimer1); clearTimeout(loadTimer2); clearTimeout(loadTimer3);
                 alert("सर्वर से कनेक्ट होने में समस्या। कृपया रीफ्रेश करें।");
                 auth.signOut();
                 document.getElementById('fullScreenLoader').style.display = 'none';
@@ -443,7 +458,6 @@
         auth.sendPasswordResetEmail(email).then(() => alert("पासवर्ड रीसेट लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
 
-    // 🚀 NEW: Check Pending Test 🚀
     function checkPendingTest() {
         if(!autoSaveKey) return;
         let savedStateStr = localStorage.getItem(autoSaveKey);
@@ -476,7 +490,7 @@
                 document.getElementById('studentText').value = '';
             }
             selectCategory('SSC'); 
-            checkPendingTest(); // 🚀 CHECK AUTOSAVE 🚀
+            checkPendingTest();
         }
     }
 
@@ -484,7 +498,6 @@
     let finalMasterText = "", totalDuration = 600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
     let currentTestSpeed = "", currentTestTopic = "", isLiveTestActive = false;
 
-    // 🚀 NEW: Save State Logic 🚀
     function saveTestState() {
         if(!isTestRunning) return;
         let stdArea = document.getElementById('studentText');
@@ -497,7 +510,6 @@
         localStorage.setItem(autoSaveKey, JSON.stringify(testState));
     }
 
-    // 🚀 NEW: Resume Logic 🚀
     function resumeTest() {
         let savedStateStr = localStorage.getItem(autoSaveKey);
         if(!savedStateStr) return;
@@ -592,9 +604,7 @@
     function exitTest() {
         if(confirm("क्या आप वाकई टेस्ट बीच में छोड़ना चाहते हैं? आपका डेटा डिलीट हो जाएगा।")) {
             isTestRunning = false; clearInterval(timerInterval);
-            
-            localStorage.removeItem(autoSaveKey); // 🚀 CLEAR SAVE 🚀
-            
+            localStorage.removeItem(autoSaveKey); 
             document.getElementById('studentText').value = '';
             document.getElementById('typingSection').style.display = 'none';
             document.querySelector('.top-header').style.display = 'flex';
@@ -613,10 +623,10 @@
         stdArea.focus();
         updateTimer(); 
         timerInterval = setInterval(updateTimer, 1000);
-        saveTestState(); // 🚀 INITIAL SAVE 🚀
+        saveTestState(); 
 
         stdArea.addEventListener('paste', e => { e.preventDefault(); alert("🚫 पेस्ट करना वर्जित है!"); });
-        stdArea.addEventListener('input', function() { saveTestState(); }); // 🚀 SAVE ON TYPE 🚀
+        stdArea.addEventListener('input', function() { saveTestState(); }); 
 
         function lockCursorToEnd() { setTimeout(() => { stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length; }, 0); }
         stdArea.addEventListener('click', lockCursorToEnd); stdArea.addEventListener('select', lockCursorToEnd);
@@ -630,7 +640,6 @@
         });
     }
 
-    // 🚀 NEW: Resumed Type Start 🚀
     function startTypingTestFromResume() {
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
@@ -657,7 +666,7 @@
     function updateTimer() {
         let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
         document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-        saveTestState(); // 🚀 SAVE ON TIMER TICK 🚀
+        saveTestState(); 
         
         if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
         timeLeft--;
@@ -665,8 +674,7 @@
 
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
-        
-        localStorage.removeItem(autoSaveKey); // 🚀 CLEAR SAVE ON SUBMIT 🚀
+        localStorage.removeItem(autoSaveKey); 
         
         try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
         document.querySelector('.top-header').style.display = 'flex';
