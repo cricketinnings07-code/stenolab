@@ -84,8 +84,9 @@
         .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(16, 185, 129, 0.4); }
         .btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
         .btn-danger { background: #ef4444; width: auto; box-shadow: 0 8px 15px rgba(239, 68, 68, 0.3); }
+        .btn-info { background: #3b82f6; width: auto; box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3); }
         
-        .kruti-text { font-family: 'Kruti Dev 010', Arial; font-size: 26px; width: 100%; padding: 25px; box-sizing: border-box; border: 2px solid #cbd5e1; border-radius: 16px; background-color: #fff; line-height: 1.8; user-select: text; -webkit-user-select: text; }
+        .kruti-text { font-family: 'Kruti Dev 010', Arial; font-size: 26px; width: 100%; padding: 25px; box-sizing: border-box; border: 2px solid #cbd5e1; border-radius: 16px; background-color: #fff; line-height: 1.8; user-select: text; -webkit-user-select: text; transition: font-size 0.3s ease; }
         .kruti-text:focus { border-color: #4f46e5; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
         textarea.kruti-text { height: 220px; }
         
@@ -100,7 +101,6 @@
         .cat-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; background: #fff; font-weight: bold; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .cat-btn.active { border-color: #4f46e5; background: #eef2ff; color: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15); }
 
-        /* 🚀 Premium Server Loader CSS 🚀 */
         #fullScreenLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter: blur(10px); }
         .server-box { position: relative; display: inline-block; margin-bottom: 25px; }
         .server-icon { font-size: 70px; color: #4f46e5; animation: pulseServer 1.5s ease-in-out infinite alternate; text-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
@@ -230,7 +230,17 @@
             <div style="font-size: 60px; color: #4f46e5; margin-bottom: 20px;"><i class="fas fa-volume-up"></i></div>
             <h2 style="color: #ef4444; margin-top: 0;">ऑडियो डिक्टेशन चल रही है...</h2>
             <audio id="dictationAudio" controls style="width: 100%; max-width: 500px; margin-top: 20px;"></audio><br>
-            <button class="btn" style="background: #f59e0b; margin-top: 30px; width: auto;" onclick="skipAudio()">स्किप करें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
+            
+            <div style="margin-top: 25px; margin-bottom: 25px;">
+                <label style="font-weight: bold; color: #64748b; font-size: 14px; margin-bottom: 10px; display: block;">ऑडियो स्पीड (Playback Speed):</label>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-info" style="margin: 0; padding: 10px 20px;" onclick="setAudioSpeed(0.8)">0.8x</button>
+                    <button class="btn" style="margin: 0; padding: 10px 20px; background: #4f46e5; box-shadow: 0 4px 10px rgba(79,70,229,0.3);" onclick="setAudioSpeed(1.0)">1.0x (Normal)</button>
+                    <button class="btn btn-info" style="margin: 0; padding: 10px 20px;" onclick="setAudioSpeed(1.2)">1.2x</button>
+                </div>
+            </div>
+
+            <button class="btn" style="background: #f59e0b; margin-top: 10px; width: auto;" onclick="skipAudio()">स्किप करें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
         </div>
 
         <div id="typingSection" style="display: none; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
@@ -241,11 +251,19 @@
                     <label style="font-size: 20px; font-weight: 800;">अपना अनुवाद यहाँ टाइप करें:</label>
                     <p style="color:#10b981; font-size:14px; margin-top:5px; font-weight: bold;"><i class="fas fa-save"></i> ऑटो-सेव (Auto-Save) चालू है!</p>
                 </div>
-                <div style="background: #e0e7ff; padding: 8px 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
-                    <label style="font-size: 13px; font-weight: bold; color: #4f46e5; margin-bottom: 5px; display: block;">Backspace</label>
-                    <select id="backspaceToggle" style="padding: 5px; border-radius: 6px; font-weight: bold;" onchange="saveTestState()">
-                        <option value="on" selected>ON (चालू)</option><option value="off">OFF (बंद)</option>
-                    </select>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <div style="background: #f1f5f9; padding: 5px; border-radius: 12px; border: 1px solid #cbd5e1; display: flex; gap: 5px;">
+                        <button class="btn" style="width:auto; padding: 5px 12px; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow:none; font-size: 16px;" onclick="changeFontSize(2)">A+</button>
+                        <button class="btn" style="width:auto; padding: 5px 12px; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow:none; font-size: 14px;" onclick="changeFontSize(0)">A</button>
+                        <button class="btn" style="width:auto; padding: 5px 12px; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow:none; font-size: 12px;" onclick="changeFontSize(-2)">A-</button>
+                    </div>
+
+                    <div style="background: #e0e7ff; padding: 8px 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
+                        <label style="font-size: 13px; font-weight: bold; color: #4f46e5; margin-bottom: 5px; display: block;">Backspace</label>
+                        <select id="backspaceToggle" style="padding: 5px; border-radius: 6px; font-weight: bold;" onchange="saveTestState()">
+                            <option value="on" selected>ON (चालू)</option><option value="off">OFF (बंद)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -284,6 +302,29 @@
                     <div>शुद्ध शब्द: <span id="r_netWords" style="color:#4f46e5;">0</span></div>
                 </div>
             </div>
+
+            <div style="background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                <h4 style="margin: 0 0 15px 0; color: #312e81; text-align: center; font-size: 18px;"><i class="fas fa-search-plus"></i> आपकी गलतियों का विश्लेषण</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">छूटे हुए शब्द (Omissions)</b><br>
+                        <span id="r_om_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">स्पेलिंग (Full Mistakes)</b><br>
+                        <span id="r_fm_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">अतिरिक्त शब्द (Extra Words)</b><br>
+                        <span id="r_ew_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">कोमा/मात्रा (Half Mistakes)</b><br>
+                        <span id="r_hm_deep" style="color: #f59e0b; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                </div>
+            </div>
+
             <p id="saveStatus" style="text-align:center; color:#059669; font-weight:bold;"></p>
             <div style="text-align: center; margin-top: 20px;">
                 <button class="btn" style="width:auto; padding: 12px 30px;" onclick="switchTab('dashboard')">डैशबोर्ड पर जाएं</button>
@@ -358,7 +399,7 @@
 
     // ==========================================
     // ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyxfbTNsI8lhXmAL9ptD9x-BfvWBVi636rTrgjHuCzNQirc87S8FGsVr_eQa5umsTsG/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeJZIkQZ1BsUwxN_mWuU2DiajqISPcFYpivEdMezFdz93x1Ds1anfh8-NOR_RA6QMl/exec"; 
     // ==========================================
 
     auth.onAuthStateChanged((user) => {
@@ -366,7 +407,6 @@
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('fullScreenLoader').style.display = 'flex'; 
             
-            // 🚀 स्मार्ट सर्वर लोडिंग इफ़ेक्ट 🚀
             let loadText = document.getElementById('dynamicLoaderText');
             let loadTimer1 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-shield-alt'></i> VIP सिक्योरिटी चेक की जा रही है..."; }, 1500);
             let loadTimer2 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-database'></i> क्लाउड से डिक्टेशन लोड हो रहे हैं..."; }, 3500);
@@ -498,6 +538,22 @@
     let finalMasterText = "", totalDuration = 600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
     let currentTestSpeed = "", currentTestTopic = "", isLiveTestActive = false;
 
+    // 🚀 Feature 2: Change Font Size Logic 🚀
+    let currentFontSize = 26;
+    function changeFontSize(change) {
+        if(change === 0) currentFontSize = 26;
+        else currentFontSize += change;
+        document.getElementById('studentText').style.fontSize = currentFontSize + 'px';
+    }
+
+    // 🚀 Feature 3: Audio Speed Logic 🚀
+    function setAudioSpeed(speed) {
+        let player = document.getElementById('dictationAudio');
+        if(player) {
+            player.playbackRate = speed;
+        }
+    }
+
     function saveTestState() {
         if(!isTestRunning) return;
         let stdArea = document.getElementById('studentText');
@@ -586,6 +642,9 @@
             totalDuration = (currentCategory === 'SSC') ? (10 * 60) : (6 * 60); 
             document.getElementById('dictationAudio').src = setting.audio;
         }
+
+        // Reset speed
+        setAudioSpeed(1.0);
 
         timeLeft = totalDuration;
         document.getElementById('mainNavbar').style.display = 'none';
@@ -725,6 +784,12 @@
             document.getElementById('liveView').style.display = 'block';
             document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
         } else {
+            // 🚀 Feature 4: Display Deep Dive Stats 🚀
+            document.getElementById('r_om_deep').innerText = om;
+            document.getElementById('r_fm_deep').innerText = fm;
+            document.getElementById('r_hm_deep').innerText = hm;
+            document.getElementById('r_ew_deep').innerText = ew;
+
             document.getElementById('r_name').innerText = currentUserData.name;
             document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
             document.getElementById('r_masterWords').innerText = tw; document.getElementById('r_actualMistakes').innerText = actualErr; 
