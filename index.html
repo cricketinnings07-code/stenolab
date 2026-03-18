@@ -3,488 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>हिंदी स्टेनो लैब - एडवांस स्टेनोग्राफी टेस्ट</title>
+    <title>हिंदी स्टेनो लैब - प्रो टेस्ट पोर्टल</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        @font-face { 
-            font-family: 'Kruti Dev 010'; 
-            src: url('kruti.ttf') format('truetype'); 
-        }
+        @font-face { font-family: 'Kruti Dev 010'; src: url('kruti.ttf') format('truetype'); }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #e0e7ff; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
 
         body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background-color: #f0f2f5; 
-            padding: 15px; 
-            transition: background-color 0.3s; 
-            margin: 0; 
-            min-height: 100vh; 
+            font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8fafc; padding: 0; 
+            margin: 0; min-height: 100vh; user-select: none; -webkit-user-select: none; color: #1e293b;
         }
         
-        .container { 
-            max-width: 900px; 
-            margin: 0 auto; 
-            position: relative; 
-            transition: 0.3s; 
-        }
-        
-        .top-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 10px; 
-            padding: 15px 20px; 
-            background: white; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-        }
-        
-        .top-header h1 { 
-            margin: 0; 
-            color: #0277bd; 
-            font-size: 26px; 
-        }
-        
-        .dark-mode-btn { 
-            background: #333; 
-            color: #fff; 
-            border: none; 
-            padding: 8px 12px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: 0.3s; 
-        }
-        
-        .dark-mode-btn:hover { 
-            background: #000; 
-            transform: translateY(-2px); 
+        .top-notification {
+            background: linear-gradient(90deg, #ef4444, #f97316); color: white; padding: 8px 0;
+            font-size: 15px; font-weight: bold; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
+        .main-pad { padding: 20px 15px; }
+        .container { max-width: 950px; margin: 0 auto; position: relative; }
+        
+        .top-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 25px; padding: 15px 30px; background: #ffffff; 
+            border-radius: 16px; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.08); 
+            border-left: 6px solid #4f46e5; transition: 0.3s;
+        }
+        
+        .brand-link { display: flex; align-items: center; gap: 15px; text-decoration: none; cursor: pointer; }
+        .brand-link h1 { margin: 0; color: #312e81; font-size: 30px; font-weight: 800; }
+        
         .navbar { 
-            display: flex; 
-            gap: 5px; 
-            background: #fff; 
-            padding: 10px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-            margin-bottom: 20px; 
-            overflow-x: auto; 
-            white-space: nowrap; 
+            display: flex; gap: 10px; padding: 12px; border-radius: 16px; 
+            background: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 30px; overflow-x: auto; white-space: nowrap; 
         }
         
         .nav-btn { 
-            flex: 1; 
-            padding: 12px 15px; 
-            border: none; 
-            background: transparent; 
-            font-size: 15px; 
-            font-weight: bold; 
-            color: #555; 
-            cursor: pointer; 
-            border-radius: 8px; 
-            transition: 0.3s; 
-            text-align: center; 
+            flex: 1; padding: 14px 20px; border: none; background: transparent; 
+            font-size: 15px; font-weight: 700; color: #64748b; cursor: pointer; 
+            border-radius: 12px; transition: all 0.3s; text-align: center; 
         }
-        
-        .nav-btn:hover { 
-            background: #f0f2f5; 
-            color: #0277bd; 
-        }
-        
-        .nav-btn.active { 
-            background: #0277bd; 
-            color: white; 
-            box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3); 
-        }
+        .nav-btn:hover { background: #e0e7ff; color: #4f46e5; }
+        .nav-btn.active { background: #4f46e5; color: white; box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4); transform: translateY(-2px); }
+        .nav-btn-live { background: #ef4444; color: white; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
 
-        .view-section { 
-            display: none; 
-            animation: fadeInSlideUp 0.4s ease-out; 
-        }
-        
-        .view-section.active { 
-            display: block; 
-        }
-        
-        @keyframes fadeInSlideUp { 
-            from { opacity: 0; transform: translateY(15px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        .view-section { display: none; animation: fadeIn 0.4s ease forwards; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .auth-wrapper { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 65vh; 
-        }
+        .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 70vh; }
+        .auth-box { background: white; width: 100%; max-width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;}
+        .auth-box h3 { color: #312e81; font-size: 28px; margin-top: 0; margin-bottom: 5px; font-weight: 800; }
+        .auth-box p { color: #64748b; margin-bottom: 25px; font-size: 14px; }
         
-        .auth-box { 
-            background: white; 
-            width: 100%; 
-            max-width: 380px; 
-            padding: 35px 30px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-        }
+        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
+        .input-group i { position: absolute; left: 15px; top: 16px; color: #1e293b; font-size: 18px; }
+        .input-group input { width: 100%; padding: 15px 15px 15px 45px; border: 2px solid #cbd5e1; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #f8fafc; transition: 0.3s; font-weight: bold;}
+        .input-group input:focus { border-color: #4f46e5; outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        .eye-icon { position: absolute; right: 15px; left: auto !important; top: 16px; cursor: pointer; color: #64748b !important; }
         
-        .auth-box h3 { 
-            color: #0277bd; 
-            text-align: center; 
-            margin-top: 0; 
-            font-size: 24px; 
-            margin-bottom: 5px;
-        }
-        
-        .auth-box p { 
-            text-align: center; 
-            color: #777; 
-            font-size: 14px; 
-            margin-bottom: 25px; 
-        }
-        
-        .auth-box label { 
-            font-size: 13px; 
-            font-weight: 600; 
-            margin-top: 10px; 
-            margin-bottom: 5px; 
-            color: #444; 
-            display: block; 
-        }
-        
-        .auth-input { 
-            width: 100%; 
-            padding: 12px 15px; 
-            margin-bottom: 15px; 
-            border: 1.5px solid #e0e0e0; 
-            border-radius: 10px; 
-            font-size: 14px; 
-            box-sizing: border-box; 
-            transition: 0.3s; 
-            background: #fafafa; 
-        }
-        
-        .auth-input:focus { 
-            border-color: #0277bd; 
-            background: #fff; 
-            outline: none; 
-        }
-        
-        .forgot-link { 
-            display: block; 
-            text-align: right; 
-            color: #0277bd; 
-            font-size: 12px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-top: -8px; 
-            margin-bottom: 20px; 
-        }
-        
-        .auth-btn-full { 
-            width: 100%; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 10px; 
-            font-size: 15px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            color: white; 
-            margin-bottom: 15px; 
-            background: linear-gradient(135deg, #0277bd, #01579b); 
-        }
-        .switch-auth { 
-            text-align: center; 
-            font-size: 13px; 
-            color: #555; 
-        }
-        
-        .switch-auth span { 
-            color: #0277bd; 
-            font-weight: bold; 
-            cursor: pointer; 
-            text-decoration: underline; 
-        }
+        .switch-auth { text-align: center; font-size: 15px; color: #555; margin-top: 20px; }
+        .switch-auth span { color: #4f46e5; font-weight: bold; cursor: pointer; text-decoration: underline; }
 
-        .setup-box, .result-box { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 12px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-        }
+        .setup-box, .result-box, .reading-box { background: white; padding: 35px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .input-field { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #e2e8f0; border-radius: 12px; box-sizing: border-box; font-size: 16px; font-weight: bold; background: #f8fafc; color: #333; cursor: pointer;}
+        .input-field:focus { border-color: #4f46e5; outline: none; }
         
-        .result-box { 
-            border: 2px solid #28a745; 
-            display: none; 
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 25px; background: #10b981; color: white; border: none; font-size: 16px; cursor: pointer; border-radius: 12px; width: 100%; font-weight: bold; box-shadow: 0 8px 15px rgba(16, 185, 129, 0.3); transition: 0.3s; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(16, 185, 129, 0.4); }
+        .btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-danger { background: #ef4444; width: auto; box-shadow: 0 8px 15px rgba(239, 68, 68, 0.3); }
+        .btn-info { background: #3b82f6; width: auto; box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3); }
         
-        .readonly-info { 
-            background: #e3f2fd; 
-            padding: 15px; 
-            border-radius: 8px; 
-            border: 1px solid #b8daff; 
-            margin-bottom: 15px; 
-        }
+        .kruti-text { font-family: 'Kruti Dev 010', Arial; font-size: 26px; width: 100%; padding: 25px; box-sizing: border-box; border: 2px solid #cbd5e1; border-radius: 16px; background-color: #fff; line-height: 1.8; transition: font-size 0.3s ease; }
+        .kruti-text:focus { border-color: #4f46e5; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        textarea.kruti-text { height: 220px; resize: vertical; }
         
-        .readonly-info p { 
-            margin: 5px 0; 
-            font-size: 15px; 
-            color: #0056b3; 
-        }
+        .timer { font-size: 30px; color: #ef4444; font-weight: 900; text-align: center; margin: 20px 0; background: #fef2f2; padding: 15px; border-radius: 12px; border: 2px dashed #fca5a5; letter-spacing: 2px;}
         
-        .input-field { 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 15px; 
-            border: 1.5px solid #e0e0e0; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-size: 15px; 
-            transition: 0.3s;
-        }
-        
-        select.input-field { 
-            cursor: pointer; 
-        }
-        
-        .btn { 
-            display: inline-block; 
-            padding: 12px 20px; 
-            background: #5cb85c; 
-            color: white; 
-            border: none; 
-            font-size: 16px; 
-            cursor: pointer; 
-            border-radius: 8px; 
-            margin-top: 15px; 
-            width: 100%; 
-            font-weight: bold; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-            transition: 0.3s; 
-        }
-        
-        .btn:hover { 
-            transform: translateY(-2px); 
-        }
-        
-        .btn-info { 
-            background: #17a2b8; 
-            margin-top: 15px; 
-            width: auto;
-        }
-        
-        .btn-danger { 
-            background: #dc3545; 
-            width: auto; 
-            font-size: 14px; 
-        }
-        
-        .kruti-text { 
-            font-family: 'Kruti Dev 010', Arial, sans-serif; 
-            font-size: 24px; 
-            width: 100%; 
-            padding: 15px; 
-            box-sizing: border-box; 
-            border: 2px solid #ccc; 
-            border-radius: 8px; 
-            resize: vertical; 
-            background-color: #fff; 
-            line-height: 1.8; 
-            transition: 0.3s; 
-        }
-        
-        textarea.kruti-text { 
-            height: 150px; 
-        }
-        
-        .kruti-readonly { 
-            background-color: #f8f9fa; 
-            border: 2px dashed #6c757d; 
-            cursor: default; 
-            min-height: 150px; 
-            height: auto; 
-            margin-bottom: 15px; 
-        }
-        
-        .timer { 
-            font-size: 24px; 
-            color: #d9534f; 
-            font-weight: bold; 
-            text-align: center; 
-            margin: 15px 0; 
-            background: #f8d7da; 
-            padding: 10px; 
-            border-radius: 8px; 
-            border: 1px solid #f5c6cb;
-        }
-        
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            margin-bottom: 20px; 
-        }
-        
-        .stat-item { 
-            padding: 12px; 
-            background: #f8f9fa; 
-            border-radius: 8px; 
-            font-size: 15px; 
-            font-weight: bold; 
-            border: 1px solid #eee; 
-        }
-        
-        .stat-item span { 
-            float: right; 
-            color: #d9534f; 
-            font-size: 16px;
-        }
-        
-        .stat-item.positive span { 
-            color: #28a745; 
-        }
-        
-        .official-box { 
-            background: #fff3cd; 
-            padding: 20px; 
-            border: 2px solid #ffc107; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-        }
-        
-        .official-box h4 { 
-            margin-top: 0; 
-            color: #856404; 
-            text-align: center; 
-            border-bottom: 1px solid #ffeeba; 
-            padding-bottom: 10px; 
-        }
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 20px; font-size: 15px; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .data-table th, .data-table td { padding: 18px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .data-table th { background-color: #4f46e5; color: white; font-weight: 700; text-transform: uppercase; font-size: 14px; }
+        .data-table tr:hover td { background-color: #f8fafc; }
 
-        .data-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-top: 15px; 
-            font-size: 15px; 
-        }
-        
-        .data-table th, .data-table td { 
-            padding: 12px; 
-            text-align: left; 
-            border-bottom: 1px solid #ddd; 
-        }
-        
-        .data-table th { 
-            background-color: #0277bd; 
-            color: white; 
-            font-weight: bold; 
-            border-radius: 4px 4px 0 0; 
-        }
-        
-        .dashboard-table th { 
-            background-color: #17a2b8; 
-        }
-        
-        .chart-container { 
-            width: 100%; 
-            max-width: 320px; 
-            margin: 20px auto; 
-            text-align: center; 
-        }
-
-        /* Dark Mode */
-        body.dark-mode { background-color: #121212; color: #e0e0e0; }
-        body.dark-mode .top-header, body.dark-mode .navbar, body.dark-mode .auth-box, body.dark-mode .setup-box, body.dark-mode .result-box { background: #1e1e1e; border-color: #333; }
-        body.dark-mode .nav-btn { color: #aaa; } 
-        body.dark-mode .nav-btn:hover { background: #2a2a2a; color:#fff; }
-        body.dark-mode .nav-btn.active { background: #01579b; color: #fff; }
-        body.dark-mode .input-field, body.dark-mode .auth-input { background: #2a2a2a; border-color: #444; color: #fff; }
-        body.dark-mode .kruti-text { background: #2a2a2a; color: #fff; border-color: #444; }
-        body.dark-mode .stat-item, body.dark-mode .data-table tr:hover { background: #2a2a2a; border-color: #333; }
-        body.dark-mode .official-box { background: #3a3212; border-color: #856404; }
-        body.dark-mode .readonly-info { background: #1a2a3a; border-color: #0f4c81; color:#fff; }
-        body.dark-mode .readonly-info p { color: #4fc3f7; }
+        .category-tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;}
+        .cat-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; background: #fff; font-weight: bold; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;}
+        .cat-btn.active { border-color: #4f46e5; background: #eef2ff; color: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15); }
 
         /* 🚀 Server Loader CSS 🚀 */
         #fullScreenLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter: blur(10px); }
         .server-box { position: relative; display: inline-block; margin-bottom: 25px; }
-        .server-icon { font-size: 70px; color: #0277bd; animation: pulseServer 1.5s ease-in-out infinite alternate; text-shadow: 0 10px 20px rgba(2, 119, 189, 0.3); }
-        .sync-spinner { position: absolute; bottom: -5px; right: -15px; font-size: 28px; color: #28a745; background: #fff; border-radius: 50%; padding: 4px; animation: spin 1s linear infinite; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid #e2e8f0; }
-        @keyframes pulseServer { 0% { transform: translateY(0); color: #0277bd; } 100% { transform: translateY(-8px); color: #01579b; } }
+        .server-icon { font-size: 70px; color: #4f46e5; animation: pulseServer 1.5s ease-in-out infinite alternate; text-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
+        .sync-spinner { position: absolute; bottom: -5px; right: -15px; font-size: 28px; color: #10b981; background: #fff; border-radius: 50%; padding: 4px; animation: spin 1s linear infinite; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid #e2e8f0; }
+        @keyframes pulseServer { 0% { transform: translateY(0); color: #4f46e5; } 100% { transform: translateY(-8px); color: #6366f1; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        @media (max-width: 600px) { 
-            .stats-grid { grid-template-columns: 1fr; } 
-            .navbar { overflow-x: scroll; } 
-            .nav-btn { padding: 10px; font-size: 14px;} 
-        }
     </style>
 </head>
 <body>
 
+<div class="top-notification">
+    <marquee id="notificationText" scrollamount="6">हिंदी स्टेनो लैब में आपका स्वागत है। सर्वर से डेटा लोड हो रहा है...</marquee>
+</div>
+
+<div id="fullScreenLoader">
+    <div class="server-box">
+        <i class="fas fa-server server-icon"></i>
+        <i class="fas fa-sync-alt sync-spinner"></i>
+    </div>
+    <h2 style="color: #312e81; font-weight: 800; margin-bottom: 5px; font-size: 24px;">सुरक्षित सर्वर से कनेक्ट हो रहा है...</h2>
+    <p id="dynamicLoaderText" style="color: #ef4444; font-weight: bold; font-size: 15px; background: #fee2e2; padding: 8px 25px; border-radius: 50px; margin-top: 15px; border: 1px solid #fca5a5; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);"><i class="fas fa-wifi"></i> डेटाबेस सिंक किया जा रहा है...</p>
+</div>
+
+<div class="main-pad">
 <div class="container">
     
     <div class="top-header">
-        <h1>हिंदी स्टेनो लैब</h1>
-        <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 डार्क मोड</button>
-    </div>
-
-    <div id="fullScreenLoader">
-        <div class="server-box">
-            <i class="fas fa-server server-icon"></i>
-            <i class="fas fa-sync-alt sync-spinner"></i>
-        </div>
-        <h2 style="color: #0277bd; font-weight: 800; margin-bottom: 5px; font-size: 24px;">सुरक्षित सर्वर से कनेक्ट हो रहा है...</h2>
-        <p id="dynamicLoaderText" style="color: #d9534f; font-weight: bold; font-size: 15px; background: #f8d7da; padding: 8px 25px; border-radius: 50px; margin-top: 15px; border: 1px solid #f5c6cb; box-shadow: 0 4px 10px rgba(217, 83, 79, 0.1);"><i class="fas fa-wifi"></i> डेटाबेस सिंक किया जा रहा है...</p>
+        <a class="brand-link" onclick="switchTab('home')">
+            <img src="logo.png" alt="Logo" style="width: 65px; height: 65px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <h1>हिंदी स्टेनो लैब</h1>
+        </a>
+        <div style="font-weight: bold; color: #ef4444; font-size: 18px;"><i class="fas fa-crown"></i> VIP PRO</div>
     </div>
 
     <div id="mainNavbar" class="navbar" style="display:none;">
-        <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">🏠 Home</button>
-        <button class="nav-btn" id="btn-dashboard" onclick="switchTab('dashboard')">📊 Dashboard</button>
-        <button class="nav-btn" id="btn-test" onclick="switchTab('test')">✍️ Steno Test</button>
-        <button class="nav-btn" id="btn-profile" onclick="switchTab('profile')">👤 Profile</button>
-        <button class="nav-btn" id="btn-leaderboard" onclick="switchTab('leaderboard')">🏆 Leaderboard</button>
+        <button class="nav-btn active" id="btn-home" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</button>
+        <button class="nav-btn" id="btn-dashboard" onclick="switchTab('dashboard')"><i class="fas fa-chart-bar"></i> Dashboard</button>
+        <button class="nav-btn" id="btn-test" onclick="switchTab('test')"><i class="fas fa-keyboard"></i> Steno Test</button>
+        <button class="nav-btn" id="btn-leaderboard" onclick="switchTab('leaderboard')"><i class="fas fa-trophy"></i> Leaderboard</button>
+        <button class="nav-btn nav-btn-live" id="btn-live" onclick="switchTab('live')"><i class="fas fa-broadcast-tower"></i> Live Sunday Test</button>
     </div>
 
     <div id="authWrapper" class="auth-wrapper">
         <div class="auth-box">
-            <h3 id="authTitle">लॉगिन करें</h3><p id="authSubtitle">टेस्ट देने के लिए अपना खाता खोलें</p>
-            <div id="nameFieldContainer" style="display: none;">
-                <label>विद्यार्थी का पूरा नाम</label><input type="text" id="authName" class="auth-input" placeholder="जैसे: राहुल कुमार">
+            <h3 id="authTitle"><i class="fas fa-user-shield"></i> लॉगिन करें</h3>
+            <p id="authSubtitle">प्रीमियम टेस्ट पोर्टल में प्रवेश करें</p>
+            
+            <div id="nameFieldContainer" class="input-group" style="display: none;">
+                <i class="fas fa-user"></i>
+                <input type="text" id="authName" placeholder="विद्यार्थी का पूरा नाम">
             </div>
-            <label>ईमेल आईडी</label><input type="email" id="authEmail" class="auth-input" placeholder="student@example.com">
-            <label>पासवर्ड</label><input type="password" id="authPassword" class="auth-input" placeholder="कम से कम 6 अक्षर">
-            <span class="forgot-link" id="forgotPwdLink" onclick="resetPassword()">पासवर्ड भूल गए?</span>
-            <button class="auth-btn-full" id="mainAuthBtn" onclick="processAuth()">लॉगिन करें</button>
-            <div class="switch-auth" id="switchAuthText">नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें</span></div>
+            
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="authEmail" placeholder="student@example.com">
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="authPassword" placeholder="पासवर्ड दर्ज करें (Min 6 chars)">
+                <i class="fas fa-eye eye-icon" id="pwdIcon" onclick="togglePwd()"></i>
+            </div>
+            
+            <button class="btn" style="background: #4f46e5; margin-top: 10px; width: 100%; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);" id="mainAuthBtn" onclick="processAuth()"><i class="fas fa-sign-in-alt"></i> पोर्टल में प्रवेश करें</button>
+            <div class="switch-auth" id="switchAuthText">नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें (Sign Up)</span></div>
         </div>
     </div>
 
     <div id="homeView" class="view-section">
-        <div class="setup-box" style="text-align:center; padding: 40px 20px;">
-            <h2 style="color:#0277bd; font-size: 28px; margin-bottom: 10px;">पोर्टल में आपका स्वागत है!</h2>
-            <p style="color:#666; font-size:16px;">ऊपर दिए गए मेनू (Steno Test) से अपना टेस्ट शुरू करें।</p>
-            
-            <div style="margin-top:40px; padding:30px; background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-left: 6px solid #0277bd; border-radius:12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <span style="font-size: 40px;">💡</span>
-                <h3 style="color:#01579b; font-style: italic; font-size: 22px; line-height: 1.5; margin-top: 10px;">
-                    "सफलता का पीछा करते रहो दोस्त,<br>कामयाब होगे।"
-                </h3>
-            </div>
+        <div class="setup-box" style="text-align:center;">
+            <h2 style="color:#312e81; font-size: 32px; font-weight: 800;"><i class="fas fa-hand-sparkles"></i> पोर्टल में आपका स्वागत है, <span id="homeName"></span>!</h2>
+            <p style="color:#64748b; font-size:18px;">आज का अभ्यास शुरू करने के लिए ऊपर दिए गए मेनू का उपयोग करें।</p>
         </div>
     </div>
 
-    <div id="dashboardView" class="view-section setup-box" style="border: 2px solid #17a2b8;">
-        <h2 style="color: #17a2b8; text-align: center; margin-top: 0; font-size: 26px;">📊 मेरा डैशबोर्ड</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 20px;">यहाँ आपके द्वारा दिए गए सभी टेस्ट्स का रिकॉर्ड मौजूद है।</p>
+    <div id="dashboardView" class="view-section setup-box">
+        <h2 style="color: #4f46e5; text-align: center; margin-top: 0;"><i class="fas fa-chart-line"></i> मेरा परफॉरमेंस</h2>
+        <div style="width: 100%; max-width: 750px; margin: 0 auto 30px auto; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <canvas id="progressLineChart"></canvas>
+        </div>
         <div style="overflow-x: auto;">
-            <table class="data-table dashboard-table">
-                <thead><tr><th>दिनांक (Date)</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th><th>गलतियां</th></tr></thead>
+            <table class="data-table">
+                <thead><tr><th>दिनांक</th><th>पैनल</th><th>स्पीड</th><th>Net Words</th><th>Accuracy</th></tr></thead>
                 <tbody id="dashboardData"><tr><td colspan="5" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
             </table>
         </div>
@@ -492,155 +193,192 @@
 
     <div id="testView" class="view-section">
         <div id="studentDetailsBox" class="setup-box">
-            <h3 style="margin-top: 0; color: #0277bd; font-size: 20px;">टेस्ट सेटअप</h3>
+            <h3 style="margin-top: 0; color: #312e81; font-size: 26px;"><i class="fas fa-sliders-h"></i> टेस्ट सेटअप</h3>
             
-            <div id="pendingTestBanner" style="display:none; background: #fff3cd; padding: 20px; border-left: 6px solid #ffc107; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <h4 style="margin: 0 0 10px 0; color: #856404; font-size: 18px;"><i class="fas fa-exclamation-triangle"></i> आपका एक टेस्ट अधूरा है!</h4>
-                <p style="margin: 0 0 15px 0; font-size: 14px; color: #856404;">पिछला टेस्ट बीच में बंद हो गया था। आपका टाइप किया हुआ डेटा सुरक्षित है।</p>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn" style="margin-top: 0; width: auto; background: #ffc107; color: #000;" onclick="resumeTest()"><i class="fas fa-play"></i> वहीं से शुरू करें</button>
+            <div id="pendingTestBanner" style="display:none; background: #fffbeb; padding: 25px; border-left: 6px solid #f59e0b; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <h4 style="margin: 0 0 10px 0; color: #b45309; font-size: 20px;"><i class="fas fa-exclamation-triangle"></i> आपका एक टेस्ट अधूरा है!</h4>
+                <p style="margin: 0 0 20px 0; font-size: 15px; color: #78350f; font-weight:bold;">पिछला टेस्ट बीच में बंद हो गया था। आपका टाइप किया हुआ डेटा सुरक्षित है।</p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn" style="margin-top: 0; width: auto; background: #f59e0b; color: #fff;" onclick="resumeTest()"><i class="fas fa-play"></i> वहीं से शुरू करें</button>
                     <button class="btn btn-danger" style="margin-top: 0; width: auto;" onclick="discardPendingTest()"><i class="fas fa-trash-alt"></i> डिलीट करें</button>
                 </div>
             </div>
 
             <div id="newTestSetupArea">
-                <label style="border:none; margin-top:15px;">① डिक्टेशन की गति (Speed) चुनें:</label>
+                <p id="dataLoadingMsg" style="color: #b45309; background: #fef3c7; padding:15px; border-radius:12px; font-weight: bold; text-align: center;"><i class="fas fa-spinner fa-spin"></i> डिक्टेशन लोड हो रहा है...</p>
+                
+                <label style="font-weight: bold; margin-bottom: 10px; display: block; font-size: 16px;">① स्टडी मटेरियल (Panel) चुनें:</label>
+                <div class="category-tabs">
+                    <button class="cat-btn active" id="cat-ssc" onclick="selectCategory('SSC')"><i class="fas fa-file-alt"></i> SSC (10 Min)</button>
+                    <button class="cat-btn" id="cat-court" onclick="selectCategory('Court')"><i class="fas fa-gavel"></i> Court (6 Min)</button>
+                    <button class="cat-btn" id="cat-news" onclick="selectCategory('News')"><i class="fas fa-newspaper"></i> Newspaper (6 Min)</button>
+                </div>
+
+                <label style="font-weight: bold; margin-bottom: 10px; display: block;">② डिक्टेशन स्पीड (WPM):</label>
                 <select id="speedSelect" class="input-field" onchange="updateTopicName()">
-                    <option value="60">60 शब्द प्रति मिनट (60 WPM)</option>
-                    <option value="80" selected>80 शब्द प्रति मिनट (80 WPM)</option>
-                    <option value="90">90 शब्द प्रति मिनट (90 WPM)</option>
-                    <option value="100">100 शब्द प्रति मिनट (100 WPM)</option>
+                    <option value="60">60 WPM</option><option value="70">70 WPM</option>
+                    <option value="80" selected>80 WPM</option><option value="90">90 WPM</option><option value="100">100 WPM</option>
                 </select>
 
-                <label style="border:none; margin-top:10px;">② टॉपिक (Topic Name):</label>
-                <select id="topicSelect" class="input-field" style="background:#f8f9fa;">
-                    <option>लोड हो रहा है...</option>
-                </select>
+                <label style="font-weight: bold; margin-bottom: 10px; display: block;">③ उपलब्ध डिक्टेशन टॉपिक:</label>
+                <select id="topicSelect" class="input-field"><option>लोड हो रहा है...</option></select>
 
-                <label style="border:none; margin-top:10px;">③ बैकस्पेस (Backspace) सेटिंग:</label>
-                <select id="backspaceSelect" class="input-field" style="background:#e3f2fd; color:#01579b; font-weight:bold; border:2px solid #90caf9;">
-                    <option value="on" selected>चालू रखें (Allow Backspace)</option>
-                    <option value="off">बंद करें (Disable Backspace)</option>
-                </select>
-
-                <button id="startTestBtn" class="btn" onclick="startAudioSection()">टेस्ट शुरू करें</button>
+                <button id="startTestBtn" class="btn" style="background: #4f46e5; font-size: 18px; padding: 18px; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);" disabled onclick="startAudioSection(false)"><i class="fas fa-headphones"></i> डिक्टेशन शुरू करें</button>
             </div>
         </div>
 
-        <div id="audioSection" style="text-align: center; margin-bottom: 20px; display: none;">
-            <p style="color: #d9534f; font-weight: bold; font-size: 18px;">निर्देश: नीचे दिए गए ऑडियो को ध्यानपूर्वक सुनें।</p>
-            <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;"
-                <audio id="dictationAudio" controls style="width: 100%; margin-top: 15px;">आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।</audio>
-            <button class="btn" style="background: #f0ad4e; margin-top: 15px; width: auto;" onclick="skipAudio()">स्किप करें / सीधे रीडिंग शुरू करें</button>
+        <div id="audioSection" style="text-align: center; display: none; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <div style="font-size: 60px; color: #4f46e5; margin-bottom: 20px;"><i class="fas fa-volume-up"></i></div>
+            <h2 style="color: #ef4444; margin-top: 0;">ऑडियो डिक्टेशन चल रही है...</h2>
+            <audio id="dictationAudio" controls style="width: 100%; max-width: 500px; margin-top: 20px;"></audio><br>
+            <button class="btn" style="background: #f59e0b; margin-top: 30px; width: auto;" onclick="skipAudio()">स्किप करें (सीधे रीडिंग) <i class="fas fa-arrow-right"></i></button>
         </div>
 
         <div id="readingSection" style="display: none; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;">
-            <div style="font-size: 60px; color: #28a745; margin-bottom: 20px;"><i class="fas fa-book-reader"></i></div>
-            <h2 style="color: #0277bd; margin-top: 0;">डिक्टेशन रीडिंग टाइम</h2>
-            <div class="timer" id="readingTimerDisplay" style="color: #28a745; background: #d4edda; border-color: #c3e6cb;">05:00</div>
-            <p style="color: #555; font-weight: bold; font-size: 16px;">अपनी शॉर्टहैंड आउटलाइन को पढ़ने के लिए 5 मिनट दिए गए हैं।</p>
+            <div style="font-size: 60px; color: #10b981; margin-bottom: 20px;"><i class="fas fa-book-reader"></i></div>
+            <h2 style="color: #312e81; margin-top: 0;">डिक्टेशन रीडिंग टाइम</h2>
+            <div class="timer" id="readingTimerDisplay" style="color: #10b981; background: #ecfdf5; border-color: #6ee7b7;">05:00</div>
+            <p style="color: #64748b; font-weight: bold; font-size: 16px;">अपनी शॉर्टहैंड आउटलाइन को पढ़ने के लिए आपको 5 मिनट दिए गए हैं।</p>
             <div style="text-align: center; margin-top: 25px;">
-                <button class="btn" style="background: #0277bd; width: auto;" onclick="skipReading()">रीडिंग छोड़ें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
+                <button class="btn" style="background: #4f46e5; width: auto;" onclick="skipReading()">रीडिंग छोड़ें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
 
-        <div id="typingSection" style="display: none;">
-            <div class="timer" id="timerDisplay">समय शेष: 60:00</div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5px;">
+        <div id="typingSection" style="display: none; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <div class="timer" id="timerDisplay">समय शेष: 00:00</div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
                 <div>
-                    <label style="border:none; display: block; margin-bottom: 0;"><b>अपना अनुवाद यहाँ टाइप करें (Kruti Dev 010):</b></label>
-                    <p style="color:red; font-size:14px; margin-top:0; margin-bottom: 5px;"><i>सख्त हिदायत: टेस्ट के दौरान कोई दूसरा टैब न खोलें!</i></p>
+                    <label style="font-size: 20px; font-weight: 800;">अपना अनुवाद यहाँ टाइप करें:</label>
+                    <p style="color:#10b981; font-size:14px; margin-top:5px; font-weight: bold;"><i class="fas fa-save"></i> ऑटो-सेव (Auto-Save) चालू है!</p>
                 </div>
-                <div style="color:#28a745; font-size:14px; font-weight: bold; margin-bottom: 5px;"><i class="fas fa-save"></i> ऑटो-सेव चालू है!</div>
-            </div>
-            
-            <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="यहाँ टाइप करना शुरू करें..."></textarea>
-            
-            <div style="display: flex; gap: 15px;">
-                <button class="btn btn-danger" style="margin-top: 15px;" onclick="exitTest()">टेस्ट छोड़ें (Exit)</button>
-                <button class="btn" style="margin-top: 15px;" onclick="submitTest()">टेस्ट सबमिट करें</button>
-            </div>
-        </div>
-        
-        <div id="resultBox" class="result-box">
-            <h2 style="color: #0277bd; text-align: center; margin-top: 0;">हिंदी स्टेनो लैब</h2>
-            <h3 style="color: #28a745; text-align:center;">परीक्षा परिणाम (Official Result)</h3>
-            
-            <div style="text-align: center; margin-bottom: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 15px;">
-                <b>नाम:</b> <span id="r_name"></span> &nbsp;|&nbsp; <b>टेस्ट स्पीड:</b> <span id="r_testSpeed"></span><br>
-                <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #d9534f;"></span></div>
-            </div>
-            
-            <div class="chart-container"><canvas id="resultChart"></canvas></div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <div style="background: #f1f5f9; padding: 5px; border-radius: 12px; border: 1px solid #cbd5e1; display: flex; gap: 5px;">
+                        <button class="btn" style="width:auto; padding: 5px 12px; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow:none; font-size: 16px;" onclick="changeFontSize(2)">A+</button>
+                        <button class="btn" style="width:auto; padding: 5px 12px; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow:none; font-size: 14px;" onclick="changeFontSize(0)">A</button>
+                        <button class="btn" style="width:auto; padding: 5px 12px; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow:none; font-size: 12px;" onclick="changeFontSize(-2)">A-</button>
+                    </div>
 
-            <div class="stats-grid">
-                <div class="stat-item positive">कुल शब्द: <span id="r_masterWords">0</span></div>
-                <div class="stat-item">छूटे हुए शब्द: <span id="r_omissions">0</span></div>
-                <div class="stat-item">स्पेलिंग/गलत शब्द: <span id="r_fullMistakes">0</span></div>
-                <div class="stat-item">अतिरिक्त शब्द: <span id="r_extraWords">0</span></div>
-            </div>
-
-            <div class="official-box">
-                <h4>आधिकारिक मूल्यांकन (5% Margin Rule)</h4>
-                <div class="stats-grid" style="margin-bottom: 0;">
-                    <div class="stat-item" style="background: none; border:none;">कुल गलतियां: <span id="r_actualMistakes" style="font-size: 20px;">0</span></div>
-                    <div class="stat-item positive" style="background: none; border:none;">माफ की गई (5%): <span id="r_allowedMistakes" style="font-size: 20px;">0</span></div>
-                    <div class="stat-item" style="background: none; border-top: 1px solid #ffeeba; border-radius:0;">काटी जाने वाली (Excess): <span id="r_excessMistakes" style="font-size: 22px;">0</span></div>
-                    <div class="stat-item positive" style="background: none; border-top: 1px solid #ffeeba; border-radius:0;">शुद्ध शब्द (Net Words): <span id="r_netWords" style="font-size: 22px;">0</span></div>
-                    <div class="stat-item positive" style="background: #d4edda; grid-column: span 2; text-align: center; border: 1px solid #c3e6cb; padding:15px;">
-                        <span style="float:none; color: #155724; font-size: 22px;">स्पीड: <b id="r_speed">0 WPM</b> &nbsp;|&nbsp; एक्यूरेसी: <b id="r_accuracy">0%</b></span>
+                    <div style="background: #e0e7ff; padding: 8px 15px; border-radius: 12px; border: 1px solid #c7d2fe;">
+                        <label style="font-size: 13px; font-weight: bold; color: #4f46e5; margin-bottom: 5px; display: block;">Backspace</label>
+                        <select id="backspaceToggle" style="padding: 5px; border-radius: 6px; font-weight: bold;" onchange="saveTestState()">
+                            <option value="on" selected>ON (चालू)</option><option value="off">OFF (बंद)</option>
+                        </select>
                     </div>
                 </div>
             </div>
-            <p id="saveStatus" style="text-align:center; color:#28a745; font-weight:bold; display:none; background: #d4edda; padding: 10px; border-radius: 8px;">✅ आपका रिज़ल्ट सुरक्षित कर लिया गया है!</p>
 
-            <label style="border:none;">आपके अनुवाद का मूल्यांकन:</label>
-            <div id="displayEvaluatedText" class="kruti-text kruti-readonly"></div>
-            <div style="text-align: center;">
-                <button id="downloadPdfBtn" class="btn btn-info" style="width: auto;" onclick="downloadResultPDF()">परिणाम को PDF में डाउनलोड करें</button>
+            <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="टाइपिंग शुरू करें..."></textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <button class="btn btn-danger" style="margin: 0; padding: 15px 25px;" onclick="exitTest()"><i class="fas fa-times-circle"></i> टेस्ट छोड़ें (Exit)</button>
+                <button class="btn" style="width: auto; margin: 0; padding: 15px 40px; font-size: 18px;" onclick="submitTest()"><i class="fas fa-check-circle"></i> सबमिट करें</button>
+            </div>
+        </div>
+        
+        <div id="resultBox" class="result-box" style="border-top: 8px solid #10b981;">
+            <div style="text-align: center; margin-bottom: 20px;"><i class="fas fa-trophy" style="font-size: 50px; color: #10b981;"></i></div>
+            <h2 style="color: #312e81; text-align: center; margin-top: 0; font-size: 32px;">परीक्षा परिणाम</h2>
+            <div style="text-align: center; font-size: 18px; margin-bottom: 30px; color: #64748b; font-weight: bold;">
+                नाम: <span id="r_name" style="color:#1e293b;"></span> | स्पीड: <span id="r_testSpeed" style="color:#1e293b;"></span>
+                <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #ef4444;"></span></div>
+            </div>
+            
+            <div style="max-width: 320px; margin: 20px auto; text-align: center;">
+                <canvas id="resultDoughnutChart"></canvas>
+            </div>
+
+            <div style="background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">छूटे हुए शब्द (Omissions)</b><br><span id="r_om_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">स्पेलिंग (Full Mistakes)</b><br><span id="r_fm_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">अतिरिक्त शब्द (Extra Words)</b><br><span id="r_ew_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
+                        <b style="color: #64748b; font-size: 14px;">कोमा/मात्रा (Half Mistakes)</b><br><span id="r_hm_deep" style="color: #f59e0b; font-size: 24px; font-weight: 900;">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #fffbeb; padding: 25px; border-radius: 16px; border: 2px dashed #fde68a; margin-bottom: 25px;">
+                <h4 style="margin: 0 0 15px 0; color: #b45309; text-align: center; font-size: 18px;">आधिकारिक मूल्यांकन (5% Rules)</h4>
+                <div style="display: flex; justify-content: space-around; font-weight: bold; color: #78350f; font-size: 16px; flex-wrap: wrap; gap: 10px;">
+                    <div>कुल शब्द: <span id="r_masterWords">0</span></div>
+                    <div>कुल गलतियां: <span id="r_actualMistakes" style="color:#ef4444;">0</span></div>
+                    <div>माफ (5%): <span id="r_allowedMistakes" style="color:#10b981;">0</span></div>
+                    <div>शुद्ध शब्द: <span id="r_netWords" style="color:#4f46e5; font-size: 20px;">0</span></div>
+                </div>
+                <div style="text-align: center; margin-top: 15px; font-size: 20px;">
+                    <span style="color: #312e81;">स्पीड: <b id="r_speed">0 WPM</b></span> &nbsp;|&nbsp; 
+                    <span style="color: #10b981;">एक्यूरेसी: <b id="r_accuracy">0%</b></span>
+                </div>
+            </div>
+
+            <label style="font-weight:bold; color:#312e81; display:block; margin-bottom:10px; font-size: 18px;">आपके अनुवाद का मूल्यांकन (Word-by-Word Check):</label>
+            <div id="displayEvaluatedText" class="kruti-text" style="background:#f8fafc; border:2px dashed #cbd5e1; min-height:150px; margin-bottom:20px; cursor:default; user-select:text; -webkit-user-select:text;"></div>
+            
+            <p id="saveStatus" style="text-align:center; color:#059669; font-weight:bold;"></p>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="downloadPdfBtn" class="btn btn-info" style="width:auto; margin-right: 10px;" onclick="downloadResultPDF()"><i class="fas fa-file-pdf"></i> परिणाम PDF डाउनलोड करें</button>
+                <button class="btn" style="width:auto; padding: 12px 30px;" onclick="switchTab('dashboard')">डैशबोर्ड पर जाएं</button>
             </div>
         </div>
     </div>
 
-    <div id="profileView" class="view-section setup-box">
-        <h2 style="color: #0277bd; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-top:0;">👤 विद्यार्थी प्रोफाइल</h2>
-        <div style="font-size: 18px; line-height: 2.5; max-width: 400px; margin: 20px auto;">
-            <p style="background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 10px;">
-                <b>① Mail ID:</b> <br><span id="profileEmail" style="color: #01579b; font-weight: bold;"></span>
-            </p>
-            <p style="background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 10px;">
-                <b>② Name:</b> <br><span id="profileName" style="color: #555;"></span>
-            </p>
-            <p style="background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 10px;">
-                <b>③ Roll No.:</b> <br><span id="profileRoll" style="color: #d9534f; font-weight: bold;"></span>
-            </p>
-            <button class="btn btn-danger" onclick="logoutUser()" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 16px;">सुरक्षित लॉगआउट करें</button>
-        </div>
+    <div id="liveView" class="view-section setup-box" style="border-top: 6px solid #ef4444; text-align: center; padding: 50px 30px;">
+        <div style="font-size: 60px; color: #ef4444; margin-bottom: 15px; animation: pulse 2s infinite; border-radius: 50%; display: inline-block;"><i class="fas fa-tower-broadcast"></i></div>
+        <h2 style="color: #ef4444; font-size: 35px; margin-top: 0; font-weight: 900;">LIVE SUNDAY EXAM</h2>
+        <div id="liveStatusBox" style="background: #fef2f2; padding: 30px; border-radius: 16px; border: 2px dashed #fca5a5; max-width: 600px; margin: 0 auto;"></div>
     </div>
 
-    <div id="leaderboardView" class="view-section setup-box" style="border: 2px solid #ffc107;">
-        <h2 style="color: #ffc107; text-align: center; margin-top: 0; font-size: 26px;">🏆 लीडरबोर्ड (रैंकिंग)</h2>
-        <p style="text-align: center; color: #666; margin-bottom: 20px;">किसने कौनसी रैंक हासिल की, यहाँ देखें।</p>
-        
-        <label style="border:none; margin-top:0;"><b>किस डिक्टेशन का लीडरबोर्ड देखना है?</b></label>
-        <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fff3cd; color:#856404; font-weight:bold; border:2px solid #ffc107;">
-            <option>लोड हो रहा है...</option>
-        </select>
-
+    <div id="leaderboardView" class="view-section setup-box" style="border-top: 6px solid #f59e0b;">
+        <h2 style="color: #d97706; text-align: center; margin-top: 0; font-size: 30px;"><i class="fas fa-trophy"></i> लीडरबोर्ड</h2>
+        <select id="leaderboardSpeedSelect" class="input-field" onchange="renderLeaderboard()" style="background:#fffbeb; border-color:#fde68a;"></select>
         <div style="overflow-x: auto;">
             <table class="data-table">
-                <thead><tr><th>रैंक</th><th>विद्यार्थी का नाम</th><th>Net Words</th><th>Accuracy</th></tr></thead>
+                <thead style="background: #f59e0b;"><tr><th>रैंक</th><th>नाम</th><th>Net Words</th><th>Accuracy</th></tr></thead>
                 <tbody id="leaderboardData"><tr><td colspan="4" style="text-align: center;">डेटा लोड हो रहा है...</td></tr></tbody>
             </table>
         </div>
     </div>
 
 </div>
+</div>
 
 <script>
+    let isSignupMode = false;
 
-    // 1. Firebase Config Setup
-    // ==========================================
+    function toggleAuthMode() {
+        isSignupMode = !isSignupMode;
+        document.getElementById('authTitle').innerHTML = isSignupMode ? "<i class='fas fa-user-plus'></i> खाता बनाएं" : "<i class='fas fa-user-shield'></i> लॉगिन करें";
+        document.getElementById('nameFieldContainer').style.display = isSignupMode ? "block" : "none";
+        document.getElementById('forgotPwdLink').style.display = isSignupMode ? "none" : "block";
+        document.getElementById('mainAuthBtn').innerHTML = isSignupMode ? "<i class='fas fa-user-plus'></i> खाता बनाएं" : "<i class='fas fa-sign-in-alt'></i> पोर्टल में प्रवेश करें";
+        document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें (Sign Up)</span>";
+    }
+
+    function togglePwd() {
+        let p = document.getElementById('authPassword');
+        let i = document.getElementById('pwdIcon');
+        if(p.type === 'password') { p.type = 'text'; i.className = 'fas fa-eye-slash eye-icon'; }
+        else { p.type = 'password'; i.className = 'fas fa-eye eye-icon'; }
+    }
+
+    document.addEventListener('contextmenu', e => e.preventDefault()); 
+    document.addEventListener('copy', e => { e.preventDefault(); alert("🚫 कॉपी करना सख्त मना है!"); }); 
+    document.addEventListener('cut', e => { e.preventDefault(); alert("🚫 कट करना सख्त मना है!"); }); 
+    document.addEventListener('keydown', e => {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault(); alert("🚫 डेवलपर टूल्स मना है!");
+        }
+    });
+
     const firebaseConfig = {
       apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
       authDomain: "hindi-steno-lab-1.firebaseapp.com",
@@ -652,75 +390,60 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    let isSignupMode = false;
     let currentUserData = { name: "", roll: "", email: "" };
-    
-    // 🚀 NEW: Auto Save Variable 🚀
+    let currentCategory = "SSC"; 
     let autoSaveKey = "";
 
     // ==========================================
     // ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
-    // ==========================================
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyxfbTNsI8lhXmAL9ptD9x-BfvWBVi636rTrgjHuCzNQirc87S8FGsVr_eQa5umsTsG/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "YOUR_GOOGLE_SHEET_WEB_APP_URL_HERE"; 
     // ==========================================
 
-    function toggleAuthMode() {
-        isSignupMode = !isSignupMode;
-        document.getElementById('authTitle').innerText = isSignupMode ? "नया खाता बनाएं" : "लॉगिन करें";
-        document.getElementById('nameFieldContainer').style.display = isSignupMode ? "block" : "none";
-        document.getElementById('forgotPwdLink').style.display = isSignupMode ? "none" : "block";
-        document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें</span>";
-    }
-
-    // 🚀 2. VIP Authentication Flow + Loader 🚀
     auth.onAuthStateChanged((user) => {
-        if (user && user.emailVerified) {
+        if (user) {
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('fullScreenLoader').style.display = 'flex'; 
-
+            
             let loadText = document.getElementById('dynamicLoaderText');
             let loadTimer1 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-shield-alt'></i> VIP सिक्योरिटी चेक की जा रही है..."; }, 1500);
             let loadTimer2 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-database'></i> क्लाउड से डिक्टेशन लोड हो रहे हैं..."; }, 3500);
             let loadTimer3 = setTimeout(() => { if(loadText) loadText.innerHTML = "<i class='fas fa-tachometer-alt'></i> बस थोड़ा सा इंतज़ार, पोर्टल तैयार है..."; }, 6000);
 
             let noCacheUrl = GOOGLE_SHEET_WEB_APP_URL + "?t=" + new Date().getTime();
-            
+
             fetch(noCacheUrl).then(res => res.json()).then(data => {
                 clearTimeout(loadTimer1); clearTimeout(loadTimer2); clearTimeout(loadTimer3);
-                
+
                 let approvedUsers = data.approvedUsers || [];
                 let userEmail = user.email.toLowerCase();
 
                 if(approvedUsers.includes(userEmail)) {
                     document.getElementById('fullScreenLoader').style.display = 'none';
-                    
                     let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
                     let userName = user.displayName || user.email.split('@')[0];
                     currentUserData = { name: userName, roll: generatedRoll, email: user.email };
                     
                     autoSaveKey = "steno_autosave_" + currentUserData.email;
 
-                    document.getElementById('profileEmail').innerText = currentUserData.email;
-                    document.getElementById('profileName').innerText = currentUserData.name;
-                    document.getElementById('profileRoll').innerText = currentUserData.roll;
-                    
                     document.getElementById('mainNavbar').style.display = 'flex';
+                    document.getElementById('homeName').innerText = currentUserData.name;
                     
-                    adminSettingsData = data.adminSettings;
-                    globalLeaderboardData = data.leaderboard;
-                    globalHistoryData = data.history; 
+                    adminSettingsData = data.adminSettings; globalHistoryData = data.history; 
+                    globalLeaderboardData = data.leaderboard; liveResultsData = data.liveResults;
+                    if(data.notification) document.getElementById('notificationText').innerText = "🔔 आवश्यक सूचना: " + data.notification;
 
+                    document.getElementById('dataLoadingMsg').style.color = "#059669"; 
+                    document.getElementById('dataLoadingMsg').style.background = "#d1fae5";
+                    document.getElementById('dataLoadingMsg').innerHTML = "<i class='fas fa-check-circle'></i> डिक्टेशन रेडी है!";
+                    document.getElementById('speedSelect').disabled = false;
+                    document.getElementById('startTestBtn').disabled = false; 
+                    document.getElementById('startTestBtn').style.opacity = 1;
+                    
                     updateTopicName(); 
-
-                    let lbSelect = document.getElementById('leaderboardSpeedSelect');
-                    lbSelect.innerHTML = "";
-                    if(adminSettingsData && adminSettingsData.length > 0) {
-                        adminSettingsData.forEach(item => {
-                            lbSelect.innerHTML += `<option value="${item.topic}">${item.speed} WPM - ${item.topic}</option>`;
-                        });
-                    } else {
-                        lbSelect.innerHTML = `<option>डेटा उपलब्ध नहीं</option>`;
-                    }
+                    let lbSelect = document.getElementById('leaderboardSpeedSelect'); lbSelect.innerHTML = "";
+                    adminSettingsData.forEach(item => {
+                        if(!item.isLive) lbSelect.innerHTML += `<option value="${item.topic}">[${item.category}] ${item.speed} WPM - ${item.topic}</option>`;
+                    });
 
                     switchTab('home'); 
                 } else {
@@ -729,13 +452,13 @@
                     document.getElementById('authWrapper').style.display = 'flex';
                     alert("⚠️ आपका खाता स्वीकृत (Approved) नहीं है या सब्सक्रिप्शन खत्म हो गया है। कृपया एडमिन से संपर्क करें।");
                 }
-            }).catch(err => {
+            }).catch(e => {
                 clearTimeout(loadTimer1); clearTimeout(loadTimer2); clearTimeout(loadTimer3);
+                alert("सर्वर से कनेक्ट होने में समस्या। कृपया रीफ्रेश करें।");
+                auth.signOut();
                 document.getElementById('fullScreenLoader').style.display = 'none';
                 document.getElementById('authWrapper').style.display = 'flex';
-                alert("❌ सर्वर से कनेक्ट नहीं हो पाया। कृपया पेज रिफ्रेश करें।");
             });
-
         } else {
             document.getElementById('fullScreenLoader').style.display = 'none';
             document.getElementById('authWrapper').style.display = 'flex';
@@ -746,41 +469,32 @@
 
     function processAuth() {
         const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value.trim();
+        const pwd = document.getElementById('authPassword').value.trim();
         const name = document.getElementById('authName') ? document.getElementById('authName').value.trim() : "";
+        if(!email || !pwd) return alert("कृपया ईमेल और पासवर्ड डालें!");
         
-        if(!email || !password) return alert("कृपया ईमेल और पासवर्ड डालें!");
-
         if(isSignupMode) {
-            if(!name) return alert("खाता बनाने के लिए पूरा नाम डालना ज़रूरी है!");
-            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-                return userCredential.user.updateProfile({ displayName: name }).then(() => userCredential.user.sendEmailVerification());
+            if(!name) return alert("नाम डालना ज़रूरी है!");
+            auth.createUserWithEmailAndPassword(email, pwd).then((userCred) => {
+                return userCred.user.updateProfile({ displayName: name });
             }).then(() => {
                 auth.signOut(); 
-                alert("✅ खाता बन गया! कृपया अपना ईमेल चेक करें और लिंक पर क्लिक करके वेरीफाई करें।"); 
+                alert("✅ आपका खाता बन गया है! कृपया इसे चालू करवाने के लिए एडमिन को WhatsApp पर मैसेज करें।");
                 toggleAuthMode();
             }).catch(e => alert("एरर: " + e.message));
         } else {
-            auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
-                if (!userCredential.user.emailVerified) {
-                    userCredential.user.sendEmailVerification().then(() => {
-                        auth.signOut(); 
-                        alert("⚠️ आपका ईमेल वेरीफाई नहीं है! हमने आपके ईमेल पर 'नया लिंक' भेजा है। कृपया वेरीफाई करें।");
-                    });
-                }
-            }).catch(e => alert("❌ लॉगिन फेल: ईमेल या पासवर्ड गलत है।"));
+            auth.signInWithEmailAndPassword(email, pwd).catch(e => {
+                alert("❌ लॉगिन फेल: ईमेल/पासवर्ड गलत है।");
+            });
         }
     }
-    
-    function logoutUser() { auth.signOut(); location.reload(); }
-    
+
     function resetPassword() {
         const email = document.getElementById('authEmail').value.trim();
         if(!email) return alert("पासवर्ड रीसेट के लिए पहले अपना ईमेल दर्ज करें।");
-        auth.sendPasswordResetEmail(email).then(() => alert("लिंक भेज दिया गया है!")).catch(e => alert(e.message));
+        auth.sendPasswordResetEmail(email).then(() => alert("पासवर्ड रीसेट लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
 
-    // 🚀 NEW: Check Pending Test (Auto Save) 🚀
     function checkPendingTest() {
         if(!autoSaveKey) return;
         let savedStateStr = localStorage.getItem(autoSaveKey);
@@ -793,18 +507,16 @@
         }
     }
 
-    // ==========================================
-     // 3. Tab Navigation Logic
-    // ==========================================
     function switchTab(tabId) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        
         document.getElementById(tabId + 'View').classList.add('active');
-        document.getElementById('btn-' + tabId).classList.add('active');
+        let btn = document.getElementById('btn-' + tabId);
+        if(btn) btn.classList.add('active');
 
         if(tabId === 'dashboard') renderDashboard();
         if(tabId === 'leaderboard') renderLeaderboard();
+        if(tabId === 'live') renderLiveTestLogic();
         if(tabId === 'test') {
             document.getElementById('studentDetailsBox').style.display = 'block';
             document.getElementById('audioSection').style.display = 'none';
@@ -815,59 +527,30 @@
             if(!localStorage.getItem(autoSaveKey)) {
                 document.getElementById('studentText').value = '';
             }
+            selectCategory('SSC'); 
             checkPendingTest();
         }
     }
 
-    let adminSettingsData = null; 
-    let globalLeaderboardData = null; 
-    let globalHistoryData = null; 
-    let resultChartInstance = null;
-    let finalMasterText = ""; 
-    let totalDuration = 3600; // 60 Minutes Default
-    let timeLeft = totalDuration; 
-    let timerInterval; 
-    let isTestRunning = false;
-    let currentTestSpeed = "";
-    let currentTestTopic = "";
+    let adminSettingsData = null, globalHistoryData = null, globalLeaderboardData = null, liveResultsData = null;
+    let finalMasterText = "", totalDuration = 3600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
+    let currentTestSpeed = "", currentTestTopic = "", isLiveTestActive = false;
 
-    function updateTopicName() {
-        let speed = document.getElementById('speedSelect').value;
-        let topicBox = document.getElementById('topicSelect');
-        let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed) : [];
-
-        topicBox.innerHTML = ""; 
-        
-        if(matchingSettings.length > 0) {
-            matchingSettings.forEach(setting => {
-                let topicName = setting.topic ? setting.topic : `डिक्टेशन अभ्यास - ${speed} WPM`;
-                topicBox.innerHTML += `<option value="${topicName}">${topicName}</option>`;
-            });
-            topicBox.disabled = false;
-        } else {
-            topicBox.innerHTML = `<option>टॉपिक उपलब्ध नहीं</option>`;
-            topicBox.disabled = true;
-        }
+    let currentFontSize = 26;
+    function changeFontSize(change) {
+        if(change === 0) currentFontSize = 26;
+        else currentFontSize += change;
+        document.getElementById('studentText').style.fontSize = currentFontSize + 'px';
     }
 
-    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-    
-    function requestFullScreen() { 
-        try { 
-            var e = document.documentElement; 
-            if (e.requestFullscreen) e.requestFullscreen(); 
-            else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen(); 
-        } catch(e) {} 
-    }
-
-    // 🚀 NEW: Auto Save Logic 🚀
     function saveTestState() {
         if(!isTestRunning) return;
         let stdArea = document.getElementById('studentText');
         let testState = {
             speed: currentTestSpeed, topic: currentTestTopic, text: stdArea.value,
             timeLeft: timeLeft, totalDuration: totalDuration, masterText: finalMasterText,
-            backspace: document.getElementById('backspaceSelect').value
+            backspace: document.getElementById('backspaceToggle').value,
+            category: currentCategory, isLive: isLiveTestActive
         };
         localStorage.setItem(autoSaveKey, JSON.stringify(testState));
     }
@@ -877,13 +560,11 @@
         if(!savedStateStr) return;
         
         let savedState = JSON.parse(savedStateStr);
-        currentTestSpeed = savedState.speed; 
-        currentTestTopic = savedState.topic;
-        finalMasterText = savedState.masterText; 
-        totalDuration = savedState.totalDuration; 
-        timeLeft = savedState.timeLeft;
+        currentTestSpeed = savedState.speed; currentTestTopic = savedState.topic;
+        finalMasterText = savedState.masterText; totalDuration = savedState.totalDuration; timeLeft = savedState.timeLeft;
+        currentCategory = savedState.category || 'SSC'; isLiveTestActive = savedState.isLive || false;
         
-        document.getElementById('backspaceSelect').value = savedState.backspace || 'on';
+        document.getElementById('backspaceToggle').value = savedState.backspace || 'on';
         let stdArea = document.getElementById('studentText');
         stdArea.value = savedState.text;
 
@@ -891,25 +572,11 @@
         document.getElementById('audioSection').style.display = 'none'; 
         document.getElementById('readingSection').style.display = 'none'; 
         document.getElementById('mainNavbar').style.display = 'none';
+        document.querySelector('.top-header').style.display = 'none';
         
-        requestFullScreen();
+        if(isLiveTestActive) { try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); } catch(e) {} }
         
-        document.getElementById('r_name').innerText = currentUserData.name;
-        document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
-
-        document.getElementById('typingSection').style.display = 'block';
-        isTestRunning = true; 
-        stdArea.focus();
-        updateTimer(); 
-        timerInterval = setInterval(updateTimer, 1000);
-        
-        stdArea.addEventListener('paste', e => { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
-        stdArea.addEventListener('input', function() { saveTestState(); }); 
-        
-        stdArea.addEventListener('keydown', e => {
-            let backspaceSetting = document.getElementById('backspaceSelect').value;
-            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') { e.preventDefault(); }
-        });
+        startTypingTestFromResume(); 
     }
 
     function discardPendingTest() {
@@ -920,39 +587,64 @@
         }
     }
 
-    function startAudioSection() {
-        currentTestSpeed = document.getElementById('speedSelect').value;
-        currentTestTopic = document.getElementById('topicSelect').value; 
+    function selectCategory(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+        if(cat==='SSC') document.getElementById('cat-ssc').classList.add('active');
+        if(cat==='Court') document.getElementById('cat-court').classList.add('active');
+        if(cat==='News') document.getElementById('cat-news').classList.add('active');
+        updateTopicName();
+    }
+
+    function updateTopicName() {
+        let speed = document.getElementById('speedSelect').value;
+        let topicBox = document.getElementById('topicSelect');
+        let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed && item.category === currentCategory && !item.isLive) : [];
+        topicBox.innerHTML = ""; 
         
-        let setting = adminSettingsData ? adminSettingsData.find(item => item.speed == currentTestSpeed && item.topic == currentTestTopic) : null;
-
-        if(!setting) { alert(`तकनीकी त्रुटि: यह डिक्टेशन उपलब्ध नहीं है।`); return; }
-
-        finalMasterText = setting.text;
-        let finalAudioLink = setting.audio; 
-        
-        let timeInMins = setting.timeMins || 60; // 60 Minutes Default
-        totalDuration = timeInMins * 60; 
-        timeLeft = totalDuration;
-
-        document.getElementById('mainNavbar').style.display = 'none';
-
-        requestFullScreen();
-        document.getElementById('dictationAudio').src = finalAudioLink;
-        document.getElementById('r_name').innerText = currentUserData.name;
-        document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
-
-        document.getElementById('studentDetailsBox').style.display = 'none';
-        document.getElementById('audioSection').style.display = 'block';
-
-        let audioPlayer = document.getElementById('dictationAudio');
-        if(audioPlayer) {
-            // 🚀 After audio ends -> Go to 5 Min Reading 🚀
-            audioPlayer.onended = function() { startReadingTest(); };
+        if(matchingSettings.length > 0) {
+            matchingSettings.reverse().forEach(setting => {
+                let displayDate = setting.date ? `[${setting.date}] ` : "";
+                topicBox.innerHTML += `<option value="${setting.topic}">${displayDate}${setting.topic}</option>`;
+            });
+            topicBox.disabled = false;
+        } else { 
+            topicBox.innerHTML = `<option>इस पैनल में डिक्टेशन नहीं है</option>`; 
+            topicBox.disabled = true; 
         }
     }
 
-    // 🚀 NEW: 5 Min Reading Time Logic 🚀
+    function startAudioSection(isLive) {
+        isLiveTestActive = isLive;
+        if(isLiveTestActive) {
+            try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); } catch(e) {}
+            let setting = adminSettingsData.find(item => item.isLive);
+            if(!setting) return alert("आज का लाइव टेस्ट उपलब्ध नहीं है!");
+            currentTestSpeed = setting.speed; currentTestTopic = setting.topic; finalMasterText = setting.text;
+            document.getElementById('dictationAudio').src = setting.audio;
+        } else {
+            currentTestSpeed = document.getElementById('speedSelect').value;
+            currentTestTopic = document.getElementById('topicSelect').value; 
+            let setting = adminSettingsData.find(item => item.speed == currentTestSpeed && item.topic == currentTestTopic && item.category === currentCategory);
+            if(!setting) return alert(`तकनीकी त्रुटि!`);
+            finalMasterText = setting.text;
+            document.getElementById('dictationAudio').src = setting.audio;
+        }
+
+        totalDuration = 60 * 60; // 60 Min Typing
+        timeLeft = totalDuration;
+
+        document.getElementById('mainNavbar').style.display = 'none';
+        document.querySelector('.top-header').style.display = 'none'; 
+        
+        if(!isLiveTestActive) document.getElementById('studentDetailsBox').style.display = 'none';
+        else document.getElementById('liveView').style.display = 'none';
+
+        document.getElementById('audioSection').style.display = 'block';
+        let audioPlayer = document.getElementById('dictationAudio');
+        if(audioPlayer) audioPlayer.onended = function() { startReadingTest(); };
+    }
+
     let readingInterval;
     let readingTimeLeft = 300; // 5 Minutes
 
@@ -981,15 +673,13 @@
 
     function exitTest() {
         if(confirm("क्या आप वाकई टेस्ट बीच में छोड़ना चाहते हैं? आपका डेटा डिलीट हो जाएगा।")) {
-            isTestRunning = false; 
-            clearInterval(timerInterval); 
-            clearInterval(readingInterval);
-            localStorage.removeItem(autoSaveKey); // Clear Auto-save
-            
+            isTestRunning = false; clearInterval(timerInterval); clearInterval(readingInterval);
+            localStorage.removeItem(autoSaveKey); 
             document.getElementById('studentText').value = '';
             document.getElementById('audioSection').style.display = 'none';
             document.getElementById('readingSection').style.display = 'none';
             document.getElementById('typingSection').style.display = 'none';
+            document.querySelector('.top-header').style.display = 'flex';
             document.getElementById('mainNavbar').style.display = 'flex';
             try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
             switchTab('dashboard');
@@ -1005,217 +695,168 @@
         stdArea.focus();
         updateTimer(); 
         timerInterval = setInterval(updateTimer, 1000);
-        saveTestState(); // Initial Save
-        
-        stdArea.addEventListener('paste', e => { e.preventDefault(); alert("पेस्ट करना वर्जित है!"); });
-        stdArea.addEventListener('input', function() { saveTestState(); }); // Save on Type
+        saveTestState(); 
+
+        stdArea.addEventListener('paste', e => { e.preventDefault(); alert("🚫 पेस्ट करना वर्जित है!"); });
+        stdArea.addEventListener('input', function() { saveTestState(); }); 
+
+        function lockCursorToEnd() { setTimeout(() => { stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length; }, 0); }
+        stdArea.addEventListener('click', lockCursorToEnd); stdArea.addEventListener('select', lockCursorToEnd);
         
         stdArea.addEventListener('keydown', e => {
-            let backspaceSetting = document.getElementById('backspaceSelect').value;
-            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') {
-                e.preventDefault();
-            }
+            const blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
+            if (blockedKeys.includes(e.key)) { e.preventDefault(); return; }
+            lockCursorToEnd();
+            let backspaceSetting = document.getElementById('backspaceToggle').value;
+            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') { e.preventDefault(); }
         });
     }
 
-    document.addEventListener("visibilitychange", function() {
-        if (isTestRunning && document.visibilityState === 'hidden') { 
-            alert("❌ चीटिंग पकड़ी गई! आपका टेस्ट सबमिट किया जा रहा है।"); 
-            submitTest(); 
-        }
-    });
+    function startTypingTestFromResume() {
+        document.getElementById('typingSection').style.display = 'block';
+        isTestRunning = true; 
+        let stdArea = document.getElementById('studentText'); 
+        stdArea.focus();
+        updateTimer(); 
+        timerInterval = setInterval(updateTimer, 1000);
+        
+        stdArea.addEventListener('paste', e => { e.preventDefault(); alert("🚫 पेस्ट करना वर्जित है!"); });
+        stdArea.addEventListener('input', function() { saveTestState(); }); 
+
+        function lockCursorToEnd() { setTimeout(() => { stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length; }, 0); }
+        stdArea.addEventListener('click', lockCursorToEnd); stdArea.addEventListener('select', lockCursorToEnd);
+        
+        stdArea.addEventListener('keydown', e => {
+            const blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
+            if (blockedKeys.includes(e.key)) { e.preventDefault(); return; }
+            lockCursorToEnd();
+            let backspaceSetting = document.getElementById('backspaceToggle').value;
+            if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') { e.preventDefault(); }
+        });
+    }
 
     function updateTimer() {
-        let m = Math.floor(timeLeft / 60); 
-        let s = timeLeft % 60;
+        let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
         document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        saveTestState(); 
         
-        saveTestState(); // Save every second
-
-        if (timeLeft <= 0) { 
-            clearInterval(timerInterval); 
-            submitTest(); 
-        }
+        if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
         timeLeft--;
     }
 
-    // ==========================================
-    // 7. Result Evaluation & DP Algorithm (100% UNTOUCHED)
-    // ==========================================
+    // 🚀 ORIGINAL PERFECT DP ALGORITHM (WORD-BY-WORD DIFF) 🚀
     function submitTest() {
-        isTestRunning = false; 
-        clearInterval(timerInterval);
+        isTestRunning = false; clearInterval(timerInterval);
+        localStorage.removeItem(autoSaveKey); 
         
-        localStorage.removeItem(autoSaveKey); // 🚀 CLEAR SAVE ON SUBMIT 🚀
-
         try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
+        document.querySelector('.top-header').style.display = 'flex';
+        document.getElementById('mainNavbar').style.display = 'flex';
         
         let tt = totalDuration - timeLeft;
         document.getElementById('r_timeTaken').innerText = `${Math.floor(tt / 60)} मिनट ${tt % 60} सेकंड`;
-        
-        calculateDetailedMistakes(finalMasterText, document.getElementById('studentText').value.trim(), tt / 60);
-        
         document.getElementById('typingSection').style.display = 'none';
-        document.getElementById('resultBox').style.display = 'block';
         
-        document.getElementById('mainNavbar').style.display = 'flex';
-        
-        let currentTopic = document.getElementById('topicSelect').value;
-        let lbSelect = document.getElementById('leaderboardSpeedSelect');
-        if([...lbSelect.options].some(opt => opt.value === currentTopic)) {
-            lbSelect.value = currentTopic;
-        }
-
-        window.scrollTo(0, 0);
+        let studentText = document.getElementById('studentText').value.trim();
+        calculateDetailedMistakes(finalMasterText, studentText, tt / 60);
     }
 
     function calculateDetailedMistakes(master, student, timeTakenMins) {
-        let mWords = master.split(/\s+/).filter(w => w.length > 0);
-        let sWords = student.split(/\s+/).filter(w => w.length > 0);
-        
+        let mWords = master.split(/\s+/).filter(w => w.length > 0); let sWords = student.split(/\s+/).filter(w => w.length > 0);
         let dp = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
         let path = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
-        
-        for(let i=1; i<=mWords.length; i++){ dp[i][0] = i; path[i][0] = 2; } 
-        for(let j=1; j<=sWords.length; j++){ dp[0][j] = j; path[0][j] = 3; }
-        
+        for(let i=1; i<=mWords.length; i++){ dp[i][0] = i; path[i][0] = 2; } for(let j=1; j<=sWords.length; j++){ dp[0][j] = j; path[0][j] = 3; }
         for(let i=1; i<=mWords.length; i++){
             for(let j=1; j<=sWords.length; j++){
                 let cost = (mWords[i-1] === sWords[j-1]) ? 0 : (mWords[i-1].replace(/[,\|]/g,'') === sWords[j-1].replace(/[,\|]/g,'') ? 0.5 : 1);
-                let diag = dp[i-1][j-1] + cost; 
-                let del = dp[i-1][j] + 1; 
-                let ins = dp[i][j-1] + 1;
-                
-                if(diag <= del && diag <= ins){
-                    dp[i][j] = diag; path[i][j] = 1;
-                } else if(del <= ins){
-                    dp[i][j] = del; path[i][j] = 2;
-                } else {
-                    dp[i][j] = ins; path[i][j] = 3;
-                }
+                let diag = dp[i-1][j-1] + cost, del = dp[i-1][j] + 1, ins = dp[i][j-1] + 1;
+                if(diag <= del && diag <= ins){ dp[i][j] = diag; path[i][j] = 1; } else if(del <= ins){ dp[i][j] = del; path[i][j] = 2; } else { dp[i][j] = ins; path[i][j] = 3; }
             }
         }
         
-        let om=0, hm=0, fm=0, ew=0, currI=mWords.length, currJ=sWords.length, diffHtml=[]; 
+        let om=0, hm=0, fm=0, ew=0;
+        let currI=mWords.length, currJ=sWords.length, diffHtml=[]; 
         
         while(currI>0 || currJ>0) {
             if(currI>0 && currJ>0 && path[currI][currJ]===1) {
                 let w1=mWords[currI-1], w2=sWords[currJ-1];
                 if(w1===w2) {
-                    diffHtml.unshift(`<span style="color:#28a745;">${w2}</span>`);
+                    diffHtml.unshift(`<span style="color:#10b981;">${w2}</span>`);
                 } else {
-                    let cwHtml=` <span style="color:#28a745;font-family:Arial;">(</span><span style="color:#28a745;">${w1}</span><span style="color:#28a745;font-family:Arial;">)</span>`;
+                    let cwHtml=` <span style="color:#10b981;font-family:Arial;">(</span><span style="color:#10b981;">${w1}</span><span style="color:#10b981;font-family:Arial;">)</span>`;
                     if(w1.replace(/[,\|]/g,'') === w2.replace(/[,\|]/g,'')){
-                        hm++; 
-                        diffHtml.unshift(`<span style="color:#fd7e14;">${w2}</span>`+cwHtml);
+                        hm++; diffHtml.unshift(`<span style="color:#f59e0b;">${w2}</span>`+cwHtml);
                     } else {
-                        fm++; 
-                        diffHtml.unshift(`<span style="color:#dc3545;">${w2}</span>`+cwHtml);
+                        fm++; diffHtml.unshift(`<span style="color:#ef4444;">${w2}</span>`+cwHtml);
                     }
                 }
                 currI--; currJ--;
             } else if(currI>0 && (currJ===0 || path[currI][currJ]===2)) {
-                om++; 
-                diffHtml.unshift(`<span style="color:#dc3545;text-decoration:line-through;">${mWords[currI-1]}</span>`); 
-                currI--;
+                om++; diffHtml.unshift(`<span style="color:#ef4444;text-decoration:line-through;">${mWords[currI-1]}</span>`); currI--;
             } else if(currJ>0 && (currI===0 || path[currI][currJ]===3)) {
-                ew++; 
-                diffHtml.unshift(`<span style="color:#dc3545;border-bottom:2px solid #dc3545;">${sWords[currJ-1]}</span>`); 
-                currJ--;
+                ew++; diffHtml.unshift(`<span style="color:#ef4444;border-bottom:2px solid #ef4444;">${sWords[currJ-1]}</span>`); currJ--;
             }
         }
         
         let tw = mWords.length;
-        let totalErr = fm + ew + om;
-        let actualErr = totalErr + (hm/2);
+        let totalErr = fm + ew + om, actualErr = totalErr + (hm/2);
         let allowed = (sWords.length===0) ? 0 : Math.round(tw * 0.05);
         let excess = actualErr > allowed ? actualErr - allowed : 0;
-        
-        let net = tw - excess; 
-        if(net > sWords.length) net = sWords.length; 
-        if(net < 0) net = 0;
-        
-        let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0;
-        let wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
+        let net = tw - excess; if(net > sWords.length) net = sWords.length; if(net < 0) net = 0;
+        let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0, wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
 
-        document.getElementById('r_masterWords').innerText = tw; 
-        document.getElementById('r_omissions').innerText = om;
-        document.getElementById('r_fullMistakes').innerText = fm; 
-        document.getElementById('r_extraWords').innerText = ew;
-        document.getElementById('r_actualMistakes').innerText = actualErr; 
-        document.getElementById('r_allowedMistakes').innerText = allowed;
-        document.getElementById('r_excessMistakes').innerText = excess;
-        document.getElementById('r_netWords').innerText = net;
-        document.getElementById('r_speed').innerText = wpm + " WPM";
-        document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
-        document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
+        if(isLiveTestActive) {
+            saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true);
+            document.getElementById('liveView').style.display = 'block';
+            document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
+        } else {
+            document.getElementById('r_om_deep').innerText = om;
+            document.getElementById('r_fm_deep').innerText = fm;
+            document.getElementById('r_hm_deep').innerText = hm;
+            document.getElementById('r_ew_deep').innerText = ew;
 
-        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net);
-        drawResultChart(net, actualErr);
+            document.getElementById('r_name').innerText = currentUserData.name;
+            document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
+            document.getElementById('r_masterWords').innerText = tw; document.getElementById('r_actualMistakes').innerText = actualErr; 
+            document.getElementById('r_allowedMistakes').innerText = allowed; document.getElementById('r_excessMistakes').innerText = excess; 
+            document.getElementById('r_netWords').innerText = net; document.getElementById('r_speed').innerText = wpm + " WPM"; 
+            document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
+            
+            document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
+            drawDoughnutChart(net, actualErr);
+
+            document.getElementById('resultBox').style.display = 'block';
+            window.scrollTo(0,0);
+            saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, false);
+            if(acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }});
+        }
     }
 
-    function drawResultChart(netWords, mistakes) {
-        let ctx = document.getElementById('resultChart').getContext('2d');
-        if(resultChartInstance) resultChartInstance.destroy();
+    // 📊 DOUGHNUT CHART LOGIC 📊
+    let doughnutChartInstance = null;
+    function drawDoughnutChart(netWords, mistakes) {
+        let ctx = document.getElementById('resultDoughnutChart').getContext('2d');
+        if(doughnutChartInstance) doughnutChartInstance.destroy();
         
-        resultChartInstance = new Chart(ctx, {
+        doughnutChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: { 
                 labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
                 datasets: [{ 
                     data: [netWords, mistakes], 
-                    backgroundColor: ['#28a745', '#dc3545'], 
+                    backgroundColor: ['#10b981', '#ef4444'], 
                     borderWidth: 2, 
                     borderColor: '#ffffff' 
                 }] 
             },
-            options: { 
-                responsive: true, 
-                plugins: { 
-                    legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } 
-                } 
-            }
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
         });
     }
 
-    // ==========================================
-    
-    // ==========================================
-    // 8. Output Functions (Save, Download, Data Display)
-    // ==========================================
-    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords) {
-        let currentTopic = document.getElementById('topicSelect').value;
-        let dataPayload = { 
-            name: currentUserData.name, 
-            rollNumber: currentUserData.roll, 
-            email: currentUserData.email, 
-            speedTarget: document.getElementById('speedSelect').value, 
-            topic: currentTopic, 
-            actualSpeedWPM: speedWPM, 
-            accuracy: accuracy, 
-            totalMistakes: totalMistakes, 
-            netWords: netWords 
-        };
-        
-        fetch(GOOGLE_SHEET_WEB_APP_URL, { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-            body: JSON.stringify(dataPayload) 
-        })
-        .then(response => { 
-            document.getElementById('saveStatus').style.display = 'block'; 
-        })
-        .catch(error => { 
-            console.error("Error saving data:", error); 
-        });
-    }
-
+    // 📄 PDF DOWNLOAD LOGIC 📄
     function downloadResultPDF() {
         const btn = document.getElementById('downloadPdfBtn'); 
         btn.style.display = 'none';
-        
-        let wasDarkMode = document.body.classList.contains('dark-mode'); 
-        if(wasDarkMode) document.body.classList.remove('dark-mode');
         
         const element = document.getElementById('resultBox');
         const opt = { 
@@ -1228,62 +869,94 @@
         
         html2pdf().set(opt).from(element).save().then(() => { 
             btn.style.display = 'inline-block'; 
-            if(wasDarkMode) document.body.classList.add('dark-mode'); 
         });
     }
 
-    function renderLeaderboard() {
-        if (!globalLeaderboardData) { 
-            document.getElementById('leaderboardData').innerHTML = "<tr><td colspan='4' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; 
-            return; 
-        }
+    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive) {
+        let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive };
+        fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; });
+    }
+
+    function renderLiveTestLogic() {
+        let now = new Date();
+        let day = now.getDay(); 
+        let hour = now.getHours();
         
+        let statusBox = document.getElementById('liveStatusBox');
+        
+        if (day === 0 && hour >= 10 && hour < 18) {
+            let liveData = adminSettingsData ? adminSettingsData.find(i => i.isLive) : null;
+            if(liveData) {
+                statusBox.innerHTML = `
+                    <h3 style="color:#b45309;">आज का लाइव टेस्ट शुरू हो चुका है!</h3>
+                    <p style="font-weight:bold; font-size:18px;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
+                    <p style="color:#ef4444; font-size:14px;"><i class="fas fa-exclamation-triangle"></i> टेस्ट फुल स्क्रीन में होगा। बीच में बंद करने पर सबमिट नहीं माना जाएगा।</p>
+                    <button class="btn" style="background:#ef4444; font-size:20px; padding:15px 30px;" onclick="startAudioSection(true)"><i class="fas fa-play-circle"></i> टेस्ट में प्रवेश करें</button>
+                `;
+            } else {
+                statusBox.innerHTML = `<h3 style="color:#ef4444;">आज कोई लाइव टेस्ट निर्धारित नहीं है।</h3>`;
+            }
+        } 
+        else if (day === 0 && hour >= 18) {
+            let tableRows = "";
+            if(liveResultsData && liveResultsData.length > 0) {
+                liveResultsData.sort((a,b) => b.accuracy - a.accuracy); 
+                liveResultsData.forEach((res, idx) => {
+                    let rank = idx===0?"🥇":idx===1?"🥈":idx===2?"🥉":(idx+1);
+                    tableRows += `<tr><td><b>${rank}</b></td><td>${res.name}</td><td>${res.netWords}</td><td style="color:#10b981; font-weight:bold;">${res.accuracy}%</td></tr>`;
+                });
+            } else { tableRows = `<tr><td colspan="4">अभी तक कोई रिज़ल्ट घोषित नहीं हुआ है।</td></tr>`; }
+
+            statusBox.innerHTML = `
+                <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
+                <table class="data-table" style="text-align:left;">
+                    <thead style="background:#4f46e5;"><tr><th>Rank</th><th>Name</th><th>Net Words</th><th>Accuracy</th></tr></thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
+            `;
+        } 
+        else {
+            statusBox.innerHTML = `
+                <i class="fas fa-clock" style="font-size:50px; color:#64748b; margin-bottom:15px;"></i>
+                <h3 style="color:#1e293b;">लाइव टेस्ट अभी बंद है।</h3>
+                <p style="font-size:16px; color:#64748b; font-weight:bold;">यह टेस्ट केवल <b>रविवार सुबह 10:00 बजे से शाम 6:00 बजे</b> तक उपलब्ध होता है।</p>
+            `;
+        }
+    }
+
+    function renderLeaderboard() {
         let selectedTopic = document.getElementById('leaderboardSpeedSelect').value;
         let filteredData = globalLeaderboardData.filter(item => item.topic === selectedTopic);
-
-        filteredData.sort((a, b) => {
-            let accA = parseFloat(a.accuracy) || 0; 
-            let accB = parseFloat(b.accuracy) || 0;
-            if (accB !== accA) return accB - accA; 
-            
-            let wordsA = parseInt(a.netWords) || 0; 
-            let wordsB = parseInt(b.netWords) || 0;
-            return wordsB - wordsA; 
-        });
-
+        filteredData.sort((a, b) => b.accuracy - a.accuracy);
         let tableHtml = "";
-        filteredData.forEach((student, index) => {
-            let rankIcon = (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : (index + 1);
-            let correctWords = student.netWords ? student.netWords : "0"; 
-            tableHtml += `<tr><td><b>${rankIcon}</b></td><td>${student.name}</td><td>${correctWords}</td><td style="color: #28a745; font-weight: bold;">${parseFloat(student.accuracy).toFixed(2)}%</td></tr>`;
+        filteredData.forEach((st, idx) => {
+            let r = idx===0?"🥇":idx===1?"🥈":idx===2?"🥉":(idx+1);
+            tableHtml += `<tr><td><b>${r}</b></td><td>${st.name}</td><td>${st.netWords}</td><td style="color: #10b981; font-weight: 800;">${parseFloat(st.accuracy).toFixed(2)}%</td></tr>`;
         });
-        
-        if(filteredData.length === 0) { 
-            tableHtml = `<tr><td colspan='4' style='text-align:center;'>इस डिक्टेशन का अभी तक कोई रिज़ल्ट नहीं है।</td></tr>`; 
-        }
+        if(filteredData.length === 0) tableHtml = `<tr><td colspan='4' style='text-align:center;'>कोई डेटा नहीं।</td></tr>`;
         document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
 
     function renderDashboard() {
-        if (!globalHistoryData) { 
-            document.getElementById('dashboardData').innerHTML = "<tr><td colspan='5' style='text-align:center; color:red;'>डेटा लोड करने में समस्या आई।</td></tr>"; 
-            return; 
-        }
+        let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email && item.type !== "LIVE"); 
+        let chartData = [...myHistory]; 
+        let labels = chartData.map(a => new Date(a.date).toLocaleDateString('en-IN').substring(0,5)); 
+        let accData = chartData.map(a => parseFloat(a.accuracy));
         
-        let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email);
-        myHistory.reverse(); 
-
-        let tableHtml = "";
-        myHistory.forEach((attempt) => {
-            let dateObj = new Date(attempt.date);
-            let dateStr = dateObj.toLocaleDateString('en-IN') + " " + dateObj.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-            tableHtml += `<tr><td>${dateStr}</td><td>${attempt.speed} WPM</td><td style="color:#0277bd; font-weight:bold;">${attempt.netWords}</td><td style="color:#28a745; font-weight:bold;">${parseFloat(attempt.accuracy).toFixed(2)}%</td><td style="color:#d9534f; font-weight:bold;">${attempt.mistakes}</td></tr>`;
+        let ctx = document.getElementById('progressLineChart').getContext('2d');
+        if(window.dashboardLineChart) window.dashboardLineChart.destroy();
+        window.dashboardLineChart = new Chart(ctx, {
+            type: 'line', data: { labels: labels, datasets: [{ label: 'Accuracy', data: accData, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }] },
+            options: { responsive: true, scales: { y: { min: 50, max: 100 } } }
         });
-        
-        if(myHistory.length === 0) { 
-            tableHtml = "<tr><td colspan='5' style='text-align:center;'>आपने अभी तक कोई टेस्ट नहीं दिया है।</td></tr>"; 
-        }
-        document.getElementById('dashboardData').innerHTML = tableHtml;
+
+        myHistory.reverse(); let tHtml = "";
+        myHistory.forEach((a) => {
+            let dStr = new Date(a.date).toLocaleDateString('en-IN');
+            tHtml += `<tr><td>${dStr}</td><td>${a.category || 'SSC'}</td><td>${a.speed}</td><td style="font-weight:bold;">${a.netWords}</td><td style="color:#10b981; font-weight:bold;">${parseFloat(a.accuracy).toFixed(2)}%</td></tr>`;
+        });
+        document.getElementById('dashboardData').innerHTML = tHtml || "<tr><td colspan='5' style='text-align:center;'>डेटा नहीं मिला</td></tr>";
     }
 </script>
 
