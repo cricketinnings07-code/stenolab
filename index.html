@@ -84,7 +84,6 @@
         .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(16, 185, 129, 0.4); }
         .btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
         .btn-danger { background: #ef4444; width: auto; box-shadow: 0 8px 15px rgba(239, 68, 68, 0.3); }
-        .btn-info { background: #3b82f6; width: auto; box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3); }
         
         .kruti-text { font-family: 'Kruti Dev 010', Arial; font-size: 26px; width: 100%; padding: 25px; box-sizing: border-box; border: 2px solid #cbd5e1; border-radius: 16px; background-color: #fff; line-height: 1.8; user-select: text; -webkit-user-select: text; transition: font-size 0.3s ease; }
         .kruti-text:focus { border-color: #4f46e5; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
@@ -101,6 +100,7 @@
         .cat-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; background: #fff; font-weight: bold; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .cat-btn.active { border-color: #4f46e5; background: #eef2ff; color: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15); }
 
+        /* 🚀 Premium Server Loader CSS 🚀 */
         #fullScreenLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter: blur(10px); }
         .server-box { position: relative; display: inline-block; margin-bottom: 25px; }
         .server-icon { font-size: 70px; color: #4f46e5; animation: pulseServer 1.5s ease-in-out infinite alternate; text-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
@@ -230,17 +230,17 @@
             <div style="font-size: 60px; color: #4f46e5; margin-bottom: 20px;"><i class="fas fa-volume-up"></i></div>
             <h2 style="color: #ef4444; margin-top: 0;">ऑडियो डिक्टेशन चल रही है...</h2>
             <audio id="dictationAudio" controls style="width: 100%; max-width: 500px; margin-top: 20px;"></audio><br>
-            
-            <div style="margin-top: 25px; margin-bottom: 25px;">
-                <label style="font-weight: bold; color: #64748b; font-size: 14px; margin-bottom: 10px; display: block;">ऑडियो स्पीड (Playback Speed):</label>
-                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn btn-info" style="margin: 0; padding: 10px 20px;" onclick="setAudioSpeed(0.8)">0.8x</button>
-                    <button class="btn" style="margin: 0; padding: 10px 20px; background: #4f46e5; box-shadow: 0 4px 10px rgba(79,70,229,0.3);" onclick="setAudioSpeed(1.0)">1.0x (Normal)</button>
-                    <button class="btn btn-info" style="margin: 0; padding: 10px 20px;" onclick="setAudioSpeed(1.2)">1.2x</button>
-                </div>
-            </div>
+            <button class="btn" style="background: #f59e0b; margin-top: 30px; width: auto;" onclick="skipAudio()">स्किप करें (सीधे रीडिंग) <i class="fas fa-arrow-right"></i></button>
+        </div>
 
-            <button class="btn" style="background: #f59e0b; margin-top: 10px; width: auto;" onclick="skipAudio()">स्किप करें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
+        <div id="readingSection" style="display: none; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;">
+            <div style="font-size: 60px; color: #10b981; margin-bottom: 20px;"><i class="fas fa-book-reader"></i></div>
+            <h2 style="color: #312e81; margin-top: 0;">डिक्टेशन रीडिंग टाइम</h2>
+            <div class="timer" id="readingTimerDisplay" style="color: #10b981; background: #ecfdf5; border-color: #6ee7b7;">05:00</div>
+            <p style="color: #64748b; font-weight: bold; font-size: 16px;">अपनी शॉर्टहैंड आउटलाइन को पढ़ने के लिए आपको 5 मिनट दिए गए हैं।</p>
+            <div style="text-align: center; margin-top: 25px;">
+                <button class="btn" style="background: #4f46e5; width: auto;" onclick="skipReading()">रीडिंग छोड़ें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
+            </div>
         </div>
 
         <div id="typingSection" style="display: none; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
@@ -249,7 +249,7 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
                 <div>
                     <label style="font-size: 20px; font-weight: 800;">अपना अनुवाद यहाँ टाइप करें:</label>
-                    <p style="color:#10b981; font-size:14px; margin-top:5px; font-weight: bold;"><i class="fas fa-save"></i> ऑटो-सेव (Auto-Save) चालू है!</p>
+                    <p style="color:#10b981; font-size:14px; margin-top:5px; font-weight: bold;"><i class="fas fa-save"></i> ऑटो-सेव चालू है! (कुल समय: 60 मिनट)</p>
                 </div>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
                     <div style="background: #f1f5f9; padding: 5px; border-radius: 12px; border: 1px solid #cbd5e1; display: flex; gap: 5px;">
@@ -523,6 +523,7 @@
         if(tabId === 'test') {
             document.getElementById('studentDetailsBox').style.display = 'block';
             document.getElementById('audioSection').style.display = 'none';
+            document.getElementById('readingSection').style.display = 'none';
             document.getElementById('typingSection').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
             
@@ -535,23 +536,14 @@
     }
 
     let adminSettingsData = null, globalHistoryData = null, globalLeaderboardData = null, liveResultsData = null;
-    let finalMasterText = "", totalDuration = 600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
+    let finalMasterText = "", totalDuration = 3600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
     let currentTestSpeed = "", currentTestTopic = "", isLiveTestActive = false;
 
-    // 🚀 Feature 2: Change Font Size Logic 🚀
     let currentFontSize = 26;
     function changeFontSize(change) {
         if(change === 0) currentFontSize = 26;
         else currentFontSize += change;
         document.getElementById('studentText').style.fontSize = currentFontSize + 'px';
-    }
-
-    // 🚀 Feature 3: Audio Speed Logic 🚀
-    function setAudioSpeed(speed) {
-        let player = document.getElementById('dictationAudio');
-        if(player) {
-            player.playbackRate = speed;
-        }
     }
 
     function saveTestState() {
@@ -581,6 +573,7 @@
 
         document.getElementById('studentDetailsBox').style.display = 'none';
         document.getElementById('audioSection').style.display = 'none'; 
+        document.getElementById('readingSection').style.display = 'none'; 
         document.getElementById('mainNavbar').style.display = 'none';
         document.querySelector('.top-header').style.display = 'none';
         
@@ -631,7 +624,6 @@
             let setting = adminSettingsData.find(item => item.isLive);
             if(!setting) return alert("आज का लाइव टेस्ट उपलब्ध नहीं है!");
             currentTestSpeed = setting.speed; currentTestTopic = setting.topic; finalMasterText = setting.text;
-            totalDuration = 10 * 60; 
             document.getElementById('dictationAudio').src = setting.audio;
         } else {
             currentTestSpeed = document.getElementById('speedSelect').value;
@@ -639,14 +631,13 @@
             let setting = adminSettingsData.find(item => item.speed == currentTestSpeed && item.topic == currentTestTopic && item.category === currentCategory);
             if(!setting) return alert(`तकनीकी त्रुटि!`);
             finalMasterText = setting.text;
-            totalDuration = (currentCategory === 'SSC') ? (10 * 60) : (6 * 60); 
             document.getElementById('dictationAudio').src = setting.audio;
         }
 
-        // Reset speed
-        setAudioSpeed(1.0);
-
+        // 🚀 60 Minutes (3600 seconds) Typing Duration 🚀
+        totalDuration = 60 * 60; 
         timeLeft = totalDuration;
+
         document.getElementById('mainNavbar').style.display = 'none';
         document.querySelector('.top-header').style.display = 'none'; 
         
@@ -655,16 +646,43 @@
 
         document.getElementById('audioSection').style.display = 'block';
         let audioPlayer = document.getElementById('dictationAudio');
-        if(audioPlayer) audioPlayer.onended = function() { startTypingTest(); };
+        if(audioPlayer) audioPlayer.onended = function() { startReadingTest(); }; // 🚀 Audio ended -> Go to Reading
     }
 
-    function skipAudio() { document.getElementById('dictationAudio').pause(); startTypingTest(); }
+    // 🚀 5 Minute Reading Logic 🚀
+    let readingInterval;
+    let readingTimeLeft = 300; // 5 Minutes
+
+    function startReadingTest() {
+        document.getElementById('audioSection').style.display = 'none';
+        document.getElementById('readingSection').style.display = 'block';
+        readingTimeLeft = 300;
+        updateReadingTimer();
+        readingInterval = setInterval(updateReadingTimer, 1000);
+    }
+
+    function updateReadingTimer() {
+        let m = Math.floor(readingTimeLeft / 60); let s = readingTimeLeft % 60;
+        document.getElementById('readingTimerDisplay').innerText = (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+        if(readingTimeLeft <= 0) { skipReading(); }
+        readingTimeLeft--;
+    }
+
+    function skipReading() {
+        clearInterval(readingInterval);
+        document.getElementById('readingSection').style.display = 'none';
+        startTypingTest();
+    }
+
+    function skipAudio() { document.getElementById('dictationAudio').pause(); startReadingTest(); }
 
     function exitTest() {
         if(confirm("क्या आप वाकई टेस्ट बीच में छोड़ना चाहते हैं? आपका डेटा डिलीट हो जाएगा।")) {
-            isTestRunning = false; clearInterval(timerInterval);
+            isTestRunning = false; clearInterval(timerInterval); clearInterval(readingInterval);
             localStorage.removeItem(autoSaveKey); 
             document.getElementById('studentText').value = '';
+            document.getElementById('audioSection').style.display = 'none';
+            document.getElementById('readingSection').style.display = 'none';
             document.getElementById('typingSection').style.display = 'none';
             document.querySelector('.top-header').style.display = 'flex';
             document.getElementById('mainNavbar').style.display = 'flex';
@@ -674,7 +692,7 @@
     }
 
     function startTypingTest() {
-        document.getElementById('audioSection').style.display = 'none';
+        document.getElementById('readingSection').style.display = 'none';
         document.getElementById('typingSection').style.display = 'block';
         isTestRunning = true; 
         
@@ -784,7 +802,6 @@
             document.getElementById('liveView').style.display = 'block';
             document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
         } else {
-            // 🚀 Feature 4: Display Deep Dive Stats 🚀
             document.getElementById('r_om_deep').innerText = om;
             document.getElementById('r_fm_deep').innerText = fm;
             document.getElementById('r_hm_deep').innerText = hm;
