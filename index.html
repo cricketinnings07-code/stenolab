@@ -100,7 +100,6 @@
         .cat-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; background: #fff; font-weight: bold; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .cat-btn.active { border-color: #4f46e5; background: #eef2ff; color: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15); }
 
-        /* 🚀 Verification Loader 🚀 */
         #fullScreenLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter: blur(10px); }
 
     </style>
@@ -232,7 +231,7 @@
             <textarea id="studentText" class="kruti-text" spellcheck="false" placeholder="टाइपिंग शुरू करें..."></textarea>
             
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                <button class="btn btn-danger" style="margin: 0; padding: 15px 25px;" onclick="exitTest()"><i class="fas fa-times-circle"></i> टेस्ट छोड़ें (Exit)</button>
+                <button class="btn btn-danger" style="margin: 0; padding: 15px 25px;" onclick="exitTest()"><i class="fas fa-times-circle"></i> टेस्ट छोड़ें (Exit)</button>
                 <button class="btn" style="width: auto; margin: 0; padding: 15px 40px; font-size: 18px;" onclick="submitTest()"><i class="fas fa-check-circle"></i> सबमिट करें</button>
             </div>
         </div>
@@ -340,21 +339,22 @@
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyxfbTNsI8lhXmAL9ptD9x-BfvWBVi636rTrgjHuCzNQirc87S8FGsVr_eQa5umsTsG/exec"; 
     // ==========================================
 
-    // 🚀 Authentication and VIP Sheet Validation (X-RAY MODE) 🚀
     auth.onAuthStateChanged((user) => {
         if (user) {
             document.getElementById('authWrapper').style.display = 'none';
-            document.getElementById('fullScreenLoader').style.display = 'flex'; // Show Loading
+            document.getElementById('fullScreenLoader').style.display = 'flex'; 
+            
+            // 🚀 CACHE BUSTER ADDED HERE 🚀
+            let noCacheUrl = GOOGLE_SHEET_WEB_APP_URL + "?t=" + new Date().getTime();
 
-            fetch(GOOGLE_SHEET_WEB_APP_URL).then(res => res.json()).then(data => {
+            fetch(noCacheUrl).then(res => res.json()).then(data => {
                 let approvedUsers = data.approvedUsers || [];
                 let userEmail = user.email.toLowerCase();
-
-                // 🚨 यह अलर्ट हमें बताएगा कि असली बीमारी कहाँ है 🚨
-                alert("🔍 सिस्टम चेक:\nआपका लॉगिन ईमेल: " + userEmail + "\nGoogle Sheet से मिले ईमेल: " + approvedUsers.join(", "));
+                
+                // Alert helps us debug what the browser is seeing
+                alert("चेकिंग...\nलॉगिन ईमेल: " + userEmail + "\nशीट के ईमेल: " + approvedUsers.join(", "));
 
                 if(approvedUsers.includes(userEmail)) {
-                    // 🎉 Approved User 🎉
                     document.getElementById('fullScreenLoader').style.display = 'none';
                     let generatedRoll = "HSL-" + user.uid.substring(0, 5).toUpperCase();
                     let userName = user.displayName || user.email.split('@')[0];
@@ -382,14 +382,13 @@
 
                     switchTab('home'); 
                 } else {
-                    // ❌ Not Approved / Expired ❌
                     auth.signOut();
                     document.getElementById('fullScreenLoader').style.display = 'none';
                     document.getElementById('authWrapper').style.display = 'flex';
                     alert("⚠️ आपका खाता स्वीकृत (Approved) नहीं है या सब्सक्रिप्शन खत्म हो गया है। कृपया एडमिन से संपर्क करें।");
                 }
             }).catch(e => {
-                alert("सर्वर से कनेक्ट होने में समस्या। कृपया अपनी Google Sheet Link चेक करें!");
+                alert("सर्वर से कनेक्ट होने में समस्या। कृपया रीफ्रेश करें।");
                 auth.signOut();
                 document.getElementById('fullScreenLoader').style.display = 'none';
                 document.getElementById('authWrapper').style.display = 'flex';
@@ -409,11 +408,11 @@
         if(!email || !pwd) return alert("कृपया ईमेल और पासवर्ड डालें!");
         
         if(isSignupMode) {
-            if(!name) return alert("नाम डालना ज़रूरी है!");
+            if(!name) return alert("नाम डालना ज़रूरी है!");
             auth.createUserWithEmailAndPassword(email, pwd).then((userCred) => {
                 return userCred.user.updateProfile({ displayName: name });
             }).then(() => {
-                auth.signOut(); // Immediately Kick Out
+                auth.signOut(); 
                 alert("✅ आपका खाता बन गया है! कृपया इसे चालू करवाने के लिए एडमिन को WhatsApp पर मैसेज करें।");
                 toggleAuthMode();
             }).catch(e => alert("एरर: " + e.message));
@@ -630,7 +629,7 @@
 
     function renderLiveTestLogic() {
         let now = new Date();
-        let day = now.getDay(); // 0 is Sunday
+        let day = now.getDay(); 
         let hour = now.getHours();
         
         let statusBox = document.getElementById('liveStatusBox');
@@ -656,10 +655,10 @@
                     let rank = idx===0?"🥇":idx===1?"🥈":idx===2?"🥉":(idx+1);
                     tableRows += `<tr><td><b>${rank}</b></td><td>${res.name}</td><td>${res.netWords}</td><td style="color:#10b981; font-weight:bold;">${res.accuracy}%</td></tr>`;
                 });
-            } else { tableRows = `<tr><td colspan="4">अभी तक कोई रिज़ल्ट घोषित नहीं हुआ है।</td></tr>`; }
+            } else { tableRows = `<tr><td colspan="4">अभी तक कोई रिज़ल्ट घोषित नहीं हुआ है।</td></tr>`; }
 
             statusBox.innerHTML = `
-                <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
+                <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
                 <table class="data-table" style="text-align:left;">
                     <thead style="background:#4f46e5;"><tr><th>Rank</th><th>Name</th><th>Net Words</th><th>Accuracy</th></tr></thead>
                     <tbody>${tableRows}</tbody>
