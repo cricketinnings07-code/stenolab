@@ -344,15 +344,13 @@
             document.getElementById('authWrapper').style.display = 'none';
             document.getElementById('fullScreenLoader').style.display = 'flex'; 
             
-            // 🚀 CACHE BUSTER ADDED HERE 🚀
             let noCacheUrl = GOOGLE_SHEET_WEB_APP_URL + "?t=" + new Date().getTime();
 
             fetch(noCacheUrl).then(res => res.json()).then(data => {
                 let approvedUsers = data.approvedUsers || [];
                 let userEmail = user.email.toLowerCase();
-                
-               // Alert helps us debug what the browser is seeing
-                alert("चेकिंग...\nलॉगिन ईमेल: " + userEmail + "\nशीट के ईमेल: " + approvedUsers.join(", "));
+
+                // 🚀 Removed the Alert popup here 🚀
 
                 if(approvedUsers.includes(userEmail)) {
                     document.getElementById('fullScreenLoader').style.display = 'none';
