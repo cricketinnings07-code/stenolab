@@ -340,7 +340,7 @@
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMswehehyzA2LdK6PtXKR7T5wf1j4dtenQvNpKJnqTa9Bl0WXY6-28Ely_BIlnUDP2/exec"; 
     // ==========================================
 
-    // 🚀 Authentication and VIP Sheet Validation 🚀
+    // 🚀 Authentication and VIP Sheet Validation (X-RAY MODE) 🚀
     auth.onAuthStateChanged((user) => {
         if (user) {
             document.getElementById('authWrapper').style.display = 'none';
@@ -349,6 +349,9 @@
             fetch(GOOGLE_SHEET_WEB_APP_URL).then(res => res.json()).then(data => {
                 let approvedUsers = data.approvedUsers || [];
                 let userEmail = user.email.toLowerCase();
+
+                // 🚨 यह अलर्ट हमें बताएगा कि असली बीमारी कहाँ है 🚨
+                alert("🔍 सिस्टम चेक:\nआपका लॉगिन ईमेल: " + userEmail + "\nGoogle Sheet से मिले ईमेल: " + approvedUsers.join(", "));
 
                 if(approvedUsers.includes(userEmail)) {
                     // 🎉 Approved User 🎉
@@ -360,7 +363,6 @@
                     document.getElementById('mainNavbar').style.display = 'flex';
                     document.getElementById('homeName').innerText = currentUserData.name;
                     
-                    // Set Data
                     adminSettingsData = data.adminSettings; globalHistoryData = data.history; 
                     globalLeaderboardData = data.leaderboard; liveResultsData = data.liveResults;
                     if(data.notification) document.getElementById('notificationText').innerText = "🔔 आवश्यक सूचना: " + data.notification;
@@ -387,7 +389,7 @@
                     alert("⚠️ आपका खाता स्वीकृत (Approved) नहीं है या सब्सक्रिप्शन खत्म हो गया है। कृपया एडमिन से संपर्क करें।");
                 }
             }).catch(e => {
-                alert("सर्वर से कनेक्ट होने में समस्या। कृपया रीफ्रेश करें।");
+                alert("सर्वर से कनेक्ट होने में समस्या। कृपया अपनी Google Sheet Link चेक करें!");
                 auth.signOut();
                 document.getElementById('fullScreenLoader').style.display = 'none';
                 document.getElementById('authWrapper').style.display = 'flex';
