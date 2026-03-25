@@ -209,9 +209,9 @@
                 
                 <label style="font-weight: bold; margin-bottom: 10px; display: block; font-size: 16px;">① स्टडी मटेरियल (Panel) चुनें:</label>
                 <div class="category-tabs">
-                    <button class="cat-btn active" id="cat-ssc" onclick="selectCategory('SSC')"><i class="fas fa-file-alt"></i> SSC (10 Min)</button>
-                    <button class="cat-btn" id="cat-court" onclick="selectCategory('Court')"><i class="fas fa-gavel"></i> Court (6 Min)</button>
-                    <button class="cat-btn" id="cat-news" onclick="selectCategory('News')"><i class="fas fa-newspaper"></i> Newspaper (6 Min)</button>
+                    <button class="cat-btn active" id="cat-ssc" onclick="selectCategory('SSC')"><i class="fas fa-file-alt"></i> SSC</button>
+                    <button class="cat-btn" id="cat-court" onclick="selectCategory('Court')"><i class="fas fa-gavel"></i> Court</button>
+                    <button class="cat-btn" id="cat-news" onclick="selectCategory('News')"><i class="fas fa-newspaper"></i> Newspaper</button>
                 </div>
 
                 <label style="font-weight: bold; margin-bottom: 10px; display: block;">② डिक्टेशन स्पीड (WPM):</label>
@@ -245,7 +245,7 @@
         </div>
 
         <div id="typingSection" style="display: none; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-            <div class="timer" id="timerDisplay">समय शेष: 00:00</div>
+            <div class="timer" id="timerDisplay">समय शेष: 60:00</div>
             
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 15px;">
                 <div>
@@ -276,51 +276,42 @@
             </div>
         </div>
         
-        <div id="resultBox" class="result-box" style="border-top: 8px solid #10b981;">
+        <div id="resultBox" class="result-box" style="border-top: 8px solid #10b981; display:none;">
             <div style="text-align: center; margin-bottom: 20px;"><i class="fas fa-trophy" style="font-size: 50px; color: #10b981;"></i></div>
             <h2 style="color: #312e81; text-align: center; margin-top: 0; font-size: 32px;">परीक्षा परिणाम</h2>
             <div style="text-align: center; font-size: 18px; margin-bottom: 30px; color: #64748b; font-weight: bold;">
                 नाम: <span id="r_name" style="color:#1e293b;"></span> | स्पीड: <span id="r_testSpeed" style="color:#1e293b;"></span>
                 <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #ef4444;"></span></div>
             </div>
-            
-            <div style="max-width: 320px; margin: 20px auto; text-align: center;">
-                <canvas id="resultDoughnutChart"></canvas>
+
+            <div class="chart-container" style="max-width: 320px; margin: 20px auto; text-align: center;">
+                <canvas id="resultChart"></canvas>
             </div>
 
-            <div style="background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
-                        <b style="color: #64748b; font-size: 14px;">छूटे हुए शब्द (Omissions)</b><br><span id="r_om_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
-                    </div>
-                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
-                        <b style="color: #64748b; font-size: 14px;">स्पेलिंग (Full Mistakes)</b><br><span id="r_fm_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
-                    </div>
-                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
-                        <b style="color: #64748b; font-size: 14px;">अतिरिक्त शब्द (Extra Words)</b><br><span id="r_ew_deep" style="color: #ef4444; font-size: 24px; font-weight: 900;">0</span>
-                    </div>
-                    <div style="text-align: center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #cbd5e1;">
-                        <b style="color: #64748b; font-size: 14px;">कोमा/मात्रा (Half Mistakes)</b><br><span id="r_hm_deep" style="color: #f59e0b; font-size: 24px; font-weight: 900;">0</span>
-                    </div>
-                </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                <div style="padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: bold; font-size:16px;">कुल शब्द: <span id="r_masterWords" style="float:right; color:#1e293b; font-size:20px;">0</span></div>
+                <div style="padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: bold; font-size:16px;">छूटे हुए शब्द: <span id="r_omissions" style="float:right; color:#dc3545; font-size:20px;">0</span></div>
+                <div style="padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: bold; font-size:16px;">स्पेलिंग/गलत शब्द: <span id="r_fullMistakes" style="float:right; color:#dc3545; font-size:20px;">0</span></div>
+                <div style="padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: bold; font-size:16px;">अतिरिक्त शब्द: <span id="r_extraWords" style="float:right; color:#dc3545; font-size:20px;">0</span></div>
+                <div style="padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: bold; grid-column: span 2; font-size:16px;">कोमा/मात्रा (Half Mistake): <span id="r_halfMistakes" style="float:right; color:#fd7e14; font-size:20px;">0</span></div>
             </div>
 
             <div style="background: #fffbeb; padding: 25px; border-radius: 16px; border: 2px dashed #fde68a; margin-bottom: 25px;">
-                <h4 style="margin: 0 0 15px 0; color: #b45309; text-align: center; font-size: 18px;">आधिकारिक मूल्यांकन (5% Rules)</h4>
-                <div style="display: flex; justify-content: space-around; font-weight: bold; color: #78350f; font-size: 16px; flex-wrap: wrap; gap: 10px;">
-                    <div>कुल शब्द: <span id="r_masterWords">0</span></div>
-                    <div>कुल गलतियां: <span id="r_actualMistakes" style="color:#ef4444;">0</span></div>
-                    <div>माफ (5%): <span id="r_allowedMistakes" style="color:#10b981;">0</span></div>
-                    <div>शुद्ध शब्द: <span id="r_netWords" style="color:#4f46e5; font-size: 20px;">0</span></div>
+                <h4 style="margin: 0 0 15px 0; color: #b45309; text-align: center; font-size: 18px;">आधिकारिक मूल्यांकन (5% Margin Rule)</h4>
+                <div style="display: flex; justify-content: space-around; font-weight: bold; color: #78350f; font-size: 16px; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                    <div>कुल गलतियां: <span id="r_actualMistakes" style="color:#ef4444; font-size:20px;">0</span></div>
+                    <div>माफ (5%): <span id="r_allowedMistakes" style="color:#10b981; font-size:20px;">0</span></div>
+                    <div>काटी गई: <span id="r_excessMistakes" style="color:#ef4444; font-size:20px;">0</span></div>
+                    <div>शुद्ध शब्द: <span id="r_netWords" style="color:#4f46e5; font-size:20px;">0</span></div>
                 </div>
-                <div style="text-align: center; margin-top: 15px; font-size: 20px;">
-                    <span style="color: #312e81;">स्पीड: <b id="r_speed">0 WPM</b></span> &nbsp;|&nbsp; 
-                    <span style="color: #10b981;">एक्यूरेसी: <b id="r_accuracy">0%</b></span>
+                <div style="text-align: center; font-size: 20px; background:#d1fae5; padding: 15px; border-radius: 10px; border: 1px solid #a7f3d0;">
+                    <span style="color: #065f46;">स्पीड: <b id="r_speed">0 WPM</b></span> &nbsp;|&nbsp; 
+                    <span style="color: #065f46;">एक्यूरेसी: <b id="r_accuracy">0%</b></span>
                 </div>
             </div>
 
             <label style="font-weight:bold; color:#312e81; display:block; margin-bottom:10px; font-size: 18px;">आपके अनुवाद का मूल्यांकन (Word-by-Word Check):</label>
-            <div id="displayEvaluatedText" class="kruti-text" style="background:#f8fafc; border:2px dashed #cbd5e1; min-height:150px; margin-bottom:20px; cursor:default; user-select:text; -webkit-user-select:text;"></div>
+            <div id="displayEvaluatedText" class="kruti-text" style="background:#f8fafc; border:2px dashed #cbd5e1; min-height:150px; margin-bottom:20px; cursor:default; user-select:text; -webkit-user-select:text; font-size:26px; line-height: 2;"></div>
             
             <p id="saveStatus" style="text-align:center; color:#059669; font-weight:bold;"></p>
             
@@ -396,7 +387,7 @@
 
     // ==========================================
     // ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyxfbTNsI8lhXmAL9ptD9x-BfvWBVi636rTrgjHuCzNQirc87S8FGsVr_eQa5umsTsG/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeJZIkQZ1BsUwxN_mWuU2DiajqISPcFYpivEdMezFdz93x1Ds1anfh8-NOR_RA6QMl/exec"; 
     // ==========================================
 
     auth.onAuthStateChanged((user) => {
@@ -744,7 +735,7 @@
         timeLeft--;
     }
 
-    // 🚀 ORIGINAL PERFECT DP ALGORITHM (WORD-BY-WORD DIFF) 🚀
+    // 🚀 100% UNTOUCHED ORIGINAL DP ALGORITHM 🚀
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
         localStorage.removeItem(autoSaveKey); 
@@ -762,98 +753,135 @@
     }
 
     function calculateDetailedMistakes(master, student, timeTakenMins) {
-        let mWords = master.split(/\s+/).filter(w => w.length > 0); let sWords = student.split(/\s+/).filter(w => w.length > 0);
+        let mWords = master.split(/\s+/).filter(w => w.length > 0);
+        let sWords = student.split(/\s+/).filter(w => w.length > 0);
+        
         let dp = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
         let path = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
-        for(let i=1; i<=mWords.length; i++){ dp[i][0] = i; path[i][0] = 2; } for(let j=1; j<=sWords.length; j++){ dp[0][j] = j; path[0][j] = 3; }
+        
+        for(let i=1; i<=mWords.length; i++){ dp[i][0] = i; path[i][0] = 2; } 
+        for(let j=1; j<=sWords.length; j++){ dp[0][j] = j; path[0][j] = 3; }
+        
         for(let i=1; i<=mWords.length; i++){
             for(let j=1; j<=sWords.length; j++){
                 let cost = (mWords[i-1] === sWords[j-1]) ? 0 : (mWords[i-1].replace(/[,\|]/g,'') === sWords[j-1].replace(/[,\|]/g,'') ? 0.5 : 1);
-                let diag = dp[i-1][j-1] + cost, del = dp[i-1][j] + 1, ins = dp[i][j-1] + 1;
-                if(diag <= del && diag <= ins){ dp[i][j] = diag; path[i][j] = 1; } else if(del <= ins){ dp[i][j] = del; path[i][j] = 2; } else { dp[i][j] = ins; path[i][j] = 3; }
+                let diag = dp[i-1][j-1] + cost; 
+                let del = dp[i-1][j] + 1; 
+                let ins = dp[i][j-1] + 1;
+                
+                if(diag <= del && diag <= ins){
+                    dp[i][j] = diag; path[i][j] = 1;
+                } else if(del <= ins){
+                    dp[i][j] = del; path[i][j] = 2;
+                } else {
+                    dp[i][j] = ins; path[i][j] = 3;
+                }
             }
         }
         
-        let om=0, hm=0, fm=0, ew=0;
-        let currI=mWords.length, currJ=sWords.length, diffHtml=[]; 
+        let om=0, hm=0, fm=0, ew=0, currI=mWords.length, currJ=sWords.length, diffHtml=[]; 
         
         while(currI>0 || currJ>0) {
             if(currI>0 && currJ>0 && path[currI][currJ]===1) {
                 let w1=mWords[currI-1], w2=sWords[currJ-1];
                 if(w1===w2) {
-                    diffHtml.unshift(`<span style="color:#10b981;">${w2}</span>`);
+                    diffHtml.unshift(`<span style="color:#28a745;">${w2}</span>`);
                 } else {
-                    let cwHtml=` <span style="color:#10b981;font-family:Arial;">(</span><span style="color:#10b981;">${w1}</span><span style="color:#10b981;font-family:Arial;">)</span>`;
+                    let cwHtml=` <span style="color:#28a745;font-family:Arial;">(</span><span style="color:#28a745;">${w1}</span><span style="color:#28a745;font-family:Arial;">)</span>`;
                     if(w1.replace(/[,\|]/g,'') === w2.replace(/[,\|]/g,'')){
-                        hm++; diffHtml.unshift(`<span style="color:#f59e0b;">${w2}</span>`+cwHtml);
+                        hm++; 
+                        diffHtml.unshift(`<span style="color:#fd7e14;">${w2}</span>`+cwHtml);
                     } else {
-                        fm++; diffHtml.unshift(`<span style="color:#ef4444;">${w2}</span>`+cwHtml);
+                        fm++; 
+                        diffHtml.unshift(`<span style="color:#dc3545;">${w2}</span>`+cwHtml);
                     }
                 }
                 currI--; currJ--;
             } else if(currI>0 && (currJ===0 || path[currI][currJ]===2)) {
-                om++; diffHtml.unshift(`<span style="color:#ef4444;text-decoration:line-through;">${mWords[currI-1]}</span>`); currI--;
+                om++; 
+                diffHtml.unshift(`<span style="color:#dc3545;text-decoration:line-through;">${mWords[currI-1]}</span>`); 
+                currI--;
             } else if(currJ>0 && (currI===0 || path[currI][currJ]===3)) {
-                ew++; diffHtml.unshift(`<span style="color:#ef4444;border-bottom:2px solid #ef4444;">${sWords[currJ-1]}</span>`); currJ--;
+                ew++; 
+                diffHtml.unshift(`<span style="color:#dc3545;border-bottom:2px solid #dc3545;">${sWords[currJ-1]}</span>`); 
+                currJ--;
             }
         }
         
         let tw = mWords.length;
-        let totalErr = fm + ew + om, actualErr = totalErr + (hm/2);
+        let totalErr = fm + ew + om;
+        let actualErr = totalErr + (hm/2);
         let allowed = (sWords.length===0) ? 0 : Math.round(tw * 0.05);
         let excess = actualErr > allowed ? actualErr - allowed : 0;
-        let net = tw - excess; if(net > sWords.length) net = sWords.length; if(net < 0) net = 0;
-        let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0, wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
+        
+        let net = tw - excess; 
+        if(net > sWords.length) net = sWords.length; 
+        if(net < 0) net = 0;
+        
+        let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0;
+        let wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
 
         if(isLiveTestActive) {
             saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true);
             document.getElementById('liveView').style.display = 'block';
             document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
         } else {
-            document.getElementById('r_om_deep').innerText = om;
-            document.getElementById('r_fm_deep').innerText = fm;
-            document.getElementById('r_hm_deep').innerText = hm;
-            document.getElementById('r_ew_deep').innerText = ew;
-
+            // IDs PERFECTLY MATCHED 🚀
             document.getElementById('r_name').innerText = currentUserData.name;
             document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
-            document.getElementById('r_masterWords').innerText = tw; document.getElementById('r_actualMistakes').innerText = actualErr; 
-            document.getElementById('r_allowedMistakes').innerText = allowed; document.getElementById('r_excessMistakes').innerText = excess; 
-            document.getElementById('r_netWords').innerText = net; document.getElementById('r_speed').innerText = wpm + " WPM"; 
+
+            document.getElementById('r_masterWords').innerText = tw; 
+            document.getElementById('r_omissions').innerText = om;
+            document.getElementById('r_fullMistakes').innerText = fm; 
+            document.getElementById('r_extraWords').innerText = ew;
+            document.getElementById('r_halfMistakes').innerText = hm;
+            
+            document.getElementById('r_actualMistakes').innerText = actualErr; 
+            document.getElementById('r_allowedMistakes').innerText = allowed;
+            document.getElementById('r_excessMistakes').innerText = excess;
+            document.getElementById('r_netWords').innerText = net;
+            
+            document.getElementById('r_speed').innerText = wpm + " WPM";
             document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
             
             document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
-            drawDoughnutChart(net, actualErr);
+            
+            drawResultChart(net, actualErr);
 
             document.getElementById('resultBox').style.display = 'block';
-            window.scrollTo(0,0);
+            window.scrollTo(0, 0);
             saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, false);
             if(acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }});
         }
     }
 
-    // 📊 DOUGHNUT CHART LOGIC 📊
-    let doughnutChartInstance = null;
-    function drawDoughnutChart(netWords, mistakes) {
-        let ctx = document.getElementById('resultDoughnutChart').getContext('2d');
-        if(doughnutChartInstance) doughnutChartInstance.destroy();
+    // 📊 CHART.JS LOGIC 📊
+    let resultChartInstance = null;
+    function drawResultChart(netWords, mistakes) {
+        let ctx = document.getElementById('resultChart').getContext('2d');
+        if(resultChartInstance) resultChartInstance.destroy();
         
-        doughnutChartInstance = new Chart(ctx, {
+        resultChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: { 
                 labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
                 datasets: [{ 
                     data: [netWords, mistakes], 
-                    backgroundColor: ['#10b981', '#ef4444'], 
+                    backgroundColor: ['#28a745', '#dc3545'], 
                     borderWidth: 2, 
                     borderColor: '#ffffff' 
                 }] 
             },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
+            options: { 
+                responsive: true, 
+                plugins: { 
+                    legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } 
+                } 
+            }
         });
     }
 
-    // 📄 PDF DOWNLOAD LOGIC 📄
+    // 📄 PDF LOGIC 📄
     function downloadResultPDF() {
         const btn = document.getElementById('downloadPdfBtn'); 
         btn.style.display = 'none';
