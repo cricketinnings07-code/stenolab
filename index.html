@@ -587,7 +587,7 @@
         updateTopicName();
     }
 
-    function updateTopicName() {
+   function updateTopicName() {
         let speed = document.getElementById('speedSelect').value;
         let topicBox = document.getElementById('topicSelect');
         let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed && item.category === currentCategory && !item.isLive) : [];
@@ -595,8 +595,13 @@
         
         if(matchingSettings.length > 0) {
             matchingSettings.reverse().forEach(setting => {
-                let displayDate = setting.date ? `[${setting.date}] ` : "";
-                topicBox.innerHTML += `<option value="${setting.topic}">${displayDate}${setting.topic}</option>`;
+                // 🚀 Date को साफ़ और सुंदर बनाने का कोड 🚀
+                let cleanDate = "";
+                if(setting.date) {
+                    let d = new Date(setting.date);
+                    if(!isNaN(d.getTime())) cleanDate = `[${d.toLocaleDateString('en-IN')}] `;
+                }
+                topicBox.innerHTML += `<option value="${setting.topic}">${cleanDate}${setting.topic}</option>`;
             });
             topicBox.disabled = false;
         } else { 
