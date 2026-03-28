@@ -437,7 +437,7 @@
 
     // ==========================================
     // ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxw2M4uNIUbuhSYFLDS11rI7Oa36Qo0lxVm0uje5rYdcXBz8aImqcjhcskkVcBhqXDi/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwYRaNxdrm10coip3JLm2wr6EqZBftnMDMxVWOnViP1owQaaCRt8simB61L8BXvVM0i/exec"; 
     // ==========================================
 
     auth.onAuthStateChanged((user) => {
@@ -815,6 +815,7 @@
         timeLeft--;
     }
 
+    // 🚀 100% UNTOUCHED ORIGINAL DP ALGORITHM 🚀
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
         localStorage.removeItem(autoSaveKey); 
@@ -828,10 +829,12 @@
         document.getElementById('typingSection').style.display = 'none';
         
         let studentText = document.getElementById('studentText').value.trim();
-        calculateDetailedMistakes(finalMasterText, studentText, tt / 60);
+        // 🚀 Add Panel info explicitly here
+        let payloadCategory = currentCategory;
+        calculateDetailedMistakes(finalMasterText, studentText, tt / 60, payloadCategory);
     }
 
-    function calculateDetailedMistakes(master, student, timeTakenMins) {
+    function calculateDetailedMistakes(master, student, timeTakenMins, payloadCategory) {
         let mWords = master.split(/\s+/).filter(w => w.length > 0); let sWords = student.split(/\s+/).filter(w => w.length > 0);
         let dp = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
         let path = Array(mWords.length+1).fill(null).map(()=>Array(sWords.length+1).fill(0));
@@ -876,58 +879,49 @@
         let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0, wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
 
         if(isLiveTestActive) {
-            saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true);
+            saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true, payloadCategory);
             document.getElementById('liveView').style.display = 'block';
             document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
         } else {
+            document.getElementById('r_om_deep').innerText = om;
+            document.getElementById('r_fm_deep').innerText = fm;
+            document.getElementById('r_hm_deep').innerText = hm;
+            document.getElementById('r_ew_deep').innerText = ew;
+
             document.getElementById('r_name').innerText = currentUserData.name;
             document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
-
-            document.getElementById('r_masterWords').innerText = tw; 
-            document.getElementById('r_omissions').innerText = om;
-            document.getElementById('r_fullMistakes').innerText = fm; 
-            document.getElementById('r_extraWords').innerText = ew;
-            document.getElementById('r_halfMistakes').innerText = hm;
-            
-            document.getElementById('r_actualMistakes').innerText = actualErr; 
-            document.getElementById('r_allowedMistakes').innerText = allowed;
-            document.getElementById('r_excessMistakes').innerText = excess;
-            document.getElementById('r_netWords').innerText = net;
-            
-            document.getElementById('r_speed').innerText = wpm + " WPM";
+            document.getElementById('r_masterWords').innerText = tw; document.getElementById('r_actualMistakes').innerText = actualErr; 
+            document.getElementById('r_allowedMistakes').innerText = allowed; document.getElementById('r_excessMistakes').innerText = excess; 
+            document.getElementById('r_netWords').innerText = net; document.getElementById('r_speed').innerText = wpm + " WPM"; 
             document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
             
             document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
-            
-            drawResultChart(net, actualErr);
+            drawDoughnutChart(net, actualErr);
 
             document.getElementById('resultBox').style.display = 'block';
-            window.scrollTo(0, 0);
-            saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, false);
+            window.scrollTo(0,0);
+            saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, false, payloadCategory);
             if(acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }});
         }
     }
 
-    let resultChartInstance = null;
-    function drawResultChart(netWords, mistakes) {
-        let ctx = document.getElementById('resultChart').getContext('2d');
-        if(resultChartInstance) resultChartInstance.destroy();
+    let doughnutChartInstance = null;
+    function drawDoughnutChart(netWords, mistakes) {
+        let ctx = document.getElementById('resultDoughnutChart').getContext('2d');
+        if(doughnutChartInstance) doughnutChartInstance.destroy();
         
-        resultChartInstance = new Chart(ctx, {
+        doughnutChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: { 
                 labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
                 datasets: [{ 
                     data: [netWords, mistakes], 
-                    backgroundColor: ['#28a745', '#dc3545'], 
+                    backgroundColor: ['#10b981', '#ef4444'], 
                     borderWidth: 2, 
                     borderColor: '#ffffff' 
                 }] 
             },
-            options: { 
-                responsive: true, 
-                plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } 
-            }
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
         });
     }
 
@@ -949,8 +943,21 @@
         });
     }
 
-    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive) {
-        let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive };
+    // 🚀 Fixed the payload to correctly send `category` 🚀
+    function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory) {
+        let payload = { 
+            name: currentUserData.name, 
+            rollNumber: currentUserData.roll, 
+            email: currentUserData.email, 
+            speedTarget: currentTestSpeed, 
+            topic: currentTestTopic, 
+            actualSpeedWPM: speedWPM, 
+            accuracy: accuracy, 
+            totalMistakes: totalMistakes, 
+            netWords: netWords, 
+            isLive: isLive,
+            category: payloadCategory // Sends SSC, Court or News accurately
+        };
         fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
         .then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; });
     }
