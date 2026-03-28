@@ -966,7 +966,7 @@
         let day = now.getDay(); let hour = now.getHours();
         let statusBox = document.getElementById('liveStatusBox');
         
-        if (day === 0 && hour >= 10 && hour < 18) {
+        if (day === 6 && hour >= 10 && hour < 18) {
             let liveData = adminSettingsData ? adminSettingsData.find(i => i.isLive) : null;
             if(liveData) {
                 // 🚀 CHECK ONE ATTEMPT 🚀
