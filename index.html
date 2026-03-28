@@ -311,7 +311,7 @@
                 <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #ef4444;"></span></div>
             </div>
 
-            <div class="chart-container" style="max-width: 320px; margin: 20px auto; text-align: center;">
+            <div style="max-width: 320px; margin: 20px auto; text-align: center;">
                 <canvas id="resultChart"></canvas>
             </div>
 
@@ -815,7 +815,6 @@
         timeLeft--;
     }
 
-    // 🚀 100% UNTOUCHED ORIGINAL DP ALGORITHM 🚀
     function submitTest() {
         isTestRunning = false; clearInterval(timerInterval);
         localStorage.removeItem(autoSaveKey); 
@@ -829,7 +828,6 @@
         document.getElementById('typingSection').style.display = 'none';
         
         let studentText = document.getElementById('studentText').value.trim();
-        // 🚀 Add Panel info explicitly here
         let payloadCategory = currentCategory;
         calculateDetailedMistakes(finalMasterText, studentText, tt / 60, payloadCategory);
     }
@@ -883,10 +881,10 @@
             document.getElementById('liveView').style.display = 'block';
             document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
         } else {
-            document.getElementById('r_om_deep').innerText = om;
-            document.getElementById('r_fm_deep').innerText = fm;
-            document.getElementById('r_hm_deep').innerText = hm;
-            document.getElementById('r_ew_deep').innerText = ew;
+            document.getElementById('r_omissions').innerText = om;
+            document.getElementById('r_fullMistakes').innerText = fm;
+            document.getElementById('r_halfMistakes').innerText = hm;
+            document.getElementById('r_extraWords').innerText = ew;
 
             document.getElementById('r_name').innerText = currentUserData.name;
             document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
@@ -896,7 +894,7 @@
             document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
             
             document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
-            drawDoughnutChart(net, actualErr);
+            drawResultChart(net, actualErr);
 
             document.getElementById('resultBox').style.display = 'block';
             window.scrollTo(0,0);
@@ -905,23 +903,26 @@
         }
     }
 
-    let doughnutChartInstance = null;
-    function drawDoughnutChart(netWords, mistakes) {
-        let ctx = document.getElementById('resultDoughnutChart').getContext('2d');
-        if(doughnutChartInstance) doughnutChartInstance.destroy();
+    let resultChartInstance = null;
+    function drawResultChart(netWords, mistakes) {
+        let ctx = document.getElementById('resultChart').getContext('2d');
+        if(resultChartInstance) resultChartInstance.destroy();
         
-        doughnutChartInstance = new Chart(ctx, {
+        resultChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: { 
                 labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
                 datasets: [{ 
                     data: [netWords, mistakes], 
-                    backgroundColor: ['#10b981', '#ef4444'], 
+                    backgroundColor: ['#28a745', '#dc3545'], 
                     borderWidth: 2, 
                     borderColor: '#ffffff' 
                 }] 
             },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
+            options: { 
+                responsive: true, 
+                plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } 
+            }
         });
     }
 
@@ -943,7 +944,6 @@
         });
     }
 
-    // 🚀 Fixed the payload to correctly send `category` 🚀
     function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory) {
         let payload = { 
             name: currentUserData.name, 
@@ -956,7 +956,7 @@
             totalMistakes: totalMistakes, 
             netWords: netWords, 
             isLive: isLive,
-            category: payloadCategory // Sends SSC, Court or News accurately
+            category: payloadCategory 
         };
         fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
         .then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; });
