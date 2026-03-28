@@ -463,10 +463,10 @@
 
     auth.onAuthStateChanged((user) => {
         if (user) {
-            let localSession = localStorage.getItem("steno_session");
             firebase.database().ref('sessions/' + user.uid).on('value', (snapshot) => {
                 let dbSession = snapshot.val();
-                if (dbSession && localSession && dbSession !== localSession) {
+                let currentLocalSession = localStorage.getItem("steno_session"); // Fresh Token Check
+                if (dbSession && currentLocalSession && dbSession !== currentLocalSession) {
                     alert("⚠️ सुरक्षा चेतावनी: आपका खाता किसी दूसरे कंप्यूटर या मोबाइल पर लॉगिन किया गया है! इसलिए आपको यहाँ से लॉगआउट किया जा रहा है।");
                     auth.signOut();
                     location.reload();
@@ -586,7 +586,11 @@
         auth.sendPasswordResetEmail(email).then(() => alert("पासवर्ड रीसेट लिंक भेज दिया गया है!")).catch(e => alert(e.message));
     }
     
-    function logoutUser() { auth.signOut(); location.reload(); }
+    function logoutUser() { 
+        localStorage.removeItem("steno_session"); // पुराना टोकन डिलीट
+        auth.signOut(); 
+        location.reload(); 
+    }
 
     function checkPendingTest() {
         if(!autoSaveKey) return;
