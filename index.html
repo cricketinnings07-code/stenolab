@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Welcome to Hindi Steno Lab </title>
+    <title>Welcome to Hindi Steno Lab</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -35,6 +35,7 @@
         .main-pad { padding: 20px 15px; }
         .container { max-width: 950px; margin: 0 auto; position: relative; }
         
+        /* 🚀 PREMIUM UI HEADERS 🚀 */
         .top-header { 
             display: flex; justify-content: space-between; align-items: center; 
             margin-bottom: 25px; padding: 15px 30px; background: #ffffff; 
@@ -63,6 +64,7 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* 🚀 PREMIUM LOGIN UI 🚀 */
         .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 70vh; }
         .auth-box { background: white; width: 100%; max-width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;}
         .auth-box h3 { color: #312e81; font-size: 28px; margin-top: 0; margin-bottom: 5px; font-weight: 800; }
@@ -189,7 +191,7 @@
     <div id="homeView" class="view-section">
         <div class="setup-box" style="text-align:center;">
             <h2 style="color:#312e81; font-size: 32px; font-weight: 800;"><i class="fas fa-hand-sparkles"></i> हिन्दी स्टेनो लैब में आपका स्वागत है, <span id="homeName"></span>!</h2>
-            <p style="color:#64748b; font-size:18px;">आज का अभ्यास शुरू करने के लिए ऊपर दिए गए Menu का उपयोग करें।</p>
+            <p style="color:#64748b; font-size:18px;">आज का अभ्यास शुरू करने के लिए ऊपर दिए गए मेनू का उपयोग करें।</p>
             
             <div style="margin-top: 35px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
                 <a href="https://youtube.com/@cricketinnings07" target="_blank" style="text-decoration: none; background: #ff0000; color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(255,0,0,0.3); transition: 0.3s; display: flex; align-items: center; gap: 8px;">
@@ -381,6 +383,7 @@
 
 </div>
 </div>
+
 <div id="audioSection" class="modal-overlay">
     <div class="modal-box">
         <div style="font-size: 60px; color: #4f46e5; margin-bottom: 15px;"><i class="fas fa-volume-up"></i></div>
@@ -446,17 +449,14 @@
     let currentUserData = { name: "", roll: "", email: "", expiry: "" };
     let currentCategory = "SSC"; 
     let autoSaveKey = "";
-    let timeOffset = 0; // 🚀 Internet Time Offset 🚀
+    let timeOffset = 0;
 
     // ==========================================
     // ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
     const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxn7JUOhleMgLkZynkHixMDeVe9XajSH4cr4Pg_Qgk1trlquAblQPEIbo6NxgqGNzs/exec"; 
     // ==========================================
 
-    // 🚀 Internet Real Time Helper 🚀
-    function getRealTime() {
-        return new Date(new Date().getTime() + timeOffset);
-    }
+    function getRealTime() { return new Date(new Date().getTime() + timeOffset); }
 
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -483,10 +483,7 @@
             fetch(noCacheUrl).then(res => res.json()).then(data => {
                 clearTimeout(loadTimer1); clearTimeout(loadTimer2); clearTimeout(loadTimer3);
 
-                // 🚀 Calc Internet Time Offset
-                if(data.serverTime) {
-                    timeOffset = data.serverTime - new Date().getTime();
-                }
+                if(data.serverTime) timeOffset = data.serverTime - new Date().getTime();
 
                 let approvedUsersMap = data.approvedUsers || {};
                 let userEmail = user.email.toLowerCase();
@@ -497,9 +494,7 @@
                     let userDataFromSheet = approvedUsersMap[userEmail];
                     let userName = user.displayName || user.email.split('@')[0];
                     
-                    currentUserData = { 
-                        name: userName, roll: userDataFromSheet.roll, email: user.email, expiry: userDataFromSheet.expiry 
-                    };
+                    currentUserData = { name: userName, roll: userDataFromSheet.roll, email: user.email, expiry: userDataFromSheet.expiry };
                     autoSaveKey = "steno_autosave_" + currentUserData.email;
 
                     document.getElementById('profileEmail').innerText = currentUserData.email;
@@ -529,11 +524,8 @@
                     });
 
                     let hashTab = window.location.hash.substring(1);
-                    if(['home', 'dashboard', 'test', 'profile', 'leaderboard', 'live'].includes(hashTab)) {
-                        switchTab(hashTab, true); 
-                    } else {
-                        switchTab('home', true); 
-                    }
+                    if(['home', 'dashboard', 'test', 'profile', 'leaderboard', 'live'].includes(hashTab)) { switchTab(hashTab, true); } 
+                    else { switchTab('home', true); }
                     
                 } else {
                     auth.signOut();
@@ -618,10 +610,7 @@
             document.getElementById('studentDetailsBox').style.display = 'block';
             document.getElementById('typingSection').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
-            
-            if(!localStorage.getItem(autoSaveKey)) {
-                document.getElementById('studentText').value = '';
-            }
+            if(!localStorage.getItem(autoSaveKey)) document.getElementById('studentText').value = '';
             selectCategory('SSC'); 
             checkPendingTest();
         }
@@ -681,7 +670,6 @@
         document.querySelector('.top-header').style.display = 'none';
         
         if(isLiveTestActive) { try { var e = document.documentElement; if (e.requestFullscreen) e.requestFullscreen(); } catch(e) {} }
-        
         startTypingTestFromResume(); 
     }
 
@@ -707,7 +695,6 @@
         let topicBox = document.getElementById('topicSelect');
         let matchingSettings = adminSettingsData ? adminSettingsData.filter(item => item.speed == speed && item.category === currentCategory && !item.isLive) : [];
         topicBox.innerHTML = ""; 
-        
         if(matchingSettings.length > 0) {
             matchingSettings.reverse().forEach(setting => {
                 let displayDate = setting.date ? `[${setting.date}] ` : "";
@@ -737,7 +724,7 @@
             document.getElementById('dictationAudio').src = setting.audio;
         }
 
-        totalDuration = 60 * 60; // 60 Min Typing
+        totalDuration = 60 * 60; 
         timeLeft = totalDuration;
 
         document.getElementById('mainNavbar').style.display = 'none';
@@ -794,8 +781,6 @@
 
     function startTypingTest() {
         document.getElementById('readingSection').style.display = 'none';
-        
-        // 🚀 FIXED BLANK SCREEN: Force active on testView 🚀
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.getElementById('testView').classList.add('active');
         document.getElementById('studentDetailsBox').style.display = 'none';
@@ -851,7 +836,6 @@
         let m = Math.floor(timeLeft / 60); let s = timeLeft % 60;
         document.getElementById('timerDisplay').innerText = `समय शेष: ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
         saveTestState(); 
-        
         if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
         timeLeft--;
     }
@@ -869,8 +853,7 @@
         document.getElementById('typingSection').style.display = 'none';
         
         let studentText = document.getElementById('studentText').value.trim();
-        let payloadCategory = currentCategory;
-        calculateDetailedMistakes(finalMasterText, studentText, tt / 60, payloadCategory);
+        calculateDetailedMistakes(finalMasterText, studentText, tt / 60, currentCategory);
     }
 
     function calculateDetailedMistakes(master, student, timeTakenMins, payloadCategory, isJustViewing = false) {
@@ -892,15 +875,11 @@
         while(currI>0 || currJ>0) {
             if(currI>0 && currJ>0 && path[currI][currJ]===1) {
                 let w1=mWords[currI-1], w2=sWords[currJ-1];
-                if(w1===w2) {
-                    diffHtml.unshift(`<span style="color:#10b981;">${w2}</span>`);
-                } else {
+                if(w1===w2) { diffHtml.unshift(`<span style="color:#10b981;">${w2}</span>`); } 
+                else {
                     let cwHtml=` <span style="color:#10b981;font-family:Arial;">(</span><span style="color:#10b981;">${w1}</span><span style="color:#10b981;font-family:Arial;">)</span>`;
-                    if(w1.replace(/[,\|]/g,'') === w2.replace(/[,\|]/g,'')){
-                        hm++; diffHtml.unshift(`<span style="color:#f59e0b;">${w2}</span>`+cwHtml);
-                    } else {
-                        fm++; diffHtml.unshift(`<span style="color:#ef4444;">${w2}</span>`+cwHtml);
-                    }
+                    if(w1.replace(/[,\|]/g,'') === w2.replace(/[,\|]/g,'')){ hm++; diffHtml.unshift(`<span style="color:#f59e0b;">${w2}</span>`+cwHtml); } 
+                    else { fm++; diffHtml.unshift(`<span style="color:#ef4444;">${w2}</span>`+cwHtml); }
                 }
                 currI--; currJ--;
             } else if(currI>0 && (currJ===0 || path[currI][currJ]===2)) {
@@ -919,26 +898,24 @@
 
         if(isLiveTestActive && !isJustViewing) {
             saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true, payloadCategory, student);
+            
+            // 🚀 Add locally to prevent re-taking
+            liveResultsData.push({ email: currentUserData.email, topic: currentTestTopic, name: currentUserData.name, netWords: net, accuracy: acc.toFixed(2) });
+
             document.getElementById('liveView').style.display = 'block';
             document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
         } else {
-            document.getElementById('r_omissions').innerText = om;
-            document.getElementById('r_fullMistakes').innerText = fm;
-            document.getElementById('r_halfMistakes').innerText = hm;
-            document.getElementById('r_extraWords').innerText = ew;
-
-            document.getElementById('r_name').innerText = currentUserData.name;
-            document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
+            document.getElementById('r_omissions').innerText = om; document.getElementById('r_fullMistakes').innerText = fm;
+            document.getElementById('r_halfMistakes').innerText = hm; document.getElementById('r_extraWords').innerText = ew;
+            document.getElementById('r_name').innerText = currentUserData.name; document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM";
             document.getElementById('r_masterWords').innerText = tw; document.getElementById('r_actualMistakes').innerText = actualErr; 
             document.getElementById('r_allowedMistakes').innerText = allowed; document.getElementById('r_excessMistakes').innerText = excess; 
             document.getElementById('r_netWords').innerText = net; document.getElementById('r_speed').innerText = wpm + " WPM"; 
             document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
-            
             document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
             
             document.getElementById('resultBox').style.display = 'block';
             window.scrollTo(0,0);
-            
             drawResultChart(net, actualErr);
             
             if(!isJustViewing) {
@@ -954,91 +931,66 @@
         if(!canvas) return;
         let ctx = canvas.getContext('2d');
         if(resultChartInstance) resultChartInstance.destroy();
-        
-        resultChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: { 
-                labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
-                datasets: [{ 
-                    data: [netWords, mistakes], 
-                    backgroundColor: ['#10b981', '#ef4444'], 
-                    borderWidth: 2, 
-                    borderColor: '#ffffff' 
-                }] 
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
-        });
+        resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } });
     }
 
     function downloadResultPDF() {
-        const btn = document.getElementById('downloadPdfBtn'); 
-        btn.style.display = 'none';
-        
+        const btn = document.getElementById('downloadPdfBtn'); btn.style.display = 'none';
         const element = document.getElementById('resultBox');
-        const opt = { 
-            margin: [10, 10, 10, 10], 
-            filename: 'Hindi_Steno_Lab_Result.pdf', 
-            image: { type: 'jpeg', quality: 0.98 }, 
-            html2canvas: { scale: 2 }, 
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-        };
-        
-        html2pdf().set(opt).from(element).save().then(() => { 
-            btn.style.display = 'inline-block'; 
-        });
+        const opt = { margin: [10, 10, 10, 10], filename: 'Hindi_Steno_Lab_Result.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+        html2pdf().set(opt).from(element).save().then(() => { btn.style.display = 'inline-block'; });
     }
 
     function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) {
-        let payload = { 
-            name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, 
-            speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, 
-            accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, 
-            isLive: isLive, category: payloadCategory, studentText: studentText // 🚀 Added studentText
-        };
+        let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText };
         fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
         .then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; });
     }
 
-    // 🚀 NEW: VIEW DETAILED COPY AFTER 6 PM 🚀
     function viewLiveCopy(topicName) {
         let myLiveResult = liveResultsData.find(res => res.email === currentUserData.email && res.topic === topicName);
         let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive);
         if(myLiveResult && setting) {
-            isLiveTestActive = false; // Trick UI into showing result
+            isLiveTestActive = false; 
             currentTestSpeed = myLiveResult.speed;
-            
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('testView').classList.add('active');
             document.getElementById('studentDetailsBox').style.display = 'none';
             document.getElementById('typingSection').style.display = 'none';
-            
-            // True parameter means isJustViewing = true (won't save again)
             calculateDetailedMistakes(setting.text, myLiveResult.studentText || "", 60, myLiveResult.category, true); 
-        } else {
-            alert("डेटा लोड नहीं हो पाया!");
-        }
+        } else { alert("डेटा लोड नहीं हो पाया!"); }
     }
 
     function renderLiveTestLogic() {
-        let now = getRealTime(); // 🚀 USING INTERNET TIME 🚀
-        let day = now.getDay(); 
-        let hour = now.getHours();
-        
+        let now = getRealTime(); 
+        let day = now.getDay(); let hour = now.getHours();
         let statusBox = document.getElementById('liveStatusBox');
         
-        if (day === 6 && hour >= 10 && hour < 18) {
+        if (day === 0 && hour >= 10 && hour < 18) {
             let liveData = adminSettingsData ? adminSettingsData.find(i => i.isLive) : null;
             if(liveData) {
-                statusBox.innerHTML = `
-                    <h3 style="color:#b45309;">आज का लाइव टेस्ट शुरू हो चुका है!</h3>
-                    <p style="font-weight:bold; font-size:18px;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
-                    <p style="color:#ef4444; font-size:14px;"><i class="fas fa-exclamation-triangle"></i> टेस्ट फुल स्क्रीन में होगा।</p>
-                    <button class="btn" style="background:#ef4444; font-size:20px; padding:15px 30px;" onclick="startAudioSection(true)"><i class="fas fa-play-circle"></i> टेस्ट में प्रवेश करें</button>
-                `;
+                // 🚀 CHECK ONE ATTEMPT 🚀
+                let alreadySubmitted = liveResultsData.some(res => res.email === currentUserData.email && res.topic === liveData.topic);
+                if (alreadySubmitted) {
+                    statusBox.innerHTML = `
+                        <div style="padding: 20px; background: #ecfdf5; border-radius: 12px; border: 2px dashed #6ee7b7;">
+                            <i class="fas fa-check-circle" style="font-size: 50px; color: #10b981; margin-bottom: 15px;"></i>
+                            <h3 style="color:#059669; margin-top:0;">आप यह लाइव टेस्ट दे चुके हैं!</h3>
+                            <p style="font-weight:bold; font-size:16px; color:#1f2937;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
+                            <p style="color:#047857; font-size:15px; font-weight:bold;">आपका रिज़ल्ट सुरक्षित जमा हो गया है। कृपया शाम 6:00 बजे का इंतज़ार करें।</p>
+                        </div>
+                    `;
+                } else {
+                    statusBox.innerHTML = `
+                        <h3 style="color:#b45309;">आज का लाइव टेस्ट शुरू हो चुका है!</h3>
+                        <p style="font-weight:bold; font-size:18px;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
+                        <p style="color:#ef4444; font-size:14px;"><i class="fas fa-exclamation-triangle"></i> टेस्ट फुल स्क्रीन में होगा।</p>
+                        <button class="btn" style="background:#ef4444; font-size:20px; padding:15px 30px;" onclick="startAudioSection(true)"><i class="fas fa-play-circle"></i> टेस्ट में प्रवेश करें</button>
+                    `;
+                }
             } else { statusBox.innerHTML = `<h3 style="color:#ef4444;">आज कोई लाइव टेस्ट निर्धारित नहीं है।</h3>`; }
         } else if (day === 0 && hour >= 18) {
-            let tableRows = "";
-            let myTopic = "";
+            let tableRows = ""; let myTopic = "";
             if(liveResultsData && liveResultsData.length > 0) {
                 liveResultsData.sort((a,b) => b.accuracy - a.accuracy); 
                 liveResultsData.forEach((res, idx) => {
@@ -1048,7 +1000,6 @@
                 });
             } else { tableRows = `<tr><td colspan="4">अभी तक कोई रिज़ल्ट घोषित नहीं हुआ है।</td></tr>`; }
 
-            // 🚀 NEW: Button to view answer sheet 🚀
             let viewCopyBtn = "";
             if(myTopic !== "") {
                 viewCopyBtn = `<div style="text-align:center; margin-top:20px;">
@@ -1091,13 +1042,9 @@
         let chartData = [...myHistory]; 
         let labels = chartData.map(a => new Date(a.date).toLocaleDateString('en-IN').substring(0,5)); 
         let accData = chartData.map(a => parseFloat(a.accuracy));
-        
         let ctx = document.getElementById('progressLineChart').getContext('2d');
         if(window.dashboardLineChart) window.dashboardLineChart.destroy();
-        window.dashboardLineChart = new Chart(ctx, {
-            type: 'line', data: { labels: labels, datasets: [{ label: 'Accuracy', data: accData, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }] },
-            options: { responsive: true, scales: { y: { min: 50, max: 100 } } }
-        });
+        window.dashboardLineChart = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Accuracy', data: accData, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }] }, options: { responsive: true, scales: { y: { min: 50, max: 100 } } } });
 
         myHistory.reverse(); let tHtml = "";
         myHistory.forEach((a) => {
