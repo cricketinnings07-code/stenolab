@@ -1000,7 +1000,7 @@
         let day = now.getDay(); let hour = now.getHours();
         let statusBox = document.getElementById('liveStatusBox');
         
-        if (day === 0 && hour >= 10 && hour < 18) {
+        if (day === 6 && hour >= 10 && hour < 20) {
             let liveData = adminSettingsData ? adminSettingsData.find(i => i.isLive) : null;
             if(liveData) {
                 let alreadySubmitted = liveResultsData.some(res => res.email === currentUserData.email && res.topic === liveData.topic);
@@ -1022,7 +1022,7 @@
                     `;
                 }
             } else { statusBox.innerHTML = `<h3 style="color:#ef4444;">आज कोई लाइव टेस्ट निर्धारित नहीं है।</h3>`; }
-        } else if (day === 6 && hour >= 19) {
+        } else if (day === 6 && hour >= 20) {
             let tableRows = ""; let myTopic = "";
             if(liveResultsData && liveResultsData.length > 0) {
                 liveResultsData.sort((a,b) => b.accuracy - a.accuracy); 
