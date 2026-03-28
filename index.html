@@ -989,7 +989,7 @@
                     `;
                 }
             } else { statusBox.innerHTML = `<h3 style="color:#ef4444;">आज कोई लाइव टेस्ट निर्धारित नहीं है।</h3>`; }
-        } else if (day === 0 && hour >= 18) {
+        } else if (day === 6 && hour >= 18) {
             let tableRows = ""; let myTopic = "";
             if(liveResultsData && liveResultsData.length > 0) {
                 liveResultsData.sort((a,b) => b.accuracy - a.accuracy); 
