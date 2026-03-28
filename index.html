@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>हिंदी स्टेनो लैब - प्रो टेस्ट पोर्टल</title>
+    <title>Welcome to Hindi Steno Lab</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -35,6 +35,7 @@
         .main-pad { padding: 20px 15px; }
         .container { max-width: 950px; margin: 0 auto; position: relative; }
         
+        /* 🚀 PREMIUM UI HEADERS 🚀 */
         .top-header { 
             display: flex; justify-content: space-between; align-items: center; 
             margin-bottom: 25px; padding: 15px 30px; background: #ffffff; 
@@ -63,6 +64,7 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* 🚀 PREMIUM LOGIN UI 🚀 */
         .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 70vh; }
         .auth-box { background: white; width: 100%; max-width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;}
         .auth-box h3 { color: #312e81; font-size: 28px; margin-top: 0; margin-bottom: 5px; font-weight: 800; }
@@ -107,18 +109,18 @@
         @keyframes pulseServer { 0% { transform: translateY(0); color: #4f46e5; } 100% { transform: translateY(-8px); color: #6366f1; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* 🚀 NEW: POP-UP MODAL UI FOR AUDIO & READING 🚀 */
+        /* 🚀 FIXED: POP-UP MODAL UI (ABSOLUTE CENTERED) 🚀 */
         .modal-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: rgba(240, 242, 245, 0.95); z-index: 9999; 
-            align-items: center; justify-content: center; backdrop-filter: blur(8px); 
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(0, 0, 0, 0.6); z-index: 999999; 
+            align-items: center; justify-content: center; backdrop-filter: blur(5px); 
         }
         .modal-box { 
-            background: white; width: 100%; max-width: 650px; padding: 40px; 
-            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center; 
-            animation: scaleUp 0.3s ease-out forwards; border: 1px solid #e2e8f0;
+            background: white; width: 90%; max-width: 600px; padding: 40px; 
+            border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: center; 
+            animation: scaleUp 0.3s ease-out forwards; border: 1px solid #e2e8f0; margin: auto;
         }
-        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     </style>
 </head>
@@ -207,7 +209,7 @@
             <div style="margin-top:40px; padding:30px; background:linear-gradient(135deg, #e0e7ff, #c7d2fe); border-left: 6px solid #4f46e5; border-radius:16px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);">
                 <span style="font-size: 40px;">💡</span>
                 <h3 style="color:#312e81; font-style: italic; font-size: 22px; line-height: 1.5; margin-top: 10px;">
-                    "सफलता का पीछा करते रहो दोस्त,<br>कामयाब होगे।"
+                    "मंजिल उन्हीं को मिलती है, जिनके सपनों में जान होती है,<br>पंखों से कुछ नहीं होता, हौसलों से उड़ान होती है"
                 </h3>
             </div>
         </div>
@@ -259,29 +261,6 @@
                 <select id="topicSelect" class="input-field" disabled><option>लोड हो रहा है...</option></select>
 
                 <button id="startTestBtn" class="btn" style="background: #4f46e5; font-size: 18px; padding: 18px; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);" disabled onclick="startAudioSection(false)"><i class="fas fa-headphones"></i> डिक्टेशन शुरू करें</button>
-            </div>
-        </div>
-
-        <div id="audioSection" class="modal-overlay">
-            <div class="modal-box">
-                <div style="font-size: 60px; color: #4f46e5; margin-bottom: 15px;"><i class="fas fa-volume-up"></i></div>
-                <h2 style="color: #ef4444; margin-top: 0; font-size: 28px;">ऑडियो डिक्टेशन चल रही है...</h2>
-                <div style="background:#f1f5f9; padding:20px; border-radius:12px; margin-top: 20px;">
-                    <audio id="dictationAudio" controls style="width: 100%; outline: none;"></audio>
-                </div>
-                <button class="btn" style="background: #f59e0b; margin-top: 25px; width: auto; font-size:18px; padding:15px 30px;" onclick="skipAudio()">स्किप करें (सीधे रीडिंग) <i class="fas fa-arrow-right"></i></button>
-            </div>
-        </div>
-
-        <div id="readingSection" class="modal-overlay">
-            <div class="modal-box" style="border-top: 8px solid #10b981;">
-                <div style="font-size: 60px; color: #10b981; margin-bottom: 15px;"><i class="fas fa-book-reader"></i></div>
-                <h2 style="color: #312e81; margin-top: 0; font-size: 28px;">डिक्टेशन रीडिंग टाइम</h2>
-                <div class="timer" id="readingTimerDisplay" style="color: #10b981; background: #ecfdf5; border: 2px dashed #6ee7b7; font-size:40px; padding:20px;">05:00</div>
-                <p style="color: #64748b; font-weight: bold; font-size: 16px;">अपनी शॉर्टहैंड आउटलाइन को पढ़ने के लिए आपको 5 मिनट दिए गए हैं।</p>
-                <div style="text-align: center; margin-top: 25px;">
-                    <button class="btn" style="background: #4f46e5; width: auto; font-size:18px; padding:15px 30px;" onclick="skipReading()">रीडिंग छोड़ें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
-                </div>
             </div>
         </div>
 
@@ -405,6 +384,28 @@
 
 </div>
 </div>
+<div id="audioSection" class="modal-overlay">
+    <div class="modal-box">
+        <div style="font-size: 60px; color: #4f46e5; margin-bottom: 15px;"><i class="fas fa-volume-up"></i></div>
+        <h2 style="color: #ef4444; margin-top: 0; font-size: 28px;">ऑडियो डिक्टेशन चल रही है...</h2>
+        <div style="background:#f1f5f9; padding:20px; border-radius:12px; margin-top: 20px;">
+            <audio id="dictationAudio" controls style="width: 100%; outline: none;"></audio>
+        </div>
+        <button class="btn" style="background: #f59e0b; margin-top: 25px; width: auto; font-size:18px; padding:15px 30px;" onclick="skipAudio()">स्किप करें (सीधे रीडिंग) <i class="fas fa-arrow-right"></i></button>
+    </div>
+</div>
+
+<div id="readingSection" class="modal-overlay">
+    <div class="modal-box" style="border-top: 8px solid #10b981;">
+        <div style="font-size: 60px; color: #10b981; margin-bottom: 15px;"><i class="fas fa-book-reader"></i></div>
+        <h2 style="color: #312e81; margin-top: 0; font-size: 28px;">डिक्टेशन रीडिंग टाइम</h2>
+        <div class="timer" id="readingTimerDisplay" style="color: #10b981; background: #ecfdf5; border: 2px dashed #6ee7b7; font-size:40px; padding:20px;">05:00</div>
+        <p style="color: #64748b; font-weight: bold; font-size: 16px;">अपनी शॉर्टहैंड आउटलाइन को पढ़ने के लिए आपको 5 मिनट दिए गए हैं।</p>
+        <div style="text-align: center; margin-top: 25px;">
+            <button class="btn" style="background: #4f46e5; width: auto; font-size:18px; padding:15px 30px;" onclick="skipReading()">रीडिंग छोड़ें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+</div>
 
 <script>
     let isSignupMode = false;
@@ -526,7 +527,7 @@
                     // 🚀 BACK BUTTON FIX (HISTORY API) 🚀
                     let hashTab = window.location.hash.substring(1);
                     if(['home', 'dashboard', 'test', 'profile', 'leaderboard', 'live'].includes(hashTab)) {
-                        switchTab(hashTab, true); // true = push to history initially
+                        switchTab(hashTab, true); 
                     } else {
                         switchTab('home', true); 
                     }
@@ -602,6 +603,11 @@
     function switchTab(tabId, pushHistory = true) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Hide Modal popups forcefully when switching tabs
+        document.getElementById('audioSection').style.display = 'none';
+        document.getElementById('readingSection').style.display = 'none';
+
         document.getElementById(tabId + 'View').classList.add('active');
         let btn = document.getElementById('btn-' + tabId);
         if(btn) btn.classList.add('active');
@@ -611,8 +617,6 @@
         if(tabId === 'live') renderLiveTestLogic();
         if(tabId === 'test') {
             document.getElementById('studentDetailsBox').style.display = 'block';
-            document.getElementById('audioSection').style.display = 'none';
-            document.getElementById('readingSection').style.display = 'none';
             document.getElementById('typingSection').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
             
@@ -623,18 +627,15 @@
             checkPendingTest();
         }
 
-        // Push URL to browser history
         if (pushHistory) {
             history.pushState({ tab: tabId }, '', '#' + tabId);
         }
     }
 
-    // Listen to Browser Back/Forward buttons
     window.addEventListener('popstate', function(event) {
         if (event.state && event.state.tab) {
-            switchTab(event.state.tab, false); // false = do not push again
+            switchTab(event.state.tab, false); 
         } else {
-            // Default fallback
             let hashTab = window.location.hash.substring(1);
             if(['home', 'dashboard', 'test', 'profile', 'leaderboard', 'live'].includes(hashTab)){
                 switchTab(hashTab, false);
@@ -726,7 +727,6 @@
         }
     }
 
-    // 🚀 NEW: AUDIO POP-UP MODAL 🚀
     function startAudioSection(isLive) {
         isLiveTestActive = isLive;
         if(isLiveTestActive) {
@@ -753,7 +753,7 @@
         if(!isLiveTestActive) document.getElementById('studentDetailsBox').style.display = 'none';
         else document.getElementById('liveView').style.display = 'none';
 
-        // Show Modal
+        // 🚀 SHOW MODAL CENTRALLY 🚀
         document.getElementById('audioSection').style.display = 'flex';
         
         let audioPlayer = document.getElementById('dictationAudio');
@@ -763,10 +763,9 @@
     let readingInterval;
     let readingTimeLeft = 300; // 5 Minutes
 
-    // 🚀 NEW: READING POP-UP MODAL 🚀
     function startReadingTest() {
         document.getElementById('audioSection').style.display = 'none';
-        document.getElementById('readingSection').style.display = 'flex'; // Show Modal
+        document.getElementById('readingSection').style.display = 'flex'; // 🚀 SHOW MODAL CENTRALLY 🚀
         readingTimeLeft = 300;
         updateReadingTimer();
         readingInterval = setInterval(updateReadingTimer, 1000);
@@ -798,7 +797,7 @@
             document.querySelector('.top-header').style.display = 'flex';
             document.getElementById('mainNavbar').style.display = 'flex';
             try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
-            switchTab('dashboard', true); // Pushes to history
+            switchTab('dashboard', true); 
         }
     }
 
@@ -939,21 +938,24 @@
             document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
             
             document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
-            drawDoughnutChart(net, actualErr);
-
+            
             document.getElementById('resultBox').style.display = 'block';
             window.scrollTo(0,0);
+            
+            drawResultChart(net, actualErr);
             saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, false, payloadCategory);
             if(acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }});
         }
     }
 
-    let doughnutChartInstance = null;
-    function drawDoughnutChart(netWords, mistakes) {
-        let ctx = document.getElementById('resultDoughnutChart').getContext('2d');
-        if(doughnutChartInstance) doughnutChartInstance.destroy();
+    let resultChartInstance = null;
+    function drawResultChart(netWords, mistakes) {
+        let canvas = document.getElementById('resultChart');
+        if(!canvas) return; // 🚀 EXTRA SAFETY 🚀
+        let ctx = canvas.getContext('2d');
+        if(resultChartInstance) resultChartInstance.destroy();
         
-        doughnutChartInstance = new Chart(ctx, {
+        resultChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: { 
                 labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
@@ -964,7 +966,10 @@
                     borderColor: '#ffffff' 
                 }] 
             },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
+            options: { 
+                responsive: true, 
+                plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } 
+            }
         });
     }
 
