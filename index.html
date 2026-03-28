@@ -35,7 +35,6 @@
         .main-pad { padding: 20px 15px; }
         .container { max-width: 950px; margin: 0 auto; position: relative; }
         
-        /* 🚀 PREMIUM UI HEADERS 🚀 */
         .top-header { 
             display: flex; justify-content: space-between; align-items: center; 
             margin-bottom: 25px; padding: 15px 30px; background: #ffffff; 
@@ -64,7 +63,6 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 🚀 PREMIUM LOGIN UI 🚀 */
         .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 70vh; }
         .auth-box { background: white; width: 100%; max-width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;}
         .auth-box h3 { color: #312e81; font-size: 28px; margin-top: 0; margin-bottom: 5px; font-weight: 800; }
@@ -102,13 +100,25 @@
         .cat-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0; background: #fff; font-weight: bold; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .cat-btn.active { border-color: #4f46e5; background: #eef2ff; color: #4f46e5; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15); }
 
-        /* 🚀 Server Loader CSS 🚀 */
         #fullScreenLoader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:9999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter: blur(10px); }
         .server-box { position: relative; display: inline-block; margin-bottom: 25px; }
         .server-icon { font-size: 70px; color: #4f46e5; animation: pulseServer 1.5s ease-in-out infinite alternate; text-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
         .sync-spinner { position: absolute; bottom: -5px; right: -15px; font-size: 28px; color: #10b981; background: #fff; border-radius: 50%; padding: 4px; animation: spin 1s linear infinite; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid #e2e8f0; }
         @keyframes pulseServer { 0% { transform: translateY(0); color: #4f46e5; } 100% { transform: translateY(-8px); color: #6366f1; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* 🚀 NEW: POP-UP MODAL UI FOR AUDIO & READING 🚀 */
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: rgba(240, 242, 245, 0.95); z-index: 9999; 
+            align-items: center; justify-content: center; backdrop-filter: blur(8px); 
+        }
+        .modal-box { 
+            background: white; width: 100%; max-width: 650px; padding: 40px; 
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center; 
+            animation: scaleUp 0.3s ease-out forwards; border: 1px solid #e2e8f0;
+        }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     </style>
 </head>
@@ -186,11 +196,9 @@
                 <a href="https://youtube.com/@cricketinnings07" target="_blank" style="text-decoration: none; background: #ff0000; color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(255,0,0,0.3); transition: 0.3s; display: flex; align-items: center; gap: 8px;">
                     <i class="fab fa-youtube" style="font-size: 22px;"></i> YouTube
                 </a>
-                
                 <a href="https://instagram.com/cricketinnings07" target="_blank" style="text-decoration: none; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3); transition: 0.3s; display: flex; align-items: center; gap: 8px;">
                     <i class="fab fa-instagram" style="font-size: 22px;"></i> Instagram
                 </a>
-                
                 <a href="#" target="_blank" style="text-decoration: none; background: #10b981; color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); transition: 0.3s; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-headset" style="font-size: 20px;"></i> Contact Us
                 </a>
@@ -254,20 +262,26 @@
             </div>
         </div>
 
-        <div id="audioSection" style="text-align: center; display: none; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-            <div style="font-size: 60px; color: #4f46e5; margin-bottom: 20px;"><i class="fas fa-volume-up"></i></div>
-            <h2 style="color: #ef4444; margin-top: 0;">ऑडियो डिक्टेशन चल रही है...</h2>
-            <audio id="dictationAudio" controls style="width: 100%; max-width: 500px; margin-top: 20px;"></audio><br>
-            <button class="btn" style="background: #f59e0b; margin-top: 30px; width: auto;" onclick="skipAudio()">स्किप करें (सीधे रीडिंग) <i class="fas fa-arrow-right"></i></button>
+        <div id="audioSection" class="modal-overlay">
+            <div class="modal-box">
+                <div style="font-size: 60px; color: #4f46e5; margin-bottom: 15px;"><i class="fas fa-volume-up"></i></div>
+                <h2 style="color: #ef4444; margin-top: 0; font-size: 28px;">ऑडियो डिक्टेशन चल रही है...</h2>
+                <div style="background:#f1f5f9; padding:20px; border-radius:12px; margin-top: 20px;">
+                    <audio id="dictationAudio" controls style="width: 100%; outline: none;"></audio>
+                </div>
+                <button class="btn" style="background: #f59e0b; margin-top: 25px; width: auto; font-size:18px; padding:15px 30px;" onclick="skipAudio()">स्किप करें (सीधे रीडिंग) <i class="fas fa-arrow-right"></i></button>
+            </div>
         </div>
 
-        <div id="readingSection" style="display: none; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;">
-            <div style="font-size: 60px; color: #10b981; margin-bottom: 20px;"><i class="fas fa-book-reader"></i></div>
-            <h2 style="color: #312e81; margin-top: 0;">डिक्टेशन रीडिंग टाइम</h2>
-            <div class="timer" id="readingTimerDisplay" style="color: #10b981; background: #ecfdf5; border-color: #6ee7b7;">05:00</div>
-            <p style="color: #64748b; font-weight: bold; font-size: 16px;">अपनी शॉर्टहैंड आउटलाइन को पढ़ने के लिए आपको 5 मिनट दिए गए हैं।</p>
-            <div style="text-align: center; margin-top: 25px;">
-                <button class="btn" style="background: #4f46e5; width: auto;" onclick="skipReading()">रीडिंग छोड़ें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
+        <div id="readingSection" class="modal-overlay">
+            <div class="modal-box" style="border-top: 8px solid #10b981;">
+                <div style="font-size: 60px; color: #10b981; margin-bottom: 15px;"><i class="fas fa-book-reader"></i></div>
+                <h2 style="color: #312e81; margin-top: 0; font-size: 28px;">डिक्टेशन रीडिंग टाइम</h2>
+                <div class="timer" id="readingTimerDisplay" style="color: #10b981; background: #ecfdf5; border: 2px dashed #6ee7b7; font-size:40px; padding:20px;">05:00</div>
+                <p style="color: #64748b; font-weight: bold; font-size: 16px;">अपनी शॉर्टहैंड आउटलाइन को पढ़ने के लिए आपको 5 मिनट दिए गए हैं।</p>
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="btn" style="background: #4f46e5; width: auto; font-size:18px; padding:15px 30px;" onclick="skipReading()">रीडिंग छोड़ें (सीधे टाइपिंग) <i class="fas fa-arrow-right"></i></button>
+                </div>
             </div>
         </div>
 
@@ -311,7 +325,7 @@
                 <div style="margin-top:8px;"><b>लिया गया समय:</b> <span id="r_timeTaken" style="color: #ef4444;"></span></div>
             </div>
 
-            <div style="max-width: 320px; margin: 20px auto; text-align: center;">
+            <div class="chart-container" style="max-width: 320px; margin: 20px auto; text-align: center;">
                 <canvas id="resultChart"></canvas>
             </div>
 
@@ -442,7 +456,6 @@
 
     auth.onAuthStateChanged((user) => {
         if (user) {
-            // 🚀 SINGLE-DEVICE LOGIN CHECK 🚀
             let localSession = localStorage.getItem("steno_session");
             firebase.database().ref('sessions/' + user.uid).on('value', (snapshot) => {
                 let dbSession = snapshot.val();
@@ -502,6 +515,7 @@
                     document.getElementById('speedSelect').disabled = false;
                     document.getElementById('startTestBtn').disabled = false; 
                     document.getElementById('startTestBtn').style.opacity = 1;
+                    document.getElementById('startTestBtn').style.cursor = 'pointer';
                     
                     updateTopicName(); 
                     let lbSelect = document.getElementById('leaderboardSpeedSelect'); lbSelect.innerHTML = "";
@@ -509,7 +523,14 @@
                         if(!item.isLive) lbSelect.innerHTML += `<option value="${item.topic}">[${item.category}] ${item.speed} WPM - ${item.topic}</option>`;
                     });
 
-                    switchTab('home'); 
+                    // 🚀 BACK BUTTON FIX (HISTORY API) 🚀
+                    let hashTab = window.location.hash.substring(1);
+                    if(['home', 'dashboard', 'test', 'profile', 'leaderboard', 'live'].includes(hashTab)) {
+                        switchTab(hashTab, true); // true = push to history initially
+                    } else {
+                        switchTab('home', true); 
+                    }
+                    
                 } else {
                     auth.signOut();
                     document.getElementById('fullScreenLoader').style.display = 'none';
@@ -548,7 +569,6 @@
             }).catch(e => alert("एरर: " + e.message));
         } else {
             auth.signInWithEmailAndPassword(email, pwd).then((userCred) => {
-                // 🚀 SINGLE DEVICE LOGIN (Save Session) 🚀
                 let sessionId = Date.now().toString();
                 localStorage.setItem("steno_session", sessionId);
                 firebase.database().ref('sessions/' + userCred.user.uid).set(sessionId);
@@ -578,7 +598,8 @@
         }
     }
 
-    function switchTab(tabId) {
+    // 🚀 BACK BUTTON LOGIC (HISTORY API) 🚀
+    function switchTab(tabId, pushHistory = true) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId + 'View').classList.add('active');
@@ -601,7 +622,27 @@
             selectCategory('SSC'); 
             checkPendingTest();
         }
+
+        // Push URL to browser history
+        if (pushHistory) {
+            history.pushState({ tab: tabId }, '', '#' + tabId);
+        }
     }
+
+    // Listen to Browser Back/Forward buttons
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.tab) {
+            switchTab(event.state.tab, false); // false = do not push again
+        } else {
+            // Default fallback
+            let hashTab = window.location.hash.substring(1);
+            if(['home', 'dashboard', 'test', 'profile', 'leaderboard', 'live'].includes(hashTab)){
+                switchTab(hashTab, false);
+            } else {
+                switchTab('home', false);
+            }
+        }
+    });
 
     let adminSettingsData = null, globalHistoryData = null, globalLeaderboardData = null, liveResultsData = null;
     let finalMasterText = "", totalDuration = 3600, timeLeft = totalDuration, timerInterval, isTestRunning = false;
@@ -685,6 +726,7 @@
         }
     }
 
+    // 🚀 NEW: AUDIO POP-UP MODAL 🚀
     function startAudioSection(isLive) {
         isLiveTestActive = isLive;
         if(isLiveTestActive) {
@@ -711,7 +753,9 @@
         if(!isLiveTestActive) document.getElementById('studentDetailsBox').style.display = 'none';
         else document.getElementById('liveView').style.display = 'none';
 
-        document.getElementById('audioSection').style.display = 'block';
+        // Show Modal
+        document.getElementById('audioSection').style.display = 'flex';
+        
         let audioPlayer = document.getElementById('dictationAudio');
         if(audioPlayer) audioPlayer.onended = function() { startReadingTest(); };
     }
@@ -719,9 +763,10 @@
     let readingInterval;
     let readingTimeLeft = 300; // 5 Minutes
 
+    // 🚀 NEW: READING POP-UP MODAL 🚀
     function startReadingTest() {
         document.getElementById('audioSection').style.display = 'none';
-        document.getElementById('readingSection').style.display = 'block';
+        document.getElementById('readingSection').style.display = 'flex'; // Show Modal
         readingTimeLeft = 300;
         updateReadingTimer();
         readingInterval = setInterval(updateReadingTimer, 1000);
@@ -753,7 +798,7 @@
             document.querySelector('.top-header').style.display = 'flex';
             document.getElementById('mainNavbar').style.display = 'flex';
             try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {}
-            switchTab('dashboard');
+            switchTab('dashboard', true); // Pushes to history
         }
     }
 
@@ -894,7 +939,7 @@
             document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%";
             
             document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' ');
-            drawResultChart(net, actualErr);
+            drawDoughnutChart(net, actualErr);
 
             document.getElementById('resultBox').style.display = 'block';
             window.scrollTo(0,0);
@@ -903,26 +948,23 @@
         }
     }
 
-    let resultChartInstance = null;
-    function drawResultChart(netWords, mistakes) {
-        let ctx = document.getElementById('resultChart').getContext('2d');
-        if(resultChartInstance) resultChartInstance.destroy();
+    let doughnutChartInstance = null;
+    function drawDoughnutChart(netWords, mistakes) {
+        let ctx = document.getElementById('resultDoughnutChart').getContext('2d');
+        if(doughnutChartInstance) doughnutChartInstance.destroy();
         
-        resultChartInstance = new Chart(ctx, {
+        doughnutChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: { 
                 labels: ['शुद्ध शब्द', 'कुल गलतियां'], 
                 datasets: [{ 
                     data: [netWords, mistakes], 
-                    backgroundColor: ['#28a745', '#dc3545'], 
+                    backgroundColor: ['#10b981', '#ef4444'], 
                     borderWidth: 2, 
                     borderColor: '#ffffff' 
                 }] 
             },
-            options: { 
-                responsive: true, 
-                plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } 
-            }
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } }
         });
     }
 
