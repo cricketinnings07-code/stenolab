@@ -525,10 +525,14 @@
                 document.getElementById('startTestBtn').style.opacity = 1;
                 document.getElementById('startTestBtn').style.cursor = 'pointer';
                 
-                updateTopicName(); 
+               updateTopicName(); 
                 let lbSelect = document.getElementById('leaderboardSpeedSelect'); lbSelect.innerHTML = "";
                 adminSettingsData.forEach(item => {
-                    if(!item.isLive) lbSelect.innerHTML += `<option value="${item.topic}">[${item.category}] ${item.speed} WPM - ${item.topic}</option>`;
+                    if(!item.isLive) {
+                        // 🚀 FREE USER को सिर्फ Demo का लीडरबोर्ड दिखेगा 🚀
+                        if(!isPremiumUser && item.category !== 'Demo') return; 
+                        lbSelect.innerHTML += `<option value="${item.topic}">[${item.category}] ${item.speed} WPM - ${item.topic}</option>`;
+                    }
                 });
 
                 let hashTab = window.location.hash.substring(1);
@@ -1060,12 +1064,19 @@
         let tableHtml = "";
         filteredData.forEach((st, idx) => {
             let r = idx===0?"🥇":idx===1?"🥈":idx===2?"🥉":(idx+1);
-            tableHtml += `<tr><td><b>${r}</b></td><td>${st.name}</td><td>${st.netWords}</td><td style="color: #10b981; font-weight: 800;">${parseFloat(st.accuracy).toFixed(2)}%</td></tr>`;
+            
+            // 🚀 FREEMIUM NAME MASKING 🚀
+            let display_name = st.name;
+            if (!isPremiumUser && st.email !== currentUserData.email) {
+                // फ्री यूजर को दूसरों के नाम के सिर्फ पहले 2 अक्षर दिखेंगे
+                display_name = st.name.substring(0, 2) + "****"; 
+            }
+            
+            tableHtml += `<tr><td><b>${r}</b></td><td>${display_name}</td><td>${st.netWords}</td><td style="color: #10b981; font-weight: 800;">${parseFloat(st.accuracy).toFixed(2)}%</td></tr>`;
         });
         if(filteredData.length === 0) tableHtml = `<tr><td colspan='4' style='text-align:center;'>कोई डेटा नहीं।</td></tr>`;
         document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
-
     function renderDashboard() {
         let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email && item.type !== "LIVE"); 
         let chartData = [...myHistory]; 
