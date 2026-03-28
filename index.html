@@ -1033,13 +1033,25 @@
                 });
             } else { tableRows = `<tr><td colspan="4">अभी तक कोई रिज़ल्ट घोषित नहीं हुआ है।</td></tr>`; }
 
+            // 🚀 NEW: PDF Download Button Added 🚀
             let viewCopyBtn = "";
+            let pdfDownloadBtn = `<button class="btn" style="width:auto; background:#f97316; margin-left:10px;" onclick="downloadLiveResultPDF('${liveResultsData[0].topic}')"><i class="fas fa-file-pdf"></i> पूरी लिस्ट PDF डाउनलोड करें</button>`;
+            
             if(myTopic !== "") {
-                viewCopyBtn = `<div style="text-align:center; margin-top:20px;">
-                    <button class="btn btn-info" style="width:auto;" onclick="viewLiveCopy('${myTopic}')"><i class="fas fa-search"></i> अपनी कॉपी देखें (Detailed Result)</button>
-                </div>`;
+                viewCopyBtn = `<button class="btn btn-info" style="width:auto;" onclick="viewLiveCopy('${myTopic}')"><i class="fas fa-search"></i> अपनी कॉपी देखें (Detailed Result)</button>`;
             }
 
+            statusBox.innerHTML = `
+                <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
+                <table class="data-table" style="text-align:left;">
+                    <thead style="background:#4f46e5;"><tr><th>Rank</th><th>Name</th><th>Net Words</th><th>Accuracy</th></tr></thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
+                <div style="text-align:center; margin-top:20px; display:flex; justify-content:center; flex-wrap:wrap; gap:10px;">
+                    ${viewCopyBtn}
+                    ${pdfDownloadBtn}
+                </div>
+            `;
             statusBox.innerHTML = `
                 <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
                 <table class="data-table" style="text-align:left;">
@@ -1092,6 +1104,73 @@
             tHtml += `<tr><td>${dStr}</td><td>${a.category || 'SSC'}</td><td>${a.speed} WPM</td><td style="font-weight:bold;">${a.netWords}</td><td style="color:#10b981; font-weight:bold;">${parseFloat(a.accuracy).toFixed(2)}%</td><td style="color:#ef4444; font-weight:bold;">${a.mistakes}</td></tr>`;
         });
         document.getElementById('dashboardData').innerHTML = tHtml || "<tr><td colspan='6' style='text-align:center;'>डेटा नहीं मिला</td></tr>";
+    }
+    // 🚀 NEW: LIVE TEST PDF DOWNLOADER 🚀
+    function downloadLiveResultPDF(topicName) {
+        let filteredResults = liveResultsData.filter(res => res.topic === topicName);
+        filteredResults.sort((a,b) => b.accuracy - a.accuracy);
+        
+        let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive);
+        let totalMasterWords = setting ? setting.text.split(/\s+/).filter(w => w.length > 0).length : 0;
+
+        let tableRows = "";
+        filteredResults.forEach((res, idx) => {
+            let typedWords = res.studentText ? res.studentText.split(/\s+/).filter(w => w.length > 0).length : 0;
+            
+            // फ्री यूज़र को PDF में भी दूसरों के नाम आधे छुपकर दिखेंगे (Marketing strategy!)
+            let display_name = res.name;
+            if(!isPremiumUser && res.email !== currentUserData.email) {
+                display_name = res.name.substring(0, 2) + "****";
+            }
+
+            tableRows += `<tr>
+                <td style="padding:10px; border:1px solid #cbd5e1; text-align:center; font-weight:bold;">${idx+1}</td>
+                <td style="padding:10px; border:1px solid #cbd5e1; font-weight:bold;">${display_name}</td>
+                <td style="padding:10px; border:1px solid #cbd5e1; text-align:center; color:#e11d48; font-weight:bold;">${res.roll || 'N/A'}</td>
+                <td style="padding:10px; border:1px solid #cbd5e1; text-align:center;">${totalMasterWords}</td>
+                <td style="padding:10px; border:1px solid #cbd5e1; text-align:center;">${typedWords}</td>
+                <td style="padding:10px; border:1px solid #cbd5e1; text-align:center; color:#ef4444; font-weight:bold;">${res.mistakes}</td>
+                <td style="padding:10px; border:1px solid #cbd5e1; text-align:center; color:#10b981; font-weight:900;">${res.accuracy}%</td>
+            </tr>`;
+        });
+
+        let printDiv = document.createElement('div');
+        printDiv.innerHTML = `
+            <div style="padding: 30px; font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; background: white;">
+                <div style="text-align: center; border-bottom: 3px solid #4f46e5; padding-bottom: 15px; margin-bottom: 25px;">
+                    <h1 style="color: #312e81; margin: 0; font-size: 28px;">हिंदी स्टेनो लैब</h1>
+                    <h2 style="color: #ef4444; margin: 5px 0 0 0; font-size: 20px;">LIVE SUNDAY EXAM - RESULT</h2>
+                    <p style="color: #64748b; font-weight: bold; margin: 5px 0 0 0;">Topic: ${topicName}</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+                    <thead style="background: #4f46e5; color: white;">
+                        <tr>
+                            <th style="padding:12px; border:1px solid #312e81;">Rank</th>
+                            <th style="padding:12px; border:1px solid #312e81; text-align:left;">Student Name</th>
+                            <th style="padding:12px; border:1px solid #312e81;">Roll No.</th>
+                            <th style="padding:12px; border:1px solid #312e81;">Total Words</th>
+                            <th style="padding:12px; border:1px solid #312e81;">Typed Words</th>
+                            <th style="padding:12px; border:1px solid #312e81;">Errors</th>
+                            <th style="padding:12px; border:1px solid #312e81;">Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
+                <p style="text-align: center; color: #94a3b8; font-size: 12px; margin-top: 30px;">Generated automatically by Hindi Steno Lab Portal</p>
+            </div>
+        `;
+        
+        document.body.appendChild(printDiv);
+        
+        let opt = { 
+            margin: [10, 10, 10, 10], filename: 'Steno_Live_Result_' + topicName.replace(/\s+/g, '_') + '.pdf', 
+            image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+        };
+        
+        html2pdf().set(opt).from(printDiv).save().then(() => {
+            document.body.removeChild(printDiv);
+        });
     }
 </script>
 </body>
