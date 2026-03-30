@@ -50,32 +50,58 @@
         <button class="nav-btn nav-btn-live" id="btn-live" onclick="switchTab('live')"><i class="fas fa-broadcast-tower"></i> Live Exam</button>
     </div>
 
-    <div id="authWrapper" class="auth-wrapper">
-        <div class="auth-box">
-            <h3 id="authTitle"><i class="fas fa-user-shield"></i> लॉगिन करें</h3>
-            <p id="authSubtitle">प्रीमियम टेस्ट पोर्टल में प्रवेश करें</p>
-            
-            <div id="nameFieldContainer" class="input-group" style="display: none;">
-                <i class="fas fa-user"></i>
-                <input type="text" id="authName" placeholder="विद्यार्थी का पूरा नाम">
-            </div>
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="authEmail" placeholder="student@example.com">
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="authPassword" placeholder="पासवर्ड दर्ज करें (Min 6 chars)">
-                <i class="fas fa-eye eye-icon" id="pwdIcon" onclick="togglePwd()"></i>
-            </div>
-            <div class="forgot-link" style="text-align:right; margin-bottom:15px; font-size:13px;">
-                <span id="forgotPwdLink" style="color:#4f46e5; cursor:pointer; font-weight:bold;" onclick="resetPassword()">पासवर्ड भूल गए?</span>
+        <div id="authWrapper" class="auth-wrapper" style="display: flex;">
+        <div id="flip-container" class="flip-wrapper">
+            <div class="login">
+                <div class="content">
+                    <h1>लॉग इन</h1>
+                    <form onsubmit="event.preventDefault(); doLogin();">
+                        <input type="email" id="loginEmail" placeholder="Email (ईमेल)" required />
+                        <input type="password" id="loginPassword" placeholder="Password (पासवर्ड)" required />
+                        <span class="forget" onclick="resetPasswordNew()">पासवर्ड भूल गए?</span>
+                        <span class="clearfix"></span>
+                        <button type="submit">पोर्टल में प्रवेश करें</button>
+                    </form>
+                </div>
             </div>
 
-            <button class="btn" style="background: #4f46e5; margin-top: 10px; width: 100%; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);" id="mainAuthBtn" onclick="processAuth()"><i class="fas fa-sign-in-alt"></i> पोर्टल में प्रवेश करें</button>
-            <div class="switch-auth" id="switchAuthText">नया खाता बनाना है? <span onclick="toggleAuthMode()">यहाँ क्लिक करें (Sign Up)</span></div>
+            <div class="page front">
+                <div class="content">
+                    <i class="fa-solid fa-user-plus" style="font-size: 35px; margin-bottom: 15px;"></i>
+                    <h1>नए विद्यार्थी?</h1>
+                    <p>पोर्टल पर अपना फ्री अकाउंट बनाएं और टेस्ट देना शुरू करें</p>
+                    <button id="registerBtn" type="button" onclick="showRegisterForm()">
+                        रजिस्टर करें <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="page back">
+                <div class="content">
+                    <i class="fa-solid fa-right-to-bracket" style="font-size: 35px; margin-bottom: 15px;"></i>
+                    <h1>वापसी का स्वागत है!</h1>
+                    <p>अपने प्रीमियम टेस्ट पोर्टल में प्रवेश करने के लिए लॉगिन करें</p>
+                    <button id="loginBtn" type="button" onclick="showLoginForm()">
+                        <i class="fa-solid fa-arrow-left"></i> लॉग इन
+                    </button>
+                </div>
+            </div>
+
+            <div class="register">
+                <div class="content">
+                    <h1>नया खाता</h1>
+                    <form onsubmit="event.preventDefault(); doSignup();">
+                        <input type="text" id="regName" placeholder="Full Name (पूरा नाम)" required>
+                        <input type="email" id="regEmail" placeholder="Email (ईमेल)" required>
+                        <input type="password" id="regPassword" placeholder="Password (कम से कम 6 अक्षर)" required>
+                        <span class="clearfix"></span>
+                        <button type="submit">खाता बनाएं</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
+    </div
+
 
     <div id="homeView" class="view-section">
         <div class="setup-box" style="text-align:center;">
