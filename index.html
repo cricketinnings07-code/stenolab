@@ -1004,19 +1004,43 @@
         let day = now.getDay(); let hour = now.getHours();
         let statusBox = document.getElementById('liveStatusBox');
         
-        if (day === 6 && hour >= 10 && hour < 20) {
-            let liveData = adminSettingsData ? adminSettingsData.find(i => i.isLive) : null;
-            if(liveData) {
-                let alreadySubmitted = liveResultsData.some(res => res.email === currentUserData.email && res.topic === liveData.topic);
-                if (alreadySubmitted) {
-                    statusBox.innerHTML = `
-                        <div style="padding: 20px; background: #ecfdf5; border-radius: 12px; border: 2px dashed #6ee7b7;">
-                            <i class="fas fa-check-circle" style="font-size: 50px; color: #10b981; margin-bottom: 15px;"></i>
-                            <h3 style="color:#059669; margin-top:0;">आप यह लाइव टेस्ट दे चुके हैं!</h3>
-                            <p style="font-weight:bold; font-size:16px; color:#1f2937;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
-                            <p style="color:#047857; font-size:15px; font-weight:bold;">आपका रिज़ल्ट सुरक्षित जमा हो गया है। कृपया शाम 6:00 बजे का इंतज़ार करें।</p>
-                        </div>
-                    `;
+       } else if (day === 0 && hour >= 18) {
+            let tableRows = ""; 
+            let myTopic = "";
+            let liveSetting = adminSettingsData.find(i => i.isLive); // 🚀 सोर्स ऑफ ट्रुथ
+            let currentLiveTopic = liveSetting ? liveSetting.topic : "Live Exam";
+
+            if(liveResultsData && liveResultsData.length > 0) {
+                // सिर्फ इसी टॉपिक के रिजल्ट्स दिखाएँ
+                let currentResults = liveResultsData.filter(r => r.topic === currentLiveTopic);
+                currentResults.sort((a,b) => b.accuracy - a.accuracy); 
+                
+                currentResults.forEach((res, idx) => {
+                    let rank = idx===0?"🥇":idx===1?"🥈":idx===2?"🥉":(idx+1);
+                    tableRows += `<tr><td><b>${rank}</b></td><td>${res.name}</td><td>${res.netWords}</td><td style="color:#10b981; font-weight:bold;">${res.accuracy}%</td></tr>`;
+                    if(res.email === currentUserData.email) myTopic = res.topic;
+                });
+            } else { tableRows = `<tr><td colspan="4" style="text-align:center;">अभी तक कोई रिज़ल्ट घोषित नहीं हुआ है।</td></tr>`; }
+
+            let viewCopyBtn = "";
+            if(myTopic !== "") {
+                viewCopyBtn = `<button class="btn btn-info" style="width:auto;" onclick="viewLiveCopy('${myTopic}')"><i class="fas fa-search"></i> अपनी कॉपी देखें</button>`;
+            }
+
+            // 🚀 PDF बटन अब एकदम सुरक्षित है
+            let pdfDownloadBtn = `<button class="btn" style="width:auto; background:#f97316;" onclick="downloadLiveResultPDF('${currentLiveTopic}')"><i class="fas fa-file-pdf"></i> पूरी लिस्ट PDF</button>`;
+
+            statusBox.innerHTML = `
+                <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
+                <table class="data-table" style="text-align:left;">
+                    <thead style="background:#4f46e5;"><tr><th>Rank</th><th>Name</th><th>Net Words</th><th>Accuracy</th></tr></thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
+                <div style="text-align:center; margin-top:20px; display:flex; justify-content:center; flex-wrap:wrap; gap:10px;">
+                    ${viewCopyBtn}
+                    ${pdfDownloadBtn}
+                </div>
+            `;
                 } else {
                     statusBox.innerHTML = `
                         <h3 style="color:#b45309;">आज का लाइव टेस्ट शुरू हो चुका है!</h3>
@@ -1110,9 +1134,12 @@
         document.getElementById('dashboardData').innerHTML = tHtml || "<tr><td colspan='6' style='text-align:center;'>डेटा नहीं मिला</td></tr>";
     }
     // 🚀 NEW: LIVE TEST PDF DOWNLOADER 🚀
-    function downloadLiveResultPDF(topicName) {
+   function downloadLiveResultPDF(topicName) {
+        if (!liveResultsData || liveResultsData.length === 0) {
+            alert("अभी कोई रिजल्ट डेटा उपलब्ध नहीं है!");
+            return;
+        }
         let filteredResults = liveResultsData.filter(res => res.topic === topicName);
-        filteredResults.sort((a,b) => b.accuracy - a.accuracy);
         
         let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive);
         let totalMasterWords = setting ? setting.text.split(/\s+/).filter(w => w.length > 0).length : 0;
