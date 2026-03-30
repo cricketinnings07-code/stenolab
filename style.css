@@ -99,3 +99,59 @@ textarea.kruti-text { height: 220px; resize: vertical; }
 .profile-card { background: #f8fafc; padding: 15px 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center; }
 .profile-card span { color: #1e293b; font-weight: bold; font-size: 16px; }
                
+/* =========================================
+   FLIP LOGIN & SIGNUP ANIMATION 
+   ========================================= */
+.flip-wrapper {
+    font-family: "Montserrat", 'Segoe UI', sans-serif;
+    width: 95%; max-width: 800px; height: 500px; position: relative;
+    border-radius: 20px; box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.1), 0 10px 10px -10px rgba(0, 0, 0, 0.02);
+    transform-style: preserve-3d; margin: 20px auto; background: #fff;
+}
+.flip-wrapper > div {
+    position: absolute; width: 50%; height: 100%; top: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.flip-wrapper .content { width: 100%; padding: 2em; text-align: center; }
+.flip-wrapper h1 { font-weight: 800; font-size: 35px; text-align: center; margin-bottom: 15px; color:#312e81;}
+.flip-wrapper p { font-size: 16px; color: #fff; line-height: 1.5; margin-bottom: 25px; font-weight: bold;}
+.flip-wrapper form input { background: #f1f5f9; border: 2px solid #cbd5e1; border-radius: 12px; padding: 15px; margin: 10px 0; width: 100%; font-size: 16px; outline: none; box-sizing: border-box; font-weight: bold;}
+.flip-wrapper form input:focus { border-color: #4f46e5; background: #fff;}
+.flip-wrapper span { color: #333; font-size: 14px; display: inline-block; margin: 15px auto; font-weight: bold; cursor: pointer; }
+.flip-wrapper span.forget { float: right; color: #4f46e5; text-decoration: underline; }
+.flip-wrapper span.clearfix { clear: both; display: table; }
+.flip-wrapper button { margin: 1em auto; border-radius: 40px; border: none; background: #4f46e5; color: #fff; font-size: 18px; font-weight: bold; padding: 15px 30px; transition: transform 0.2s; cursor: pointer; box-shadow: 0 8px 15px rgba(79,70,229,0.3);}
+.flip-wrapper button:active { transform: scale(0.95); }
+.flip-wrapper .login { left: 0; background: #fafafa; border-radius: 20px 0 0 20px; z-index: 1;}
+.flip-wrapper .register { right: 0; z-index: 1; border-radius: 0 20px 20px 0; background: #fafafa; }
+.flip-wrapper .page { right: 0; color: white; border-radius: 0 20px 20px 0; transform-origin: left center; transition: animation 1s linear; }
+.flip-wrapper .page button { border: 2px solid #fff; background: transparent; box-shadow: none; }
+.flip-wrapper .front { background: linear-gradient(-25deg, #4f46e5 0%, #a855f7 100%); z-index: 3; }
+.flip-wrapper .back { background: linear-gradient(135deg, #a855f7 0%, #4f46e5 100%); z-index: 2; }
+.flip-wrapper .back .content { transform: rotateY(180deg); }
+
+/* Animation Classes */
+.flip-wrapper.active .front { animation: rot-front 0.6s ease-in-out normal forwards; }
+.flip-wrapper.active .back { animation: rot-back 0.6s ease-in-out normal forwards; }
+.flip-wrapper.close .front { animation: close-rot-front 0.6s ease-in-out normal forwards; }
+.flip-wrapper.close .back { animation: close-rot-back 0.6s ease-in-out normal forwards; }
+.flip-wrapper.active .register .content { animation: show 0.7s ease-in-out normal forwards; }
+.flip-wrapper.close .register .content { animation: hide 0.7s ease-in-out normal forwards; }
+.flip-wrapper.active .login .content { animation: hide 0.7s ease-in-out normal forwards; }
+.flip-wrapper.close .login .content { animation: show 0.7s ease-in-out normal forwards; }
+
+@keyframes rot-front { from { transform: translateZ(2px) rotateY(0deg); } to { transform: translateZ(1px) rotateY(-180deg); } }
+@keyframes close-rot-front { from { transform: translateZ(1px) rotateY(-180deg); } to { transform: translateZ(2px) rotateY(0deg); } }
+@keyframes rot-back { from { transform: translateZ(1px) rotateY(0deg); } to { transform: translateZ(2px) rotateY(-180deg); } }
+@keyframes close-rot-back { from { transform: translateZ(2px) rotateY(-180deg); } to { transform: translateZ(1px) rotateY(0deg); } }
+@keyframes show { from { opacity: 0; transform: scale(0.8); } to { opacity: 0.99; transform: scale(0.99); } }
+@keyframes hide { from { opacity: 0.99; transform: scale(0.99); } to { opacity: 0; transform: scale(0.8); } }
+
+/* Mobile View Scaling */
+@media (max-width: 768px) {
+    .flip-wrapper { transform: scale(0.85); margin: 0 auto; }
+}
+@media (max-width: 480px) {
+    .flip-wrapper { transform: scale(0.65); margin-top: -60px; margin-bottom: -60px;}
+    .flip-wrapper h1 { font-size: 28px; }
+    }
