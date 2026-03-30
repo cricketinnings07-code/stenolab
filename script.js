@@ -1,22 +1,19 @@
-let isSignupMode = false;
 let isPremiumUser = false; 
 let timeOffset = 0;
 
-function toggleAuthMode() {
-    isSignupMode = !isSignupMode;
-    document.getElementById('authTitle').innerHTML = isSignupMode ? "<i class='fas fa-user-plus'></i> खाता बनाएं" : "<i class='fas fa-user-shield'></i> लॉगिन करें";
-    document.getElementById('nameFieldContainer').style.display = isSignupMode ? "block" : "none";
-    document.getElementById('forgotPwdLink').style.display = isSignupMode ? "none" : "block";
-    document.getElementById('mainAuthBtn').innerHTML = isSignupMode ? "<i class='fas fa-user-plus'></i> खाता बनाएं" : "<i class='fas fa-sign-in-alt'></i> पोर्टल में प्रवेश करें";
-    document.getElementById('switchAuthText').innerHTML = isSignupMode ? "पहले से खाता है? <span onclick='toggleAuthMode()'>लॉगिन करें</span>" : "नया खाता बनाना है? <span onclick='toggleAuthMode()'>यहाँ क्लिक करें (Sign Up)</span>";
+// ==========================================
+// 1. FLIP ANIMATION CONTROLLERS (नया डिज़ाइन)
+// ==========================================
+function showRegisterForm() { 
+    document.getElementById("flip-container").className = 'flip-wrapper active'; 
+}
+function showLoginForm() { 
+    document.getElementById("flip-container").className = 'flip-wrapper close'; 
 }
 
-function togglePwd() {
-    let p = document.getElementById('authPassword'); let i = document.getElementById('pwdIcon');
-    if(p.type === 'password') { p.type = 'text'; i.className = 'fas fa-eye-slash eye-icon'; }
-    else { p.type = 'password'; i.className = 'fas fa-eye eye-icon'; }
-}
-
+// ==========================================
+// 2. SECURITY & FIREBASE SETUP
+// ==========================================
 document.addEventListener('contextmenu', e => e.preventDefault()); 
 document.addEventListener('copy', e => { e.preventDefault(); alert("🚫 कॉपी करना सख्त मना है!"); }); 
 document.addEventListener('cut', e => { e.preventDefault(); alert("🚫 कट करना सख्त मना है!"); }); 
@@ -26,7 +23,6 @@ document.addEventListener('keydown', e => {
     }
 });
 
-// Firebase Setup
 const firebaseConfig = {
     apiKey: "AIzaSyBJzwVTvyXlYek1R6NxyvI2Zf-zql2S--E",
     authDomain: "hindi-steno-lab-1.firebaseapp.com",
@@ -48,6 +44,52 @@ const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxgv6b
 // ==========================================
 
 function getRealTime() { return new Date(new Date().getTime() + timeOffset); }
+
+// ==========================================
+// 3. NEW LOGIN & SIGNUP ENGINE (Firebase)
+// ==========================================
+function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd = document.getElementById('loginPassword').value.trim();
+    if(!email || !pwd) return alert("कृपया ईमेल और पासवर्ड डालें!");
+    
+    auth.signInWithEmailAndPassword(email, pwd).then((userCred) => {
+        if (!userCred.user.emailVerified && userCred.user.email.toLowerCase() !== "cricketinnings07@gmail.com") {
+            auth.signOut();
+            alert("⚠️ आपका ईमेल अभी वेरिफाई नहीं हुआ है! कृपया अपने ईमेल (Inbox या Spam) में जाकर वेरिफिकेशन लिंक पर क्लिक करें।");
+            return;
+        }
+        let sessionId = Date.now().toString();
+        localStorage.setItem("steno_session", sessionId);
+        firebase.database().ref('sessions/' + userCred.user.uid).set(sessionId);
+    }).catch(e => { alert("❌ लॉगिन फेल: ईमेल/पासवर्ड गलत है या खाता मौजूद नहीं है।"); });
+}
+
+function doSignup() {
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pwd = document.getElementById('regPassword').value.trim();
+    
+    if(!name || !email || !pwd) return alert("कृपया सभी जानकारी भरें!");
+    if(pwd.length < 6) return alert("पासवर्ड कम से कम 6 अक्षरों का होना चाहिए!");
+    
+    auth.createUserWithEmailAndPassword(email, pwd).then((userCred) => {
+        userCred.user.updateProfile({ displayName: name });
+        return userCred.user.sendEmailVerification(); 
+    }).then(() => {
+        auth.signOut(); 
+        alert("✅ आपका खाता बन गया है! सुरक्षा के लिए आपके ईमेल पर एक वेरिफिकेशन लिंक भेजा गया है। कृपया उसे वेरिफाई करें।");
+        showLoginForm(); 
+    }).catch(e => alert("एरर: " + e.message));
+}
+
+function resetPasswordNew() {
+    const email = document.getElementById('loginEmail').value.trim();
+    if(!email) return alert("पासवर्ड रीसेट के लिए पहले ऊपर अपना ईमेल दर्ज करें और फिर 'पासवर्ड भूल गए' पर क्लिक करें।");
+    auth.sendPasswordResetEmail(email).then(() => alert("पासवर्ड रीसेट लिंक आपके ईमेल पर भेज दिया गया है!")).catch(e => alert(e.message));
+}
+
+function logoutUser() { localStorage.removeItem("steno_session"); auth.signOut(); location.reload(); }
 
 auth.onAuthStateChanged((user) => {
     if (user) {
