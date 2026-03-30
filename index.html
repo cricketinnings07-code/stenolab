@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>हिंदी स्टेनो लैब - प्रो टेस्ट पोर्टल</title>
+    <title> Welcome to Hindi Steno Lab</title>
     
     <link rel="stylesheet" href="style.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -50,7 +51,7 @@
         <button class="nav-btn nav-btn-live" id="btn-live" onclick="switchTab('live')"><i class="fas fa-broadcast-tower"></i> Live Exam</button>
     </div>
 
-        <div id="authWrapper" class="auth-wrapper" style="display: flex;">
+    <div id="authWrapper" class="auth-wrapper" style="display: flex;">
         <div id="flip-container" class="flip-wrapper">
             <div class="login">
                 <div class="content">
@@ -100,9 +101,24 @@
                 </div>
             </div>
         </div>
-    </div
+    </div>
 
-    
+    <div id="homeView" class="view-section">
+        <div class="setup-box" style="text-align:center;">
+            <h2 style="color:#312e81; font-size: 32px; font-weight: 800;"><i class="fas fa-hand-sparkles"></i> पोर्टल में आपका स्वागत है, <span id="homeName"></span>!</h2>
+            <p style="color:#64748b; font-size:18px;">आज का अभ्यास शुरू करने के लिए ऊपर दिए गए मेनू का उपयोग करें。</p>
+            <div style="margin-top: 35px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <a href="https://youtube.com/@cricketinnings07" target="_blank" class="social-btn" style="background: #ff0000; box-shadow: 0 4px 15px rgba(255,0,0,0.3);"><i class="fab fa-youtube"></i> YouTube</a>
+                <a href="https://instagram.com/cricketinnings07" target="_blank" class="social-btn" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3);"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="#" target="_blank" class="social-btn" style="background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);"><i class="fas fa-headset"></i> Contact Us</a>
+            </div>
+            <div style="margin-top:40px; padding:30px; background:linear-gradient(135deg, #e0e7ff, #c7d2fe); border-left: 6px solid #4f46e5; border-radius:16px;">
+                <span style="font-size: 40px;">💡</span>
+                <h3 style="color:#312e81; font-style: italic; font-size: 22px; line-height: 1.5; margin-top: 10px;">"सफलता का पीछा करते रहो दोस्त,<br>कामयाब होगे।"</h3>
+            </div>
+        </div>
+    </div>
+
     <div id="dashboardView" class="view-section setup-box">
         <h2 style="color: #4f46e5; text-align: center; margin-top: 0;"><i class="fas fa-chart-line"></i> मेरा परफॉरमेंस</h2>
         <div style="width: 100%; max-width: 750px; margin: 0 auto 30px auto; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; background: #fff;">
@@ -119,22 +135,7 @@
     <div id="testView" class="view-section">
         <div id="studentDetailsBox" class="setup-box">
             <h3 style="margin-top: 0; color: #312e81; font-size: 26px;"><i class="fas fa-sliders-h"></i> टेस्ट सेटअप</h3>
-            <div id="pending    <div id="homeView" class="view-section">
-        <div class="setup-box" style="text-align:center;">
-            <h2 style="color:#312e81; font-size: 32px; font-weight: 800;"><i class="fas fa-hand-sparkles"></i> पोर्टल में आपका स्वागत है, <span id="homeName"></span>!</h2>
-            <p style="color:#64748b; font-size:18px;">आज का अभ्यास शुरू करने के लिए ऊपर दिए गए मेनू का उपयोग करें।</p>
-            <div style="margin-top: 35px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <a href="https://youtube.com/@cricketinnings07" target="_blank" class="social-btn" style="background: #ff0000; box-shadow: 0 4px 15px rgba(255,0,0,0.3);"><i class="fab fa-youtube"></i> YouTube</a>
-                <a href="https://instagram.com/cricketinnings07" target="_blank" class="social-btn" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3);"><i class="fab fa-instagram"></i> Instagram</a>
-                <a href="#" target="_blank" class="social-btn" style="background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);"><i class="fas fa-headset"></i> Contact Us</a>
-            </div>
-            <div style="margin-top:40px; padding:30px; background:linear-gradient(135deg, #e0e7ff, #c7d2fe); border-left: 6px solid #4f46e5; border-radius:16px;">
-                <span style="font-size: 40px;">💡</span>
-                <h3 style="color:#312e81; font-style: italic; font-size: 22px; line-height: 1.5; margin-top: 10px;">"सफलता का पीछा करते रहो दोस्त,<br>कामयाब होगे।"</h3>
-            </div>
-        </div>
-    </div>
-TestBanner" style="display:none; background: #fffbeb; padding: 25px; border-left: 6px solid #f59e0b; border-radius: 16px; margin-bottom: 25px;">
+            <div id="pendingTestBanner" style="display:none; background: #fffbeb; padding: 25px; border-left: 6px solid #f59e0b; border-radius: 16px; margin-bottom: 25px;">
                 <h4 style="margin: 0 0 10px 0; color: #b45309; font-size: 20px;"><i class="fas fa-exclamation-triangle"></i> आपका एक टेस्ट अधूरा है!</h4>
                 <p style="margin: 0 0 20px 0; font-size: 15px; color: #78350f; font-weight:bold;">पिछला टेस्ट बीच में बंद हो गया था। आपका टाइप किया हुआ डेटा सुरक्षित है.</p>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
@@ -257,10 +258,7 @@ TestBanner" style="display:none; background: #fffbeb; padding: 25px; border-left
         </div>
     </div>
 
-</div>
-</div>
-
-<div id="audioSection" class="modal-overlay">
+</div> </div> <div id="audioSection" class="modal-overlay">
     <div class="modal-box">
         <div style="font-size: 60px; color: #4f46e5; margin-bottom: 15px;"><i class="fas fa-volume-up"></i></div>
         <h2 style="color: #ef4444; margin-top: 0; font-size: 28px;">ऑडियो डिक्टेशन चल रही है...</h2>
