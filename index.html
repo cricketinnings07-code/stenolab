@@ -244,10 +244,11 @@
                 
                 <div id="categorySelectionArea">
                     <label style="font-weight: bold; margin-bottom: 10px; display: block; font-size: 16px;">① स्टडी मटेरियल (Panel) चुनें:</label>
-                    <div class="category-tabs">
+                   <div class="category-tabs">
                         <button class="cat-btn active" id="cat-ssc" onclick="selectCategory('SSC')"><i class="fas fa-file-alt"></i> SSC</button>
                         <button class="cat-btn" id="cat-court" onclick="selectCategory('Court')"><i class="fas fa-gavel"></i> Court</button>
-                        <button class="cat-btn" id="cat-news" onclick="selectCategory('News')"><i class="fas fa-newspaper"></i> Newspaper</button>
+                        <button class="cat-btn" id="cat-news" onclick="selectCategory('News')"><i class="fas fa-newspaper"></i> News</button>
+                        <button class="cat-btn" id="cat-reporter" onclick="selectCategory('Reporter')"><i class="fas fa-microphone-alt"></i> Reporter</button>
                     </div>
                 </div>
 
@@ -491,7 +492,7 @@
                 if(approvedUsersMap[userEmail]) {
                     isPremiumUser = true; 
                     let userDataFromSheet = approvedUsersMap[userEmail];
-                    currentUserData = { name: userName, roll: userDataFromSheet.roll, email: user.email, expiry: userDataFromSheet.expiry };
+                    currentUserData = { name: userName, roll: userDataFromSheet.roll, email: user.email, expiry: userDataFromSheet.expiry, access: userDataFromSheet.access || "All" };
                     document.getElementById('vipBadge').innerHTML = '<i class="fas fa-crown"></i> VIP PRO';
                     document.getElementById('vipBadge').style.color = '#ef4444';
                 } else {
@@ -554,28 +555,30 @@
         }
     });
 
-    function processAuth() {
-        const email = document.getElementById('authEmail').value.trim();
-        const pwd = document.getElementById('authPassword').value.trim();
-        const name = document.getElementById('authName') ? document.getElementById('authName').value.trim() : "";
-        if(!email || !pwd) return alert("कृपया ईमेल और पासवर्ड डालें!");
-        
-        if(isSignupMode) {
+   if(isSignupMode) {
             if(!name) return alert("नाम डालना ज़रूरी है!");
             auth.createUserWithEmailAndPassword(email, pwd).then((userCred) => {
-                return userCred.user.updateProfile({ displayName: name });
+                userCred.user.updateProfile({ displayName: name });
+                // 🚀 नया: ई-मेल वेरिफिकेशन लिंक भेजना
+                return userCred.user.sendEmailVerification(); 
             }).then(() => {
-                alert("✅ आपका फ्री खाता सफलतापूर्वक बन गया है! अब आप 'डेमो' और 'लाइव टेस्ट' दे सकते हैं।");
+                auth.signOut(); // बिना वेरिफाई किए अंदर नहीं जाने देंगे
+                alert("✅ आपका खाता बन गया है! सुरक्षा के लिए आपके ईमेल पर एक वेरिफिकेशन लिंक भेजा गया है। कृपया अपना ईमेल (Inbox या Spam) चेक करें और लिंक पर क्लिक करके खाता वेरिफाई करें।");
                 location.reload(); 
             }).catch(e => alert("एरर: " + e.message));
         } else {
             auth.signInWithEmailAndPassword(email, pwd).then((userCred) => {
+                // 🚀 नया: चेक करें कि क्या ईमेल वेरिफाई हुआ है
+                if (!userCred.user.emailVerified) {
+                    auth.signOut();
+                    alert("⚠️ आपका ईमेल अभी वेरिफाई नहीं हुआ है! कृपया अपने ईमेल में जाकर वेरिफिकेशन लिंक पर क्लिक करें।");
+                    return;
+                }
                 let sessionId = Date.now().toString();
                 localStorage.setItem("steno_session", sessionId);
                 firebase.database().ref('sessions/' + userCred.user.uid).set(sessionId);
-            }).catch(e => { alert("❌ लॉगिन फेल: ईमेल/पासवर्ड गलत है।"); });
+            }).catch(e => { alert("❌ लॉगिन फेल: ईमेल/पासवर्ड गलत है या खाता मौजूद नहीं है।"); });
         }
-    }
 
     function resetPassword() {
         const email = document.getElementById('authEmail').value.trim();
@@ -718,12 +721,31 @@
         }
     }
 
-    function selectCategory(cat) {
+   function selectCategory(cat) {
+        // 🚀 नया: एक्सेस कंट्रोल लॉजिक
+        if (isPremiumUser && cat !== 'Demo') {
+            let userAccess = (currentUserData.access || "").toLowerCase();
+            if (userAccess !== "all" && !userAccess.includes(cat.toLowerCase())) {
+                alert(`🔒 आपके पास '${cat}' पैनल का एक्सेस नहीं है! इसे अनलॉक करने के लिए एडमिन से संपर्क करें।`);
+                return; // एक्सेस नहीं है तो वहीं रोक दें
+            }
+        }
+
         currentCategory = cat;
         document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
         if(cat==='SSC') document.getElementById('cat-ssc').classList.add('active');
         if(cat==='Court') document.getElementById('cat-court').classList.add('active');
         if(cat==='News') document.getElementById('cat-news').classList.add('active');
+        if(cat==='Reporter') document.getElementById('cat-reporter').classList.add('active');
+
+        // 🚀 नया: रिपोर्टर के लिए अलग स्पीड ड्रॉपडाउन
+        let speedDropdown = document.getElementById('speedSelect');
+        if (cat === 'Reporter') {
+            speedDropdown.innerHTML = `<option value="120">120 WPM</option><option value="140">140 WPM</option><option value="160">160 WPM</option>`;
+        } else {
+            speedDropdown.innerHTML = `<option value="60">60 WPM</option><option value="70">70 WPM</option><option value="80" selected>80 WPM</option><option value="90">90 WPM</option><option value="100">100 WPM</option>`;
+        }
+
         updateTopicName();
     }
 
