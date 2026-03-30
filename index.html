@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Hindi Steno Lab</title>
+    <title> Welcome To Hindi Steno Lab </title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -35,7 +35,6 @@
         .main-pad { padding: 20px 15px; }
         .container { max-width: 950px; margin: 0 auto; position: relative; }
         
-        /* 🚀 PREMIUM UI HEADERS 🚀 */
         .top-header { 
             display: flex; justify-content: space-between; align-items: center; 
             margin-bottom: 25px; padding: 15px 30px; background: #ffffff; 
@@ -64,7 +63,6 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 🚀 PREMIUM LOGIN UI 🚀 */
         .auth-wrapper { display: flex; align-items: center; justify-content: center; min-height: 70vh; }
         .auth-box { background: white; width: 100%; max-width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;}
         .auth-box h3 { color: #312e81; font-size: 28px; margin-top: 0; margin-bottom: 5px; font-weight: 800; }
@@ -141,7 +139,7 @@
 <div class="main-pad">
 <div class="container">
     
-   <div class="top-header">
+    <div class="top-header">
         <a class="brand-link" onclick="switchTab('home')">
             <img src="logo.png" alt="Logo" style="width: 65px; height: 65px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             <h1>हिंदी स्टेनो लैब</h1>
@@ -158,6 +156,7 @@
         <button class="nav-btn" id="btn-leaderboard" onclick="switchTab('leaderboard')"><i class="fas fa-trophy"></i> Leaderboard</button>
         <button class="nav-btn nav-btn-live" id="btn-live" onclick="switchTab('live')"><i class="fas fa-broadcast-tower"></i> Live Exam</button>
     </div>
+
     <div id="authWrapper" class="auth-wrapper">
         <div class="auth-box">
             <h3 id="authTitle"><i class="fas fa-user-shield"></i> लॉगिन करें</h3>
@@ -190,7 +189,7 @@
 
     <div id="homeView" class="view-section">
         <div class="setup-box" style="text-align:center;">
-            <h2 style="color:#312e81; font-size: 32px; font-weight: 800;"><i class="fas fa-hand-sparkles"></i> हिन्दी स्टेनो लैब में आपका स्वागत है, <span id="homeName"></span>!</h2>
+            <h2 style="color:#312e81; font-size: 32px; font-weight: 800;"><i class="fas fa-hand-sparkles"></i> पोर्टल में आपका स्वागत है, <span id="homeName"></span>!</h2>
             <p style="color:#64748b; font-size:18px;">आज का अभ्यास शुरू करने के लिए ऊपर दिए गए मेनू का उपयोग करें।</p>
             
             <div style="margin-top: 35px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
@@ -208,7 +207,7 @@
             <div style="margin-top:40px; padding:30px; background:linear-gradient(135deg, #e0e7ff, #c7d2fe); border-left: 6px solid #4f46e5; border-radius:16px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);">
                 <span style="font-size: 40px;">💡</span>
                 <h3 style="color:#312e81; font-style: italic; font-size: 22px; line-height: 1.5; margin-top: 10px;">
-                    "सफलता का पीछा करते रहो दोस्त,<br>कामयाब होगे।"
+                    ""सफलता का कोई मंत्र नहीं है, यह तो सिर्फ परिश्रम का फल है।,<br> सफलता रातों-रात नहीं मिलती, इसके लिए लगातार मेहनत ज़रूरी है"
                 </h3>
             </div>
         </div>
@@ -243,7 +242,7 @@
             <div id="newTestSetupArea">
                 <p id="dataLoadingMsg" style="color: #b45309; background: #fef3c7; padding:15px; border-radius:12px; font-weight: bold; text-align: center;"><i class="fas fa-spinner fa-spin"></i> डिक्टेशन लोड हो रहा है...</p>
                 
-               <div id="categorySelectionArea">
+                <div id="categorySelectionArea">
                     <label style="font-weight: bold; margin-bottom: 10px; display: block; font-size: 16px;">① स्टडी मटेरियल (Panel) चुनें:</label>
                     <div class="category-tabs">
                         <button class="cat-btn active" id="cat-ssc" onclick="selectCategory('SSC')"><i class="fas fa-file-alt"></i> SSC</button>
@@ -456,7 +455,7 @@
 
     // ==========================================
     // ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
-    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxn7JUOhleMgLkZynkHixMDeVe9XajSH4cr4Pg_Qgk1trlquAblQPEIbo6NxgqGNzs/exec"; 
+    const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxgv6bdxa43uqOurYiubKHK3EmcNJqV6RazJjrehG29bWQUaVJKSfcW39kUW9NzVZf_/exec"; 
     // ==========================================
 
     function getRealTime() { return new Date(new Date().getTime() + timeOffset); }
@@ -465,7 +464,7 @@
         if (user) {
             firebase.database().ref('sessions/' + user.uid).on('value', (snapshot) => {
                 let dbSession = snapshot.val();
-                let currentLocalSession = localStorage.getItem("steno_session"); // Fresh Token Check
+                let currentLocalSession = localStorage.getItem("steno_session");
                 if (dbSession && currentLocalSession && dbSession !== currentLocalSession) {
                     alert("⚠️ सुरक्षा चेतावनी: आपका खाता किसी दूसरे कंप्यूटर या मोबाइल पर लॉगिन किया गया है! इसलिए आपको यहाँ से लॉगआउट किया जा रहा है।");
                     auth.signOut();
@@ -488,15 +487,15 @@
                 let userEmail = user.email.toLowerCase();
                 let userName = user.displayName || user.email.split('@')[0];
 
-                // 🚀 FREEMIUM LOGIC START 🚀
+                // 🚀 FREEMIUM LOGIC 🚀
                 if(approvedUsersMap[userEmail]) {
-                    isPremiumUser = true; // 👑 VIP User
+                    isPremiumUser = true; 
                     let userDataFromSheet = approvedUsersMap[userEmail];
                     currentUserData = { name: userName, roll: userDataFromSheet.roll, email: user.email, expiry: userDataFromSheet.expiry };
                     document.getElementById('vipBadge').innerHTML = '<i class="fas fa-crown"></i> VIP PRO';
                     document.getElementById('vipBadge').style.color = '#ef4444';
                 } else {
-                    isPremiumUser = false; // 🆓 FREE User
+                    isPremiumUser = false; 
                     currentUserData = { name: userName, roll: "FREE-USER", email: user.email, expiry: "Demo & Live Only" };
                     document.getElementById('vipBadge').innerHTML = '<i class="fas fa-user"></i> FREE USER';
                     document.getElementById('vipBadge').style.color = '#f59e0b';
@@ -525,11 +524,10 @@
                 document.getElementById('startTestBtn').style.opacity = 1;
                 document.getElementById('startTestBtn').style.cursor = 'pointer';
                 
-               updateTopicName(); 
+                updateTopicName(); 
                 let lbSelect = document.getElementById('leaderboardSpeedSelect'); lbSelect.innerHTML = "";
                 adminSettingsData.forEach(item => {
                     if(!item.isLive) {
-                        // 🚀 FREE USER को सिर्फ Demo का लीडरबोर्ड दिखेगा 🚀
                         if(!isPremiumUser && item.category !== 'Demo') return; 
                         lbSelect.innerHTML += `<option value="${item.topic}">[${item.category}] ${item.speed} WPM - ${item.topic}</option>`;
                     }
@@ -567,7 +565,6 @@
             auth.createUserWithEmailAndPassword(email, pwd).then((userCred) => {
                 return userCred.user.updateProfile({ displayName: name });
             }).then(() => {
-                // 🚀 FREEMIUM: Free users directly enter now
                 alert("✅ आपका फ्री खाता सफलतापूर्वक बन गया है! अब आप 'डेमो' और 'लाइव टेस्ट' दे सकते हैं।");
                 location.reload(); 
             }).catch(e => alert("एरर: " + e.message));
@@ -587,7 +584,7 @@
     }
     
     function logoutUser() { 
-        localStorage.removeItem("steno_session"); // पुराना टोकन डिलीट
+        localStorage.removeItem("steno_session");
         auth.signOut(); 
         location.reload(); 
     }
@@ -604,7 +601,6 @@
         }
     }
 
-    // 🚀 NEW ROUTING FUNCTIONS FOR FREEMIUM 🚀
     function openPremiumTest(pushHistory = true) {
         if(!isPremiumUser) {
             alert("🔒 यह सेक्शन केवल 'VIP' विद्यार्थियों के लिए है! फुल एक्सेस के लिए एडमिशन लें। आप 'Demo Test' और 'Live Exam' फ्री में दे सकते हैं।");
@@ -612,17 +608,17 @@
         }
         document.getElementById('categorySelectionArea').style.display = 'block';
         selectCategory('SSC');
-        switchTab('test', false); // Core tab logic
+        switchTab('test', false); 
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('btn-test').classList.add('active');
         if(pushHistory) history.pushState({ tab: 'test' }, '', '#test');
     }
 
     function openDemoTest(pushHistory = true) {
-        document.getElementById('categorySelectionArea').style.display = 'none'; // Hide Premium Categories
+        document.getElementById('categorySelectionArea').style.display = 'none'; 
         currentCategory = 'Demo'; 
         updateTopicName();
-        switchTab('test', false); // Uses the same view, just logic changes
+        switchTab('test', false); 
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('btn-demo').classList.add('active');
         if(pushHistory) history.pushState({ tab: 'demo' }, '', '#demo');
@@ -1004,7 +1000,29 @@
         let day = now.getDay(); let hour = now.getHours();
         let statusBox = document.getElementById('liveStatusBox');
         
-       } else if (day === 0 && hour >= 18) {
+        if (day === 0 && hour >= 10 && hour < 18) {
+            let liveData = adminSettingsData ? adminSettingsData.find(i => i.isLive) : null;
+            if(liveData) {
+                let alreadySubmitted = liveResultsData.some(res => res.email === currentUserData.email && res.topic === liveData.topic);
+                if (alreadySubmitted) {
+                    statusBox.innerHTML = `
+                        <div style="padding: 20px; background: #ecfdf5; border-radius: 12px; border: 2px dashed #6ee7b7;">
+                            <i class="fas fa-check-circle" style="font-size: 50px; color: #10b981; margin-bottom: 15px;"></i>
+                            <h3 style="color:#059669; margin-top:0;">आप यह लाइव टेस्ट दे चुके हैं!</h3>
+                            <p style="font-weight:bold; font-size:16px; color:#1f2937;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
+                            <p style="color:#047857; font-size:15px; font-weight:bold;">आपका रिज़ल्ट सुरक्षित जमा हो गया है। कृपया शाम 6:00 बजे का इंतज़ार करें।</p>
+                        </div>
+                    `;
+                } else {
+                    statusBox.innerHTML = `
+                        <h3 style="color:#b45309;">आज का लाइव टेस्ट शुरू हो चुका है!</h3>
+                        <p style="font-weight:bold; font-size:18px;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
+                        <p style="color:#ef4444; font-size:14px;"><i class="fas fa-exclamation-triangle"></i> टेस्ट फुल स्क्रीन में होगा।</p>
+                        <button class="btn" style="background:#ef4444; font-size:20px; padding:15px 30px;" onclick="startAudioSection(true)"><i class="fas fa-play-circle"></i> टेस्ट में प्रवेश करें</button>
+                    `;
+                }
+            } else { statusBox.innerHTML = `<h3 style="color:#ef4444;">आज कोई लाइव टेस्ट निर्धारित नहीं है।</h3>`; }
+        } else if (day === 0 && hour >= 18) {
             let tableRows = ""; 
             let myTopic = "";
             let liveSetting = adminSettingsData.find(i => i.isLive); // 🚀 सोर्स ऑफ ट्रुथ
@@ -1027,7 +1045,6 @@
                 viewCopyBtn = `<button class="btn btn-info" style="width:auto;" onclick="viewLiveCopy('${myTopic}')"><i class="fas fa-search"></i> अपनी कॉपी देखें</button>`;
             }
 
-            // 🚀 PDF बटन अब एकदम सुरक्षित है
             let pdfDownloadBtn = `<button class="btn" style="width:auto; background:#f97316;" onclick="downloadLiveResultPDF('${currentLiveTopic}')"><i class="fas fa-file-pdf"></i> पूरी लिस्ट PDF</button>`;
 
             statusBox.innerHTML = `
@@ -1040,53 +1057,6 @@
                     ${viewCopyBtn}
                     ${pdfDownloadBtn}
                 </div>
-            `;
-                } else {
-                    statusBox.innerHTML = `
-                        <h3 style="color:#b45309;">आज का लाइव टेस्ट शुरू हो चुका है!</h3>
-                        <p style="font-weight:bold; font-size:18px;">स्पीड: ${liveData.speed} WPM | टॉपिक: ${liveData.topic}</p>
-                        <p style="color:#ef4444; font-size:14px;"><i class="fas fa-exclamation-triangle"></i> टेस्ट फुल स्क्रीन में होगा।</p>
-                        <button class="btn" style="background:#ef4444; font-size:20px; padding:15px 30px;" onclick="startAudioSection(true)"><i class="fas fa-play-circle"></i> टेस्ट में प्रवेश करें</button>
-                    `;
-                }
-            } else { statusBox.innerHTML = `<h3 style="color:#ef4444;">आज कोई लाइव टेस्ट निर्धारित नहीं है।</h3>`; }
-        } else if (day === 6 && hour >= 20) {
-            let tableRows = ""; let myTopic = "";
-            if(liveResultsData && liveResultsData.length > 0) {
-                liveResultsData.sort((a,b) => b.accuracy - a.accuracy); 
-                liveResultsData.forEach((res, idx) => {
-                    let rank = idx===0?"🥇":idx===1?"🥈":idx===2?"🥉":(idx+1);
-                    tableRows += `<tr><td><b>${rank}</b></td><td>${res.name}</td><td>${res.netWords}</td><td style="color:#10b981; font-weight:bold;">${res.accuracy}%</td></tr>`;
-                    if(res.email === currentUserData.email) myTopic = res.topic;
-                });
-            } else { tableRows = `<tr><td colspan="4">अभी तक कोई रिज़ल्ट घोषित नहीं हुआ है।</td></tr>`; }
-
-            // 🚀 NEW: PDF Download Button Added 🚀
-            let viewCopyBtn = "";
-            let pdfDownloadBtn = `<button class="btn" style="width:auto; background:#f97316; margin-left:10px;" onclick="downloadLiveResultPDF('${liveResultsData[0].topic}')"><i class="fas fa-file-pdf"></i> पूरी लिस्ट PDF डाउनलोड करें</button>`;
-            
-            if(myTopic !== "") {
-                viewCopyBtn = `<button class="btn btn-info" style="width:auto;" onclick="viewLiveCopy('${myTopic}')"><i class="fas fa-search"></i> अपनी कॉपी देखें (Detailed Result)</button>`;
-            }
-
-            statusBox.innerHTML = `
-                <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
-                <table class="data-table" style="text-align:left;">
-                    <thead style="background:#4f46e5;"><tr><th>Rank</th><th>Name</th><th>Net Words</th><th>Accuracy</th></tr></thead>
-                    <tbody>${tableRows}</tbody>
-                </table>
-                <div style="text-align:center; margin-top:20px; display:flex; justify-content:center; flex-wrap:wrap; gap:10px;">
-                    ${viewCopyBtn}
-                    ${pdfDownloadBtn}
-                </div>
-            `;
-            statusBox.innerHTML = `
-                <h3 style="color:#10b981;"><i class="fas fa-check-double"></i> लाइव टेस्ट रिज़ल्ट घोषित!</h3>
-                <table class="data-table" style="text-align:left;">
-                    <thead style="background:#4f46e5;"><tr><th>Rank</th><th>Name</th><th>Net Words</th><th>Accuracy</th></tr></thead>
-                    <tbody>${tableRows}</tbody>
-                </table>
-                ${viewCopyBtn}
             `;
         } else {
             statusBox.innerHTML = `
@@ -1108,7 +1078,6 @@
             // 🚀 FREEMIUM NAME MASKING 🚀
             let display_name = st.name;
             if (!isPremiumUser && st.email !== currentUserData.email) {
-                // फ्री यूजर को दूसरों के नाम के सिर्फ पहले 2 अक्षर दिखेंगे
                 display_name = st.name.substring(0, 2) + "****"; 
             }
             
@@ -1117,6 +1086,7 @@
         if(filteredData.length === 0) tableHtml = `<tr><td colspan='4' style='text-align:center;'>कोई डेटा नहीं।</td></tr>`;
         document.getElementById('leaderboardData').innerHTML = tableHtml;
     }
+
     function renderDashboard() {
         let myHistory = globalHistoryData.filter(item => item.email === currentUserData.email && item.type !== "LIVE"); 
         let chartData = [...myHistory]; 
@@ -1133,13 +1103,15 @@
         });
         document.getElementById('dashboardData').innerHTML = tHtml || "<tr><td colspan='6' style='text-align:center;'>डेटा नहीं मिला</td></tr>";
     }
+
     // 🚀 NEW: LIVE TEST PDF DOWNLOADER 🚀
-   function downloadLiveResultPDF(topicName) {
+    function downloadLiveResultPDF(topicName) {
         if (!liveResultsData || liveResultsData.length === 0) {
             alert("अभी कोई रिजल्ट डेटा उपलब्ध नहीं है!");
             return;
         }
         let filteredResults = liveResultsData.filter(res => res.topic === topicName);
+        filteredResults.sort((a,b) => b.accuracy - a.accuracy);
         
         let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive);
         let totalMasterWords = setting ? setting.text.split(/\s+/).filter(w => w.length > 0).length : 0;
@@ -1148,7 +1120,7 @@
         filteredResults.forEach((res, idx) => {
             let typedWords = res.studentText ? res.studentText.split(/\s+/).filter(w => w.length > 0).length : 0;
             
-            // फ्री यूज़र को PDF में भी दूसरों के नाम आधे छुपकर दिखेंगे (Marketing strategy!)
+            // फ्री यूज़र को PDF में भी दूसरों के नाम आधे छुपकर दिखेंगे
             let display_name = res.name;
             if(!isPremiumUser && res.email !== currentUserData.email) {
                 display_name = res.name.substring(0, 2) + "****";
@@ -1204,5 +1176,6 @@
         });
     }
 </script>
+
 </body>
 </html>
