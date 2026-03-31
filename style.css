@@ -4,11 +4,12 @@
 ::-webkit-scrollbar-track { background: #e0e7ff; }
 ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
 
-body { 
-    font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8fafc; padding: 0; 
-    margin: 0; min-height: 100vh; user-select: none; -webkit-user-select: none; color: #1e293b;
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* बाकी आपका पुराना कोड... */
 }
-
 .top-notification {
     background: linear-gradient(90deg, #ef4444, #f97316); color: white; padding: 8px 0;
     font-size: 15px; font-weight: bold; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -155,3 +156,7 @@ textarea.kruti-text { height: 220px; resize: vertical; }
     .flip-wrapper { transform: scale(0.65); margin-top: -60px; margin-bottom: -60px;}
     .flip-wrapper h1 { font-size: 28px; }
     }
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
