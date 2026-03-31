@@ -470,3 +470,85 @@ function downloadLiveResultPDF(topicName) {
     let opt = { margin: [10, 10, 10, 10], filename: 'Steno_Live_Result_' + topicName.replace(/\s+/g, '_') + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
     html2pdf().set(opt).from(printDiv).save().then(() => { document.body.removeChild(printDiv); });
 }
+// ==========================================
+// 🚀 AUDIO -> READING -> TYPING (FULL ENGINE)
+// ==========================================
+
+let readInterval;
+let typingInterval;
+
+// 1. ऑडियो स्किप करना या पूरा होना
+function skipAudio() {
+    let audio = document.getElementById('dictationAudio');
+    if(audio) {
+        audio.pause();
+        audio.currentTime = 0; // ऑडियो वापस 0 पर सेट करें
+    }
+
+    // ऑडियो बॉक्स बंद करें, रीडिंग बॉक्स चालू करें
+    document.getElementById('audioSection').style.display = 'none';
+    document.getElementById('readingSection').style.display = 'flex';
+
+    startReadingTimer(); // 5 मिनट का टाइमर शुरू करें
+}
+
+// 2. रीडिंग का टाइमर (5 मिनट)
+function startReadingTimer() {
+    let readTime = 300; // 300 सेकंड = 5 मिनट
+    let readDisplay = document.getElementById('readingTimerDisplay');
+    if(readInterval) clearInterval(readInterval);
+
+    readInterval = setInterval(function() {
+        let m = Math.floor(readTime / 60);
+        let s = readTime % 60;
+        if(readDisplay) readDisplay.innerText = (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+
+        if(readTime <= 0) {
+            skipReading(); // टाइम खत्म होते ही अपने आप टाइपिंग पर ले जाए
+        }
+        readTime--;
+    }, 1000);
+}
+
+// 3. रीडिंग स्किप करना और टाइपिंग शुरू करना
+function skipReading() {
+    if(readInterval) clearInterval(readInterval); // रीडिंग टाइमर रोकें
+
+    // सारे फालतू बॉक्स (रीडिंग और सेटअप) छुपाएं
+    document.getElementById('readingSection').style.display = 'none';
+    document.getElementById('studentDetailsBox').style.display = 'none';
+
+    // असली टाइपिंग एरिया चालू करें
+    document.getElementById('typingSection').style.display = 'block';
+
+    startTypingTimer(); // 60 मिनट का टाइपिंग टाइमर शुरू करें
+}
+
+// 4. टाइपिंग का टाइमर (60 मिनट)
+function startTypingTimer() {
+    let typeTime = 3600; // 3600 सेकंड = 60 मिनट
+    let typeDisplay = document.getElementById('timerDisplay');
+    if(typingInterval) clearInterval(typingInterval);
+
+    typeInterval = setInterval(function() {
+        let m = Math.floor(typeTime / 60);
+        let s = typeTime % 60;
+        if(typeDisplay) typeDisplay.innerText = "समय शेष: " + (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+
+        if(typeTime <= 0) {
+            clearInterval(typingInterval);
+            submitTest(); // टाइम खत्म होते ही टेस्ट अपने-आप सबमिट हो जाए!
+        }
+        typeTime--;
+    }, 1000);
+}
+
+// 5. ऑडियो ख़त्म होने पर अपने-आप रीडिंग शुरू करने का कमांड
+document.addEventListener("DOMContentLoaded", function() {
+    let audioEl = document.getElementById('dictationAudio');
+    if(audioEl) {
+        audioEl.onended = function() {
+            skipAudio();
+        };
+    }
+});
