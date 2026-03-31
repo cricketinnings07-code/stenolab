@@ -40,7 +40,7 @@ let autoSaveKey = "";
 
 // ==========================================
 // ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
-const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwuc5Gc_jgZF5n_j3kkyEtVBL_kst1mwRHHkun8pWyTT2QnQIhSag5VeGKm9RW1Hg7T/exec"; 
+const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz14bVnbND--UxCY0la7r4zIfQg-8ZLywrP5cLQkoG1-GrCENErOIAfKe07AOZ_-AMK/exec"; 
 // ==========================================
 
 function getRealTime() { return new Date(new Date().getTime() + timeOffset); }
