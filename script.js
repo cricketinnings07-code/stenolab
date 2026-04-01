@@ -202,22 +202,24 @@ function openDemoTest(pushHistory = true) {
 }
 
 // ==========================================
-// 🔄 TAB SWITCHER (100% Force Hide Fix)
+// 🔄 TAB SWITCHER (Strict Hide)
 // ==========================================
 function switchTab(tabId, pushHistory = true) {
-    // 1. सारे मेन पन्नों को ज़बरदस्ती गायब (Hide) करो
+    // 1. सारे पन्नों को छुपायें
     document.querySelectorAll('.view-section').forEach(el => {
         el.classList.remove('active');
         el.style.display = 'none'; 
     });
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     
-    // 2. पॉपअप और रिज़ल्ट बॉक्स को छुपाओ
+    // 2. 🚨 रिजल्ट डिब्बे को हर हाल में छुपायें
+    let rBox = document.getElementById('resultBox');
+    if(rBox) rBox.style.display = 'none';
+
     let audioSec = document.getElementById('audioSection'); if(audioSec) audioSec.style.display = 'none'; 
     let readSec = document.getElementById('readingSection'); if(readSec) readSec.style.display = 'none';
-    let rBox = document.getElementById('resultBox'); if(rBox) rBox.style.display = 'none';
 
-    // 3. सिर्फ उसी पन्ने को दिखाओ जिस पर क्लिक किया है
+    // 3. जो पन्ना चाहिए, सिर्फ उसे दिखाएँ
     let newView = document.getElementById(tabId + 'View'); 
     if(newView) {
         newView.classList.add('active');
@@ -226,13 +228,15 @@ function switchTab(tabId, pushHistory = true) {
     
     let btn = document.getElementById('btn-' + tabId); if(btn) btn.classList.add('active');
 
-    // 4. पन्ने के हिसाब से डेटा लोड करो
     if(tabId === 'dashboard') renderDashboard();
     if(tabId === 'leaderboard') renderLeaderboard();
     if(tabId === 'live') renderLiveTestLogic();
     if(tabId === 'test') {
         document.getElementById('studentDetailsBox').style.display = 'block'; 
         document.getElementById('typingSection').style.display = 'none';
+        // 🚨 टेस्ट सेटअप पर जाते ही रिज़ल्ट डिब्बा वापस बंद करें
+        if(rBox) rBox.style.display = 'none';
+        
         if(!localStorage.getItem(autoSaveKey)) document.getElementById('studentText').value = '';
         checkPendingTest();
     }
@@ -396,44 +400,47 @@ let resultChartInstance = null;
 function drawResultChart(netWords, mistakes) { let canvas = document.getElementById('resultChart'); if(!canvas) return; let ctx = canvas.getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } }); }
 
 // ==========================================
-// 📄 PDF DOWNLOAD FIX (Clean & Original Layout)
+// 📄 PDF DOWNLOAD FIX (Margin Fix - No Cutoff)
 // ==========================================
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
     
-    // 1. बटनों को छुपाएं
+    // 1. बटन छुपायें
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
-    // 2. कॉपी वाले डिब्बे को टूटने (Page Break) की परमिशन दें
+    // 2. 🚨 असली इलाज: मार्जिन ज़ीरो करें ताकि कैमरा लेफ्ट से शुरू हो
+    var oldWidth = element.style.width;
+    var oldMaxWidth = element.style.maxWidth;
+    var oldMargin = element.style.margin;
+
+    element.style.width = '750px';
+    element.style.maxWidth = '750px';
+    element.style.margin = '0'; // यह लाइन चार्ट को कटने से बचाएगी
+
+    // 3. कॉपी को टूटने दें
     var evalText = document.getElementById('displayEvaluatedText');
     if (evalText) {
         evalText.style.pageBreakInside = 'auto';
         evalText.style.breakInside = 'auto';
     }
 
-    // 3. पेज को बिल्कुल ऊपर स्क्रॉल कर दें (ताकि ऊपर से कुछ न कटे)
-    window.scrollTo(0, 0);
-
-    // 4. PDF की एकदम क्लीन सेटिंग
+    // 4. PDF सेटिंग
     var opt = {
-        margin:       0.4,
+        margin:       0.3,
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
-            scrollY: 0, 
-            windowWidth: 900 // 🚨 यह जादुई नंबर चार्ट को लेफ्ट से कटने नहीं देगा!
-        },
+        html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: 'css' } // डिफ़ॉल्ट और सेफ पेज-ब्रेक
+        pagebreak:    { mode: 'css' }
     };
 
-    // 5. PDF जनरेट करें
+    // 5. PDF बनने के बाद सब वापस पहले जैसा करें
     html2pdf().set(opt).from(element).save().then(function() {
-        // डाउनलोड होने के बाद बटन वापस दिखाएं
         buttons.forEach(btn => btn.style.display = 'inline-block');
+        element.style.width = oldWidth;
+        element.style.maxWidth = oldMaxWidth;
+        element.style.margin = oldMargin;
     });
 };
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
