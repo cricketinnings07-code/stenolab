@@ -471,84 +471,76 @@ function downloadLiveResultPDF(topicName) {
     html2pdf().set(opt).from(printDiv).save().then(() => { document.body.removeChild(printDiv); });
 }
 // ==========================================
-// 🚀 AUDIO -> READING -> TYPING (FULL ENGINE)
+// 🚀 AUDIO -> READING -> TYPING (SAFE ENGINE)
 // ==========================================
 
-let readInterval;
-let typingInterval;
-
 // 1. ऑडियो स्किप करना या पूरा होना
-function skipAudio() {
-    let audio = document.getElementById('dictationAudio');
-    if(audio) {
-        audio.pause();
-        audio.currentTime = 0; // ऑडियो वापस 0 पर सेट करें
-    }
-
-    // ऑडियो बॉक्स बंद करें, रीडिंग बॉक्स चालू करें
-    document.getElementById('audioSection').style.display = 'none';
-    document.getElementById('readingSection').style.display = 'flex';
-
-    startReadingTimer(); // 5 मिनट का टाइमर शुरू करें
-}
-
-// 2. रीडिंग का टाइमर (5 मिनट)
-function startReadingTimer() {
-    let readTime = 300; // 300 सेकंड = 5 मिनट
-    let readDisplay = document.getElementById('readingTimerDisplay');
-    if(readInterval) clearInterval(readInterval);
-
-    readInterval = setInterval(function() {
-        let m = Math.floor(readTime / 60);
-        let s = readTime % 60;
-        if(readDisplay) readDisplay.innerText = (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
-
-        if(readTime <= 0) {
-            skipReading(); // टाइम खत्म होते ही अपने आप टाइपिंग पर ले जाए
+window.skipAudio = function() {
+    try {
+        var audio = document.getElementById('dictationAudio');
+        if(audio) {
+            audio.pause();
+            audio.currentTime = 0;
         }
-        readTime--;
-    }, 1000);
-}
 
-// 3. रीडिंग स्किप करना और टाइपिंग शुरू करना
-function skipReading() {
-    if(readInterval) clearInterval(readInterval); // रीडिंग टाइमर रोकें
+        document.getElementById('audioSection').style.display = 'none';
+        document.getElementById('readingSection').style.display = 'flex';
 
-    // सारे फालतू बॉक्स (रीडिंग और सेटअप) छुपाएं
-    document.getElementById('readingSection').style.display = 'none';
-    document.getElementById('studentDetailsBox').style.display = 'none';
+        // 5 मिनट (300 सेकंड) का टाइमर
+        var readTime = 300; 
+        var readDisplay = document.getElementById('readingTimerDisplay');
+        if(window.readTimer) clearInterval(window.readTimer);
 
-    // असली टाइपिंग एरिया चालू करें
-    document.getElementById('typingSection').style.display = 'block';
+        window.readTimer = setInterval(function() {
+            var m = Math.floor(readTime / 60);
+            var s = readTime % 60;
+            if(readDisplay) readDisplay.innerText = (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+            
+            if(readTime <= 0) {
+                skipReading(); // टाइम खत्म होते ही आगे बढ़े
+            }
+            readTime--;
+        }, 1000);
+    } catch(err) { console.log("Audio Skip Error: ", err); }
+};
 
-    startTypingTimer(); // 60 मिनट का टाइपिंग टाइमर शुरू करें
-}
+// 2. रीडिंग स्किप करना और टाइपिंग शुरू करना
+window.skipReading = function() {
+    try {
+        if(window.readTimer) clearInterval(window.readTimer);
 
-// 4. टाइपिंग का टाइमर (60 मिनट)
-function startTypingTimer() {
-    let typeTime = 3600; // 3600 सेकंड = 60 मिनट
-    let typeDisplay = document.getElementById('timerDisplay');
-    if(typingInterval) clearInterval(typingInterval);
+        document.getElementById('readingSection').style.display = 'none';
 
-    typeInterval = setInterval(function() {
-        let m = Math.floor(typeTime / 60);
-        let s = typeTime % 60;
-        if(typeDisplay) typeDisplay.innerText = "समय शेष: " + (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+        // 🚨 यह है वो जादुई लाइन जो स्क्रीन को सफ़ेद होने से बचाएगी!
+        document.getElementById('testView').style.display = 'block'; 
+        
+        // सेटअप छुपाकर टाइपिंग बॉक्स दिखाएं
+        document.getElementById('studentDetailsBox').style.display = 'none';
+        document.getElementById('typingSection').style.display = 'block';
 
-        if(typeTime <= 0) {
-            clearInterval(typingInterval);
-            submitTest(); // टाइम खत्म होते ही टेस्ट अपने-आप सबमिट हो जाए!
-        }
-        typeTime--;
-    }, 1000);
-}
+        // 60 मिनट (3600 सेकंड) का टाइपिंग टाइमर
+        var typeTime = 3600; 
+        var typeDisplay = document.getElementById('timerDisplay');
+        if(window.typeTimer) clearInterval(window.typeTimer);
 
-// 5. ऑडियो ख़त्म होने पर अपने-आप रीडिंग शुरू करने का कमांड
-document.addEventListener("DOMContentLoaded", function() {
-    let audioEl = document.getElementById('dictationAudio');
+        window.typeTimer = setInterval(function() {
+            var m = Math.floor(typeTime / 60);
+            var s = typeTime % 60;
+            if(typeDisplay) typeDisplay.innerText = "समय शेष: " + (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+            
+            if(typeTime <= 0) {
+                clearInterval(window.typeTimer);
+                if(typeof submitTest === "function") submitTest(); // टेस्ट सबमिट
+            }
+            typeTime--;
+        }, 1000);
+    } catch(err) { console.log("Reading Skip Error: ", err); }
+};
+
+// 3. ऑडियो खत्म होने पर ऑटोमैटिक आगे बढ़ना
+setTimeout(function() {
+    var audioEl = document.getElementById('dictationAudio');
     if(audioEl) {
-        audioEl.onended = function() {
-            skipAudio();
-        };
+        audioEl.onended = function() { skipAudio(); };
     }
-});
+}, 1000);
