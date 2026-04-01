@@ -2,7 +2,7 @@ let isPremiumUser = false;
 let timeOffset = 0;
 
 // ==========================================
-// 1. FLIP ANIMATION CONTROLLERS (नया डिज़ाइन)
+// 1. FLIP ANIMATION CONTROLLERS
 // ==========================================
 function showRegisterForm() { 
     document.getElementById("flip-container").className = 'flip-wrapper active'; 
@@ -38,15 +38,13 @@ let currentUserData = { name: "", roll: "", email: "", expiry: "", access: "" };
 let currentCategory = "SSC"; 
 let autoSaveKey = "";
 
-// ==========================================
-// ⚠️ अपनी Google Sheet की लिंक यहाँ डालें! ⚠️
+// Google Sheet URL
 const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz14bVnbND--UxCY0la7r4zIfQg-8ZLywrP5cLQkoG1-GrCENErOIAfKe07AOZ_-AMK/exec"; 
-// ==========================================
 
 function getRealTime() { return new Date(new Date().getTime() + timeOffset); }
 
 // ==========================================
-// 3. NEW LOGIN & SIGNUP ENGINE (Firebase)
+// 3. LOGIN & SIGNUP ENGINE (Firebase)
 // ==========================================
 function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
@@ -56,7 +54,7 @@ function doLogin() {
     auth.signInWithEmailAndPassword(email, pwd).then((userCred) => {
         if (!userCred.user.emailVerified && userCred.user.email.toLowerCase() !== "cricketinnings07@gmail.com") {
             auth.signOut();
-            alert("⚠️ आपका ईमेल अभी वेरिफाई नहीं हुआ है! कृपया अपने ईमेल (Inbox या Spam) में जाकर वेरिफिकेशन लिंक पर क्लिक करें।");
+            alert("⚠️ आपका ईमेल अभी वेरिफाई नहीं हुआ है! कृपया अपने ईमेल में जाकर वेरिफिकेशन लिंक पर क्लिक करें।");
             return;
         }
         let sessionId = Date.now().toString();
@@ -78,7 +76,7 @@ function doSignup() {
         return userCred.user.sendEmailVerification(); 
     }).then(() => {
         auth.signOut(); 
-        alert("✅ आपका खाता बन गया है! सुरक्षा के लिए आपके ईमेल पर एक वेरिफिकेशन लिंक भेजा गया है। कृपया उसे वेरिफाई करें।");
+        alert("✅ खाता बन गया! सुरक्षा के लिए ईमेल पर वेरिफिकेशन लिंक भेजा गया है। कृपया उसे वेरिफाई करें।");
         showLoginForm(); 
     }).catch(e => alert("एरर: " + e.message));
 }
@@ -95,14 +93,14 @@ auth.onAuthStateChanged((user) => {
     if (user) {
         if (!user.emailVerified && user.email.toLowerCase() !== "cricketinnings07@gmail.com") {
             auth.signOut();
-            alert("⚠️ आपका ईमेल अभी वेरिफाई नहीं हुआ है! कृपया अपने ईमेल (Inbox या Spam) में जाकर वेरिफिकेशन लिंक पर क्लिक करें।");
+            alert("⚠️ आपका ईमेल अभी वेरिफाई नहीं हुआ है! कृपया अपने ईमेल में जाकर वेरिफिकेशन लिंक पर क्लिक करें।");
             return;
         }
 
         firebase.database().ref('sessions/' + user.uid).on('value', (snapshot) => {
             let dbSession = snapshot.val(); let currentLocalSession = localStorage.getItem("steno_session");
             if (dbSession && currentLocalSession && dbSession !== currentLocalSession) {
-                alert("⚠️ सुरक्षा चेतावनी: आपका खाता किसी दूसरे कंप्यूटर या मोबाइल पर लॉगिन किया गया है! इसलिए आपको यहाँ से लॉगआउट किया जा रहा है।");
+                alert("⚠️ सुरक्षा चेतावनी: आपका खाता किसी दूसरे डिवाइस पर लॉगिन किया गया है! आपको लॉगआउट किया जा रहा है।");
                 auth.signOut(); location.reload();
             }
         });
@@ -183,37 +181,6 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
-function processAuth() {
-    const email = document.getElementById('authEmail').value.trim();
-    const pwd = document.getElementById('authPassword').value.trim();
-    const name = document.getElementById('authName') ? document.getElementById('authName').value.trim() : "";
-    if(!email || !pwd) return alert("कृपया ईमेल और पासवर्ड डालें!");
-    
-    if(isSignupMode) {
-        if(!name) return alert("नाम डालना ज़रूरी है!");
-        auth.createUserWithEmailAndPassword(email, pwd).then((userCred) => {
-            userCred.user.updateProfile({ displayName: name });
-            return userCred.user.sendEmailVerification(); 
-        }).then(() => {
-            auth.signOut(); 
-            alert("✅ आपका खाता बन गया है! सुरक्षा के लिए आपके ईमेल पर एक वेरिफिकेशन लिंक भेजा गया है। कृपया अपना ईमेल (Inbox या Spam) चेक करें और लिंक पर क्लिक करके खाता वेरिफाई करें।");
-            location.reload(); 
-        }).catch(e => alert("एरर: " + e.message));
-    } else {
-        auth.signInWithEmailAndPassword(email, pwd).then((userCred) => {
-            let sessionId = Date.now().toString();
-            localStorage.setItem("steno_session", sessionId);
-            firebase.database().ref('sessions/' + userCred.user.uid).set(sessionId);
-        }).catch(e => { alert("❌ लॉगिन फेल: ईमेल/पासवर्ड गलत है या खाता मौजूद नहीं है।"); });
-    }
-}
-
-function resetPassword() {
-    const email = document.getElementById('authEmail').value.trim();
-    if(!email) return alert("पासवर्ड रीसेट के लिए पहले अपना ईमेल दर्ज करें।");
-    auth.sendPasswordResetEmail(email).then(() => alert("पासवर्ड रीसेट लिंक भेज दिया गया है!")).catch(e => alert(e.message));
-}
-
 function checkPendingTest() {
     if(!autoSaveKey) return;
     let savedStateStr = localStorage.getItem(autoSaveKey);
@@ -222,7 +189,7 @@ function checkPendingTest() {
 }
 
 function openPremiumTest(pushHistory = true) {
-    if(!isPremiumUser) { alert("🔒 यह सेक्शन केवल 'VIP' विद्यार्थियों के लिए है! फुल एक्सेस के लिए एडमिशन लें। आप 'Demo Test' और 'Live Exam' फ्री में दे सकते हैं।"); return; }
+    if(!isPremiumUser) { alert("🔒 यह सेक्शन केवल 'VIP' विद्यार्थियों के लिए है! फुल एक्सेस के लिए एडमिशन लें।"); return; }
     document.getElementById('categorySelectionArea').style.display = 'block'; selectCategory('SSC'); switchTab('test', false); 
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active')); document.getElementById('btn-test').classList.add('active');
     if(pushHistory) history.pushState({ tab: 'test' }, '', '#test');
@@ -235,21 +202,31 @@ function openDemoTest(pushHistory = true) {
 }
 
 // ==========================================
-// 🔄 TAB SWITCHER (Result Box Fix)
+// 🔄 TAB SWITCHER (100% Force Hide Fix)
 // ==========================================
 function switchTab(tabId, pushHistory = true) {
-    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    // 1. सारे मेन पन्नों को ज़बरदस्ती गायब (Hide) करो
+    document.querySelectorAll('.view-section').forEach(el => {
+        el.classList.remove('active');
+        el.style.display = 'none'; 
+    });
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     
+    // 2. पॉपअप और रिज़ल्ट बॉक्स को छुपाओ
     let audioSec = document.getElementById('audioSection'); if(audioSec) audioSec.style.display = 'none'; 
     let readSec = document.getElementById('readingSection'); if(readSec) readSec.style.display = 'none';
-    
-    let rBox = document.getElementById('resultBox');
-    if(rBox) rBox.style.display = 'none';
+    let rBox = document.getElementById('resultBox'); if(rBox) rBox.style.display = 'none';
 
-    let newView = document.getElementById(tabId + 'View'); if(newView) newView.classList.add('active');
+    // 3. सिर्फ उसी पन्ने को दिखाओ जिस पर क्लिक किया है
+    let newView = document.getElementById(tabId + 'View'); 
+    if(newView) {
+        newView.classList.add('active');
+        newView.style.display = 'block'; 
+    }
+    
     let btn = document.getElementById('btn-' + tabId); if(btn) btn.classList.add('active');
 
+    // 4. पन्ने के हिसाब से डेटा लोड करो
     if(tabId === 'dashboard') renderDashboard();
     if(tabId === 'leaderboard') renderLeaderboard();
     if(tabId === 'live') renderLiveTestLogic();
@@ -262,6 +239,7 @@ function switchTab(tabId, pushHistory = true) {
     
     if (pushHistory) { history.pushState({ tab: tabId }, '', '#' + tabId); }
 }
+
 window.addEventListener('popstate', function(event) {
     if (event.state && event.state.tab) { 
         if(event.state.tab === 'test') openPremiumTest(false);
@@ -358,7 +336,7 @@ function startAudioSection(isLive) {
     document.getElementById('mainNavbar').style.display = 'none'; document.querySelector('.top-header').style.display = 'none'; 
     if(!isLiveTestActive) document.getElementById('studentDetailsBox').style.display = 'none'; else document.getElementById('liveView').style.display = 'none';
     document.getElementById('audioSection').style.display = 'flex';
-    let audioPlayer = document.getElementById('dictationAudio'); if(audioPlayer) audioPlayer.onended = function() { startReadingTest(); };
+    let audioPlayer = document.getElementById('dictationAudio'); if(audioPlayer) audioPlayer.onended = function() { skipAudio(); };
 }
 
 function exitTest() {
@@ -407,7 +385,7 @@ function calculateDetailedMistakes(master, student, timeTakenMins, payloadCatego
     let tw = mWords.length; let totalErr = fm + ew + om, actualErr = totalErr + (hm/2); let allowed = (sWords.length===0) ? 0 : Math.round(tw * 0.05); let excess = actualErr > allowed ? actualErr - allowed : 0; let net = tw - excess; if(net > sWords.length) net = sWords.length; if(net < 0) net = 0; let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0, wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
 
     if(isLiveTestActive && !isJustViewing) {
-        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true, payloadCategory, student); liveResultsData.push({ email: currentUserData.email, topic: currentTestTopic, name: currentUserData.name, netWords: net, accuracy: acc.toFixed(2) }); document.getElementById('liveView').style.display = 'block'; document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा。</p>`;
+        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true, payloadCategory, student); liveResultsData.push({ email: currentUserData.email, topic: currentTestTopic, name: currentUserData.name, netWords: net, accuracy: acc.toFixed(2) }); document.getElementById('liveView').style.display = 'block'; document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
     } else {
         document.getElementById('r_omissions').innerText = om; document.getElementById('r_fullMistakes').innerText = fm; document.getElementById('r_halfMistakes').innerText = hm; document.getElementById('r_extraWords').innerText = ew; document.getElementById('r_name').innerText = currentUserData.name; document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM"; document.getElementById('r_masterWords').innerText = tw; document.getElementById('r_actualMistakes').innerText = actualErr; document.getElementById('r_allowedMistakes').innerText = allowed; document.getElementById('r_excessMistakes').innerText = excess; document.getElementById('r_netWords').innerText = net; document.getElementById('r_speed').innerText = wpm + " WPM"; document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%"; document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' '); document.getElementById('resultBox').style.display = 'block'; window.scrollTo(0,0); drawResultChart(net, actualErr);
         if(!isJustViewing) { saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, false, payloadCategory, student); if(acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }}); }
@@ -418,57 +396,54 @@ let resultChartInstance = null;
 function drawResultChart(netWords, mistakes) { let canvas = document.getElementById('resultChart'); if(!canvas) return; let ctx = canvas.getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } }); }
 
 // ==========================================
-// 📄 PDF DOWNLOAD FIX (No Slicing, Perfect A4 Fit)
+// 📄 PDF DOWNLOAD FIX (Auto Stack & Anti-Cut)
 // ==========================================
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
     
-    // 1. PDF बनाते समय बटनों को छुपाएं
+    // बटनों को छुपाएं
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
-    // 2. 🚨 जादुई फिक्स 1: चौड़ाई को ज़बरदस्ती A4 पेज के साइज़ में फिट करना
-    var oldMaxWidth = element.style.maxWidth;
-    var oldWidth = element.style.width;
-    var oldMargin = element.style.margin;
-
-    element.style.maxWidth = '760px'; // A4 पन्ने के लिए परफेक्ट चौड़ाई
-    element.style.width = '760px';
-    element.style.margin = '0 auto';  // स्क्रीन के बीच में लाने के लिए
-
-    // 3. 🚨 जादुई फिक्स 2: स्मार्ट पेज-ब्रेक (ताकि लंबी कॉपी अगले पन्ने पर आ जाए)
-    var children = element.children;
-    for (var i = 0; i < children.length; i++) {
-        if (children[i].id !== 'displayEvaluatedText') {
-            children[i].style.pageBreakInside = 'avoid'; // छोटे डिब्बे न कटें
-        } else {
-            children[i].style.pageBreakInside = 'auto';  // अनुवाद कॉपी को टूटने दें
+    // PDF के लिए चार्ट और आँकड़ों को ऊपर-नीचे (Stack) करें
+    var flexDivs = element.querySelectorAll('div');
+    flexDivs.forEach(div => {
+        if (window.getComputedStyle(div).display === 'flex') {
+            div.setAttribute('data-old-flex', div.style.flexDirection || '');
+            div.style.flexDirection = 'column';
+            div.style.alignItems = 'center';
         }
+    });
+
+    // लंबी कॉपी को अगले पन्ने पर जाने दें
+    var evalText = document.getElementById('displayEvaluatedText');
+    if (evalText) {
+        evalText.style.pageBreakInside = 'auto';
+        evalText.style.breakInside = 'auto';
     }
 
-    // 4. PDF की फाइनल सेटिंग
+    // PDF सेटिंग
     var opt = {
-        margin:       0.3, // मार्जिन थोड़ा कम किया ताकि जगह मिले
+        margin:       0.5,
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
-            scrollY: 0,
-            windowWidth: 800 // कैमरे को बताया कि 800px मानकर फोटो खींचो
-        },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['css', 'legacy'] }
+        html2canvas:  { scale: 2, useCORS: true }, 
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
 
-    // 5. PDF जनरेट करें और काम होने के बाद डिब्बे को वापस पहले जैसा कर दें
+    // PDF जनरेट करें
     html2pdf().set(opt).from(element).save().then(function() {
-        element.style.maxWidth = oldMaxWidth;
-        element.style.width = oldWidth;
-        element.style.margin = oldMargin;
         buttons.forEach(btn => btn.style.display = 'inline-block');
+        // जादुई ट्रिक को वापस हटाएँ (वेबसाइट पर वापस अगल-बगल हो जाएगा)
+        flexDivs.forEach(div => {
+            if (div.hasAttribute('data-old-flex')) {
+                div.style.flexDirection = div.getAttribute('data-old-flex');
+                div.removeAttribute('data-old-flex');
+            }
+        });
     });
 };
+
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
 
 function viewLiveCopy(topicName) { let myLiveResult = liveResultsData.find(res => res.email === currentUserData.email && res.topic === topicName); let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive); if(myLiveResult && setting) { isLiveTestActive = false; currentTestSpeed = myLiveResult.speed; document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('testView').classList.add('active'); document.getElementById('studentDetailsBox').style.display = 'none'; document.getElementById('typingSection').style.display = 'none'; calculateDetailedMistakes(setting.text, myLiveResult.studentText || "", 60, myLiveResult.category, true); } else { alert("डेटा लोड नहीं हुआ!"); } }
@@ -500,6 +475,7 @@ function renderDashboard() {
     myHistory.reverse(); let tHtml = ""; myHistory.forEach((a) => { let dStr = new Date(a.date).toLocaleDateString('en-IN'); tHtml += `<tr><td>${dStr}</td><td>${a.category || 'SSC'}</td><td>${a.speed} WPM</td><td style="font-weight:bold;">${a.netWords}</td><td style="color:#10b981; font-weight:bold;">${parseFloat(a.accuracy).toFixed(2)}%</td><td style="color:#ef4444; font-weight:bold;">${a.mistakes}</td></tr>`; });
     document.getElementById('dashboardData').innerHTML = tHtml || "<tr><td colspan='6' style='text-align:center;'>डेटा नहीं मिला</td></tr>";
   }
+
 function downloadLiveResultPDF(topicName) {
     if (!liveResultsData || liveResultsData.length === 0) { alert("अभी कोई रिजल्ट डेटा उपलब्ध नहीं है!"); return; }
     let filteredResults = liveResultsData.filter(res => res.topic === topicName); filteredResults.sort((a,b) => b.accuracy - a.accuracy); let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive); let totalMasterWords = setting ? setting.text.split(/\s+/).filter(w => w.length > 0).length : 0; let tableRows = "";
@@ -516,7 +492,6 @@ function downloadLiveResultPDF(topicName) {
 // ==========================================
 // 🚀 AUDIO -> READING -> TYPING ENGINE
 // ==========================================
-
 window.skipAudio = function() {
     var audio = document.getElementById('dictationAudio');
     if(audio) {
@@ -557,7 +532,6 @@ window.skipReading = function() {
     var display = document.getElementById('timerDisplay');
     if (window.typeTimer) clearInterval(window.typeTimer);
 
-    // 🚨 टेस्ट शुरू करने के लिए सुरक्षा नियम लागू करना ज़रूरी है!
     startTypingTestFromResume();
 
     window.typeTimer = setInterval(function() {
@@ -588,7 +562,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var backspaceToggle = document.getElementById('backspaceToggle');
 
     if (studentTextArea && backspaceToggle) {
-        
         function forceCursorToEnd() {
             if (backspaceToggle.value === 'off') {
                 var len = studentTextArea.value.length;
@@ -606,7 +579,6 @@ document.addEventListener("DOMContentLoaded", function() {
         studentTextArea.addEventListener('keydown', function(e) {
             if (backspaceToggle.value === 'off') {
                 var blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
-                
                 if (blockedKeys.includes(e.key)) {
                     e.preventDefault(); 
                 } 
