@@ -400,47 +400,50 @@ let resultChartInstance = null;
 function drawResultChart(netWords, mistakes) { let canvas = document.getElementById('resultChart'); if(!canvas) return; let ctx = canvas.getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } }); }
 
 // ==========================================
-// 📄 PDF DOWNLOAD FIX (Margin Fix - No Cutoff)
+// 📄 PDF DOWNLOAD FIX (No Chart Cut & No Text Slicing)
 // ==========================================
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
     
-    // 1. बटन छुपायें
+    // 1. डाउनलोड होते समय बटनों को छुपाएं
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
-    // 2. 🚨 असली इलाज: मार्जिन ज़ीरो करें ताकि कैमरा लेफ्ट से शुरू हो
+    // 2. A4 पेज के लिए चौड़ाई फिक्स करें (ताकि चार्ट न कटे)
     var oldWidth = element.style.width;
     var oldMaxWidth = element.style.maxWidth;
     var oldMargin = element.style.margin;
 
     element.style.width = '750px';
     element.style.maxWidth = '750px';
-    element.style.margin = '0'; // यह लाइन चार्ट को कटने से बचाएगी
+    element.style.margin = '0 auto';
 
-    // 3. कॉपी को टूटने दें
-    var evalText = document.getElementById('displayEvaluatedText');
-    if (evalText) {
-        evalText.style.pageBreakInside = 'auto';
-        evalText.style.breakInside = 'auto';
-    }
+    // 3. 🚨 टेक्स्ट को कटने से बचाने की जादुई ट्रिक!
+    // इससे हर शब्द एक बॉक्स बन जाएगा, और लाइन के बीच से कभी नहीं कटेगा।
+    var evalTextDiv = document.getElementById('displayEvaluatedText');
+    var spans = evalTextDiv ? evalTextDiv.querySelectorAll('span') : [];
+    spans.forEach(s => { s.style.display = 'inline-block'; });
 
-    // 4. PDF सेटिंग
+    // 4. PDF सेटिंग (Legacy Mode के साथ)
     var opt = {
-        margin:       0.3,
+        margin:       0.4,
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+        html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: 'css' }
+        pagebreak:    { mode: ['css', 'legacy'] } // 🚨 Legacy mode लाइनों को सही से तोड़ता है
     };
 
-    // 5. PDF बनने के बाद सब वापस पहले जैसा करें
+    // 5. PDF जनरेट करें और वापस पहले जैसा करें
     html2pdf().set(opt).from(element).save().then(function() {
+        // बटन वापस दिखाएं
         buttons.forEach(btn => btn.style.display = 'inline-block');
+        // चौड़ाई वापस नॉर्मल करें
         element.style.width = oldWidth;
         element.style.maxWidth = oldMaxWidth;
         element.style.margin = oldMargin;
+        // शब्दों को वापस नॉर्मल (inline) करें
+        spans.forEach(s => { s.style.display = 'inline'; });
     });
 };
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
