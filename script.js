@@ -409,7 +409,7 @@ let resultChartInstance = null;
 function drawResultChart(netWords, mistakes) { let canvas = document.getElementById('resultChart'); if(!canvas) return; let ctx = canvas.getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } }); }
 
 // ==========================================
-// 📄 PDF DOWNLOAD FIX (No Slicing, Perfect Layout)
+// 📄 PDF DOWNLOAD FIX (No Slicing, Perfect A4 Fit)
 // ==========================================
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
@@ -418,38 +418,45 @@ window.downloadResultPDF = function() {
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
-    // 2. 🚨 जादुई फिक्स: स्मार्ट पेज-ब्रेक (Smart Page-Break)
+    // 2. 🚨 जादुई फिक्स 1: चौड़ाई को ज़बरदस्ती A4 पेज के साइज़ में फिट करना
+    var oldMaxWidth = element.style.maxWidth;
+    var oldWidth = element.style.width;
+    var oldMargin = element.style.margin;
+
+    element.style.maxWidth = '760px'; // A4 पन्ने के लिए परफेक्ट चौड़ाई
+    element.style.width = '760px';
+    element.style.margin = '0 auto';  // स्क्रीन के बीच में लाने के लिए
+
+    // 3. 🚨 जादुई फिक्स 2: स्मार्ट पेज-ब्रेक (ताकि लंबी कॉपी अगले पन्ने पर आ जाए)
     var children = element.children;
     for (var i = 0; i < children.length; i++) {
-        // अगर यह 'अनुवाद कॉपी' वाला डिब्बा नहीं है, तो इसे कटने से रोकें
         if (children[i].id !== 'displayEvaluatedText') {
-            children[i].style.pageBreakInside = 'avoid';
-            children[i].style.breakInside = 'avoid';
+            children[i].style.pageBreakInside = 'avoid'; // छोटे डिब्बे न कटें
         } else {
-            // लेकिन लंबी 'कॉपी' को पन्नों के बीच से टूटने दें ताकि एक भी अक्षर गायब न हो!
-            children[i].style.pageBreakInside = 'auto';
-            children[i].style.breakInside = 'auto';
+            children[i].style.pageBreakInside = 'auto';  // अनुवाद कॉपी को टूटने दें
         }
     }
 
-    // 3. PDF की फाइनल सेटिंग
+    // 4. PDF की फाइनल सेटिंग
     var opt = {
-        margin:       [0.5, 0.5, 0.5, 0.5], // चारों तरफ बराबर खाली जगह
+        margin:       0.3, // मार्जिन थोड़ा कम किया ताकि जगह मिले
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
         html2canvas:  { 
             scale: 2, 
             useCORS: true, 
-            windowWidth: 1024,
-            scrollY: 0 // यह स्क्रीन को हिलने या कटने से रोकेगा
+            scrollY: 0,
+            windowWidth: 800 // कैमरे को बताया कि 800px मानकर फोटो खींचो
         },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['css', 'legacy'] } // 🚨 'avoid-all' हटा दिया है!
+        pagebreak:    { mode: ['css', 'legacy'] }
     };
 
-    // 4. PDF जनरेट करें
+    // 5. PDF जनरेट करें और काम होने के बाद डिब्बे को वापस पहले जैसा कर दें
     html2pdf().set(opt).from(element).save().then(function() {
-        // डाउनलोड होने के बाद बटनों को वापस दिखाएं
+        element.style.maxWidth = oldMaxWidth;
+        element.style.width = oldWidth;
+        element.style.margin = oldMargin;
         buttons.forEach(btn => btn.style.display = 'inline-block');
     });
 };
