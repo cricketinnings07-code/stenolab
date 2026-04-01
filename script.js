@@ -396,54 +396,46 @@ let resultChartInstance = null;
 function drawResultChart(netWords, mistakes) { let canvas = document.getElementById('resultChart'); if(!canvas) return; let ctx = canvas.getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } }); }
 
 // ==========================================
-// 📄 PDF DOWNLOAD FIX (Auto Stack & Anti-Cut)
+// 📄 PDF DOWNLOAD FIX (Clean & Original Layout)
 // ==========================================
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
     
-    // बटनों को छुपाएं
+    // 1. बटनों को छुपाएं
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
-    // PDF के लिए चार्ट और आँकड़ों को ऊपर-नीचे (Stack) करें
-    var flexDivs = element.querySelectorAll('div');
-    flexDivs.forEach(div => {
-        if (window.getComputedStyle(div).display === 'flex') {
-            div.setAttribute('data-old-flex', div.style.flexDirection || '');
-            div.style.flexDirection = 'column';
-            div.style.alignItems = 'center';
-        }
-    });
-
-    // लंबी कॉपी को अगले पन्ने पर जाने दें
+    // 2. कॉपी वाले डिब्बे को टूटने (Page Break) की परमिशन दें
     var evalText = document.getElementById('displayEvaluatedText');
     if (evalText) {
         evalText.style.pageBreakInside = 'auto';
         evalText.style.breakInside = 'auto';
     }
 
-    // PDF सेटिंग
+    // 3. पेज को बिल्कुल ऊपर स्क्रॉल कर दें (ताकि ऊपर से कुछ न कटे)
+    window.scrollTo(0, 0);
+
+    // 4. PDF की एकदम क्लीन सेटिंग
     var opt = {
-        margin:       0.5,
+        margin:       0.4,
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { scale: 2, useCORS: true }, 
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            scrollY: 0, 
+            windowWidth: 900 // 🚨 यह जादुई नंबर चार्ट को लेफ्ट से कटने नहीं देगा!
+        },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: 'css' } // डिफ़ॉल्ट और सेफ पेज-ब्रेक
     };
 
-    // PDF जनरेट करें
+    // 5. PDF जनरेट करें
     html2pdf().set(opt).from(element).save().then(function() {
+        // डाउनलोड होने के बाद बटन वापस दिखाएं
         buttons.forEach(btn => btn.style.display = 'inline-block');
-        // जादुई ट्रिक को वापस हटाएँ (वेबसाइट पर वापस अगल-बगल हो जाएगा)
-        flexDivs.forEach(div => {
-            if (div.hasAttribute('data-old-flex')) {
-                div.style.flexDirection = div.getAttribute('data-old-flex');
-                div.removeAttribute('data-old-flex');
-            }
-        });
     });
 };
-
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
 
 function viewLiveCopy(topicName) { let myLiveResult = liveResultsData.find(res => res.email === currentUserData.email && res.topic === topicName); let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive); if(myLiveResult && setting) { isLiveTestActive = false; currentTestSpeed = myLiveResult.speed; document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('testView').classList.add('active'); document.getElementById('studentDetailsBox').style.display = 'none'; document.getElementById('typingSection').style.display = 'none'; calculateDetailedMistakes(setting.text, myLiveResult.studentText || "", 60, myLiveResult.category, true); } else { alert("डेटा लोड नहीं हुआ!"); } }
