@@ -425,7 +425,36 @@ function calculateDetailedMistakes(master, student, timeTakenMins, payloadCatego
 let resultChartInstance = null;
 function drawResultChart(netWords, mistakes) { let canvas = document.getElementById('resultChart'); if(!canvas) return; let ctx = canvas.getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } }); }
 
-function downloadResultPDF() { const btn = document.getElementById('downloadPdfBtn'); btn.style.display = 'none'; const element = document.getElementById('resultBox'); const opt = { margin: [10, 10, 10, 10], filename: 'Hindi_Steno_Lab_Result.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }; html2pdf().set(opt).from(element).save().then(() => { btn.style.display = 'inline-block'; }); }
+// ==========================================
+// 📄 PDF DOWNLOAD FIX (No Slicing, Perfect Layout)
+// ==========================================
+window.downloadResultPDF = function() {
+    var element = document.getElementById('resultBox');
+    
+    // 1. PDF खींचते समय नीचे के बटनों (Download / Dashboard) को थोड़ी देर के लिए छुपाएं
+    var buttons = element.querySelectorAll('button');
+    buttons.forEach(btn => btn.style.display = 'none');
+
+    // 2. PDF की जादुई सेटिंग
+    var opt = {
+        margin:       [0.4, 0.4, 0.4, 0.4], // पन्ने के चारों तरफ का मार्जिन (Top, Left, Bottom, Right)
+        filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
+        image:        { type: 'jpeg', quality: 1 },
+        html2canvas:  { 
+            scale: 2,           // PDF को एकदम HD (साफ़) बनाने के लिए
+            useCORS: true, 
+            windowWidth: 1024   // 🚨 जादू 1: यह डिज़ाइन को मोबाइल की तरह सिकुड़ने नहीं देगा, चार्ट साइड में ही रहेगा!
+        },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // 🚨 जादू 2: यह किसी भी डिब्बे या चार्ट को बीच से कटने नहीं देगा!
+    };
+
+    // 3. PDF जनरेट करें
+    html2pdf().set(opt).from(element).save().then(function() {
+        // PDF डाउनलोड होने के बाद बटनों को वापस स्क्रीन पर दिखा दें
+        buttons.forEach(btn => btn.style.display = 'inline-block');
+    });
+};
 
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
 
