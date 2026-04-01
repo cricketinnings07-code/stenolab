@@ -400,7 +400,7 @@ let resultChartInstance = null;
 function drawResultChart(netWords, mistakes) { let canvas = document.getElementById('resultChart'); if(!canvas) return; let ctx = canvas.getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['शुद्ध शब्द', 'कुल गलतियां'], datasets: [{ data: [netWords, mistakes], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Segoe UI', size: 14 } } } } } }); }
 
 // ==========================================
-// 📄 PDF DOWNLOAD FIX (No Chart Cut & No Text Slicing)
+// 📄 PDF DOWNLOAD FIX (Force Page Break - ब्रह्मास्त्र)
 // ==========================================
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
@@ -409,41 +409,47 @@ window.downloadResultPDF = function() {
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
-    // 2. A4 पेज के लिए चौड़ाई फिक्स करें (ताकि चार्ट न कटे)
+    // 2. A4 पेज के लिए चौड़ाई फिक्स करें 
     var oldWidth = element.style.width;
     var oldMaxWidth = element.style.maxWidth;
     var oldMargin = element.style.margin;
-
     element.style.width = '750px';
     element.style.maxWidth = '750px';
     element.style.margin = '0 auto';
 
-    // 3. 🚨 टेक्स्ट को कटने से बचाने की जादुई ट्रिक!
-    // इससे हर शब्द एक बॉक्स बन जाएगा, और लाइन के बीच से कभी नहीं कटेगा।
+    // 3. 🚨 ब्रह्मास्त्र: 'अनुवाद कॉपी' से ठीक पहले एक ज़बरदस्ती "नया पन्ना (Page Break)" लगा दें!
+    // इससे चार्ट हमेशा पहले पन्ने पर सुरक्षित रहेगा, और कॉपी दूसरे पन्ने से शुरू होगी।
+    var breakDiv = document.createElement('div');
+    breakDiv.className = 'html2pdf__page-break';
+    breakDiv.id = 'tempPageBreak';
+    
+    // 'आपके अनुवाद का मूल्यांकन' वाले हेडिंग के ठीक ऊपर इसे लगाएँ
     var evalTextDiv = document.getElementById('displayEvaluatedText');
-    var spans = evalTextDiv ? evalTextDiv.querySelectorAll('span') : [];
-    spans.forEach(s => { s.style.display = 'inline-block'; });
+    if (evalTextDiv && evalTextDiv.previousElementSibling) {
+        element.insertBefore(breakDiv, evalTextDiv.previousElementSibling);
+    }
 
-    // 4. PDF सेटिंग (Legacy Mode के साथ)
+    // 4. PDF सेटिंग
     var opt = {
         margin:       0.4,
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
         html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['css', 'legacy'] } // 🚨 Legacy mode लाइनों को सही से तोड़ता है
+        pagebreak:    { mode: 'css' } // यह हमारे 'ब्रेक' को पहचान लेगा
     };
 
     // 5. PDF जनरेट करें और वापस पहले जैसा करें
     html2pdf().set(opt).from(element).save().then(function() {
         // बटन वापस दिखाएं
         buttons.forEach(btn => btn.style.display = 'inline-block');
-        // चौड़ाई वापस नॉर्मल करें
         element.style.width = oldWidth;
         element.style.maxWidth = oldMaxWidth;
         element.style.margin = oldMargin;
-        // शब्दों को वापस नॉर्मल (inline) करें
-        spans.forEach(s => { s.style.display = 'inline'; });
+        
+        // जो ज़बरदस्ती पेज ब्रेक डाला था, उसे वेबसाइट से हटा दें
+        var tempBreak = document.getElementById('tempPageBreak');
+        if(tempBreak) tempBreak.remove();
     });
 };
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
