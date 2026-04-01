@@ -518,20 +518,31 @@ window.skipReading = function() {
     document.getElementById('studentDetailsBox').style.display = 'none';
 
     // 3. 60 मिनट का टाइपिंग टाइमर चालू करें
-    var typeTime = 3600; 
-    var typeDisplay = document.getElementById('timerDisplay');
-    if(window.typeTimer) clearInterval(window.typeTimer);
+   window.skipReading = function() {
+    if (window.readTimer) clearInterval(window.readTimer);
+
+    document.getElementById('readingSection').style.display = 'none';
+    var setupBox = document.getElementById('studentDetailsBox');
+    if (setupBox) setupBox.style.display = 'none';
+
+    document.getElementById('testView').style.display = 'block';
+    document.getElementById('typingSection').style.display = 'block';
+
+    // 🚨 यहाँ 'var' हटाकर 'window.typeTime' कर दिया ताकि रिजल्ट पेज इसे देख सके
+    window.typeTime = 3600; 
+    var display = document.getElementById('timerDisplay');
+    if (window.typeTimer) clearInterval(window.typeTimer);
 
     window.typeTimer = setInterval(function() {
-        var m = Math.floor(typeTime / 60);
-        var s = typeTime % 60;
-        if(typeDisplay) typeDisplay.innerText = "समय शेष: " + (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s);
+        var m = Math.floor(window.typeTime / 60);
+        var s = window.typeTime % 60;
+        if (display) display.innerText = "समय शेष: " + (m < 10 ? '0' + m : m) + ":" + (s < 10 ? '0' + s : s);
         
-        if(typeTime <= 0) {
+        if (window.typeTime <= 0) {
             clearInterval(window.typeTimer);
-            if(typeof submitTest === "function") submitTest(); 
+            if (typeof submitTest === "function") submitTest();
         }
-        typeTime--;
+        window.typeTime--; // टाइम घटता रहेगा
     }, 1000);
 };
 
@@ -584,3 +595,26 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+// ==========================================
+// ⏱️ TIME FIXER PATCH (0 मिनट 0 सेकंड का इलाज)
+// ==========================================
+var oldSubmit = window.submitTest; // पुराने रिजल्ट वाले फंक्शन को सेव किया
+
+window.submitTest = function() {
+    if (typeof oldSubmit === 'function') {
+        oldSubmit(); // पहले पुराना काम होने दो (चार्ट और गलतियां निकालने का)
+    }
+    
+    // 🚨 अब 0 वाले टाइम को सही टाइम से बदल दो
+    if (window.typeTime !== undefined) {
+        var totalSecondsTaken = 3600 - window.typeTime; // 60 मिनट (3600) में से बचा हुआ टाइम घटाया
+        var finalM = Math.floor(totalSecondsTaken / 60);
+        var finalS = totalSecondsTaken % 60;
+        
+        var timeText = finalM + " मिनट " + finalS + " सेकंड";
+        var timeSpan = document.getElementById('r_timeTaken');
+        if (timeSpan) {
+            timeSpan.innerText = timeText;
+        }
+    }
+};
