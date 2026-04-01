@@ -414,26 +414,45 @@ function drawResultChart(netWords, mistakes) { let canvas = document.getElementB
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
     
-    // 1. PDF खींचते समय नीचे के बटनों को थोड़ी देर के लिए छुपाएं
+    // 1. PDF बनाते समय बटनों को छुपाएं
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
-    // 2. PDF की जादुई सेटिंग
+    // 2. 🚨 जादुई फिक्स: स्मार्ट पेज-ब्रेक (Smart Page-Break)
+    var children = element.children;
+    for (var i = 0; i < children.length; i++) {
+        // अगर यह 'अनुवाद कॉपी' वाला डिब्बा नहीं है, तो इसे कटने से रोकें
+        if (children[i].id !== 'displayEvaluatedText') {
+            children[i].style.pageBreakInside = 'avoid';
+            children[i].style.breakInside = 'avoid';
+        } else {
+            // लेकिन लंबी 'कॉपी' को पन्नों के बीच से टूटने दें ताकि एक भी अक्षर गायब न हो!
+            children[i].style.pageBreakInside = 'auto';
+            children[i].style.breakInside = 'auto';
+        }
+    }
+
+    // 3. PDF की फाइनल सेटिंग
     var opt = {
-        margin:       [0.4, 0.4, 0.4, 0.4],
+        margin:       [0.5, 0.5, 0.5, 0.5], // चारों तरफ बराबर खाली जगह
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { scale: 2, useCORS: true, windowWidth: 1024 },
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            windowWidth: 1024,
+            scrollY: 0 // यह स्क्रीन को हिलने या कटने से रोकेगा
+        },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak:    { mode: ['css', 'legacy'] } // 🚨 'avoid-all' हटा दिया है!
     };
 
-    // 3. PDF जनरेट करें
+    // 4. PDF जनरेट करें
     html2pdf().set(opt).from(element).save().then(function() {
+        // डाउनलोड होने के बाद बटनों को वापस दिखाएं
         buttons.forEach(btn => btn.style.display = 'inline-block');
     });
 };
-
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
 
 function viewLiveCopy(topicName) { let myLiveResult = liveResultsData.find(res => res.email === currentUserData.email && res.topic === topicName); let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive); if(myLiveResult && setting) { isLiveTestActive = false; currentTestSpeed = myLiveResult.speed; document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('testView').classList.add('active'); document.getElementById('studentDetailsBox').style.display = 'none'; document.getElementById('typingSection').style.display = 'none'; calculateDetailedMistakes(setting.text, myLiveResult.studentText || "", 60, myLiveResult.category, true); } else { alert("डेटा लोड नहीं हुआ!"); } }
