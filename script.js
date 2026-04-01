@@ -234,25 +234,34 @@ function openDemoTest(pushHistory = true) {
     if(pushHistory) history.pushState({ tab: 'demo' }, '', '#demo');
 }
 
+// ==========================================
+// 🔄 TAB SWITCHER (Result Box Fix)
+// ==========================================
 function switchTab(tabId, pushHistory = true) {
     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('audioSection').style.display = 'none'; document.getElementById('readingSection').style.display = 'none';
-    document.getElementById(tabId + 'View').classList.add('active');
+    
+    let audioSec = document.getElementById('audioSection'); if(audioSec) audioSec.style.display = 'none'; 
+    let readSec = document.getElementById('readingSection'); if(readSec) readSec.style.display = 'none';
+    
+    let rBox = document.getElementById('resultBox');
+    if(rBox) rBox.style.display = 'none';
+
+    let newView = document.getElementById(tabId + 'View'); if(newView) newView.classList.add('active');
     let btn = document.getElementById('btn-' + tabId); if(btn) btn.classList.add('active');
 
     if(tabId === 'dashboard') renderDashboard();
     if(tabId === 'leaderboard') renderLeaderboard();
     if(tabId === 'live') renderLiveTestLogic();
     if(tabId === 'test') {
-        document.getElementById('studentDetailsBox').style.display = 'block'; document.getElementById('typingSection').style.display = 'none';
-        document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('studentDetailsBox').style.display = 'block'; 
+        document.getElementById('typingSection').style.display = 'none';
         if(!localStorage.getItem(autoSaveKey)) document.getElementById('studentText').value = '';
         checkPendingTest();
     }
+    
     if (pushHistory) { history.pushState({ tab: tabId }, '', '#' + tabId); }
 }
-
 window.addEventListener('popstate', function(event) {
     if (event.state && event.state.tab) { 
         if(event.state.tab === 'test') openPremiumTest(false);
