@@ -542,3 +542,45 @@ setTimeout(function() {
         audioEl.onended = function() { skipAudio(); };
     }
 }, 1000);
+// ==========================================
+// 🚫 STRICT CURSOR LOCK (BACKSPACE CONTROLLER)
+// ==========================================
+document.addEventListener("DOMContentLoaded", function() {
+    var studentTextArea = document.getElementById('studentText');
+    var backspaceToggle = document.getElementById('backspaceToggle');
+
+    if (studentTextArea && backspaceToggle) {
+        
+        // कर्सर को ज़बरदस्ती सबसे अंत (End) में धकेलने का फंक्शन
+        function forceCursorToEnd() {
+            if (backspaceToggle.value === 'off') {
+                var len = studentTextArea.value.length;
+                studentTextArea.setSelectionRange(len, len);
+            }
+        }
+
+        // 1. माउस से क्लिक करके कर्सर को बीच में ले जाने से रोकना
+        studentTextArea.addEventListener('mousedown', function() {
+            if (backspaceToggle.value === 'off') {
+                setTimeout(forceCursorToEnd, 10); // क्लिक करते ही कर्सर वापस अंत में आ जाएगा
+            }
+        });
+        studentTextArea.addEventListener('click', forceCursorToEnd);
+
+        // 2. कीबोर्ड के Arrow (तीर) बटनों को ब्लॉक करना
+        studentTextArea.addEventListener('keydown', function(e) {
+            if (backspaceToggle.value === 'off') {
+                var blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
+                
+                // अगर बच्चा तीर वाले बटन दबाएगा, तो कुछ नहीं होगा
+                if (blockedKeys.includes(e.key)) {
+                    e.preventDefault(); 
+                } 
+                // अगर बच्चा टाइपिंग या बैकस्पेस करता है, तो सुनिश्चित करें कि कर्सर अंत में ही हो
+                else {
+                    forceCursorToEnd();
+                }
+            }
+        });
+    }
+});
