@@ -2,7 +2,7 @@ let isPremiumUser = false;
 let timeOffset = 0;
 
 // ==========================================
-// 1. FLIP ANIMATION CONTROLLERS (नया डिज़ाइन)
+// 1. FLIP ANIMATION CONTROLLERS (नया डिज़ाइन)
 // ==========================================
 function showRegisterForm() { 
     document.getElementById("flip-container").className = 'flip-wrapper active'; 
@@ -93,11 +93,10 @@ function logoutUser() { localStorage.removeItem("steno_session"); auth.signOut()
 
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // 🚀 ADMIN BYPASS: एडमिन (आप) को ईमेल वेरिफाई करने की ज़रूरत नहीं है
         if (!user.emailVerified && user.email.toLowerCase() !== "cricketinnings07@gmail.com") {
             auth.signOut();
             alert("⚠️ आपका ईमेल अभी वेरिफाई नहीं हुआ है! कृपया अपने ईमेल (Inbox या Spam) में जाकर वेरिफिकेशन लिंक पर क्लिक करें।");
-            return; // यहीं से वापस भेज दें
+            return;
         }
 
         firebase.database().ref('sessions/' + user.uid).on('value', (snapshot) => {
@@ -214,8 +213,6 @@ function resetPassword() {
     if(!email) return alert("पासवर्ड रीसेट के लिए पहले अपना ईमेल दर्ज करें।");
     auth.sendPasswordResetEmail(email).then(() => alert("पासवर्ड रीसेट लिंक भेज दिया गया है!")).catch(e => alert(e.message));
 }
-
-function logoutUser() { localStorage.removeItem("steno_session"); auth.signOut(); location.reload(); }
 
 function checkPendingTest() {
     if(!autoSaveKey) return;
@@ -355,24 +352,10 @@ function startAudioSection(isLive) {
     let audioPlayer = document.getElementById('dictationAudio'); if(audioPlayer) audioPlayer.onended = function() { startReadingTest(); };
 }
 
-let readingInterval; let readingTimeLeft = 300; 
-function startReadingTest() { document.getElementById('audioSection').style.display = 'none'; document.getElementById('readingSection').style.display = 'flex'; readingTimeLeft = 300; updateReadingTimer(); readingInterval = setInterval(updateReadingTimer, 1000); }
-function updateReadingTimer() { let m = Math.floor(readingTimeLeft / 60); let s = readingTimeLeft % 60; document.getElementById('readingTimerDisplay').innerText = (m < 10 ? '0'+m : m) + ":" + (s < 10 ? '0'+s : s); if(readingTimeLeft <= 0) { skipReading(); } readingTimeLeft--; }
-function skipReading() { clearInterval(readingInterval); document.getElementById('readingSection').style.display = 'none'; startTypingTest(); }
-function skipAudio() { document.getElementById('dictationAudio').pause(); startReadingTest(); }
-
 function exitTest() {
     if(confirm("क्या आप वाकई टेस्ट बीच में छोड़ना चाहते हैं? आपका डेटा डिलीट हो जाएगा।")) {
-        isTestRunning = false; clearInterval(timerInterval); clearInterval(readingInterval); localStorage.removeItem(autoSaveKey); document.getElementById('studentText').value = ''; document.getElementById('audioSection').style.display = 'none'; document.getElementById('readingSection').style.display = 'none'; document.getElementById('typingSection').style.display = 'none'; document.querySelector('.top-header').style.display = 'flex'; document.getElementById('mainNavbar').style.display = 'flex'; try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {} switchTab('dashboard', true); 
+        isTestRunning = false; clearInterval(timerInterval); localStorage.removeItem(autoSaveKey); document.getElementById('studentText').value = ''; document.getElementById('audioSection').style.display = 'none'; document.getElementById('readingSection').style.display = 'none'; document.getElementById('typingSection').style.display = 'none'; document.querySelector('.top-header').style.display = 'flex'; document.getElementById('mainNavbar').style.display = 'flex'; try { if (document.exitFullscreen) document.exitFullscreen(); } catch(e) {} switchTab('dashboard', true); 
     }
-}
-
-function startTypingTest() {
-    document.getElementById('readingSection').style.display = 'none'; document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('testView').classList.add('active'); document.getElementById('studentDetailsBox').style.display = 'none'; document.getElementById('typingSection').style.display = 'block'; isTestRunning = true; 
-    let stdArea = document.getElementById('studentText'); stdArea.focus(); updateTimer(); timerInterval = setInterval(updateTimer, 1000); saveTestState(); 
-    stdArea.addEventListener('paste', e => { e.preventDefault(); alert("🚫 पेस्ट करना वर्जित है!"); }); stdArea.addEventListener('input', function() { saveTestState(); }); 
-    function lockCursorToEnd() { setTimeout(() => { stdArea.selectionStart = stdArea.selectionEnd = stdArea.value.length; }, 0); } stdArea.addEventListener('click', lockCursorToEnd); stdArea.addEventListener('select', lockCursorToEnd);
-    stdArea.addEventListener('keydown', e => { const blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown']; if (blockedKeys.includes(e.key)) { e.preventDefault(); return; } lockCursorToEnd(); let backspaceSetting = document.getElementById('backspaceToggle').value; if ((e.key === 'Backspace' || e.keyCode === 8) && backspaceSetting === 'off') { e.preventDefault(); } });
 }
 
 function startTypingTestFromResume() {
@@ -415,7 +398,7 @@ function calculateDetailedMistakes(master, student, timeTakenMins, payloadCatego
     let tw = mWords.length; let totalErr = fm + ew + om, actualErr = totalErr + (hm/2); let allowed = (sWords.length===0) ? 0 : Math.round(tw * 0.05); let excess = actualErr > allowed ? actualErr - allowed : 0; let net = tw - excess; if(net > sWords.length) net = sWords.length; if(net < 0) net = 0; let acc = (tw>0 && sWords.length>0) ? (net/tw)*100 : 0, wpm = Math.round(net / (timeTakenMins<1 ? 1 : timeTakenMins));
 
     if(isLiveTestActive && !isJustViewing) {
-        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true, payloadCategory, student); liveResultsData.push({ email: currentUserData.email, topic: currentTestTopic, name: currentUserData.name, netWords: net, accuracy: acc.toFixed(2) }); document.getElementById('liveView').style.display = 'block'; document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा।</p>`;
+        saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, true, payloadCategory, student); liveResultsData.push({ email: currentUserData.email, topic: currentTestTopic, name: currentUserData.name, netWords: net, accuracy: acc.toFixed(2) }); document.getElementById('liveView').style.display = 'block'; document.getElementById('liveStatusBox').innerHTML = `<h3 style='color:#10b981;'><i class='fas fa-check-circle'></i> टेस्ट सफलतापुर्वक जमा हो गया!</h3><p style='font-size:18px; color:#333; font-weight:bold;'>आपका रिजल्ट आज शाम 6:00 बजे इसी पेज पर अनलॉक होगा。</p>`;
     } else {
         document.getElementById('r_omissions').innerText = om; document.getElementById('r_fullMistakes').innerText = fm; document.getElementById('r_halfMistakes').innerText = hm; document.getElementById('r_extraWords').innerText = ew; document.getElementById('r_name').innerText = currentUserData.name; document.getElementById('r_testSpeed').innerText = currentTestSpeed + " WPM"; document.getElementById('r_masterWords').innerText = tw; document.getElementById('r_actualMistakes').innerText = actualErr; document.getElementById('r_allowedMistakes').innerText = allowed; document.getElementById('r_excessMistakes').innerText = excess; document.getElementById('r_netWords').innerText = net; document.getElementById('r_speed').innerText = wpm + " WPM"; document.getElementById('r_accuracy').innerText = acc.toFixed(2) + "%"; document.getElementById('displayEvaluatedText').innerHTML = diffHtml.join(' '); document.getElementById('resultBox').style.display = 'block'; window.scrollTo(0,0); drawResultChart(net, actualErr);
         if(!isJustViewing) { saveResultToGoogleSheet(wpm, acc.toFixed(2), actualErr, net, false, payloadCategory, student); if(acc >= 95) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }}); }
@@ -431,34 +414,29 @@ function drawResultChart(netWords, mistakes) { let canvas = document.getElementB
 window.downloadResultPDF = function() {
     var element = document.getElementById('resultBox');
     
-    // 1. PDF खींचते समय नीचे के बटनों (Download / Dashboard) को थोड़ी देर के लिए छुपाएं
+    // 1. PDF खींचते समय नीचे के बटनों को थोड़ी देर के लिए छुपाएं
     var buttons = element.querySelectorAll('button');
     buttons.forEach(btn => btn.style.display = 'none');
 
     // 2. PDF की जादुई सेटिंग
     var opt = {
-        margin:       [0.4, 0.4, 0.4, 0.4], // पन्ने के चारों तरफ का मार्जिन (Top, Left, Bottom, Right)
+        margin:       [0.4, 0.4, 0.4, 0.4],
         filename:     'Steno_Result_' + (document.getElementById('r_name').innerText || 'Student') + '.pdf',
         image:        { type: 'jpeg', quality: 1 },
-        html2canvas:  { 
-            scale: 2,           // PDF को एकदम HD (साफ़) बनाने के लिए
-            useCORS: true, 
-            windowWidth: 1024   // 🚨 जादू 1: यह डिज़ाइन को मोबाइल की तरह सिकुड़ने नहीं देगा, चार्ट साइड में ही रहेगा!
-        },
+        html2canvas:  { scale: 2, useCORS: true, windowWidth: 1024 },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // 🚨 जादू 2: यह किसी भी डिब्बे या चार्ट को बीच से कटने नहीं देगा!
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     // 3. PDF जनरेट करें
     html2pdf().set(opt).from(element).save().then(function() {
-        // PDF डाउनलोड होने के बाद बटनों को वापस स्क्रीन पर दिखा दें
         buttons.forEach(btn => btn.style.display = 'inline-block');
     });
 };
 
 function saveResultToGoogleSheet(speedWPM, accuracy, totalMistakes, netWords, isLive, payloadCategory, studentText) { let payload = { name: currentUserData.name, rollNumber: currentUserData.roll, email: currentUserData.email, speedTarget: currentTestSpeed, topic: currentTestTopic, actualSpeedWPM: speedWPM, accuracy: accuracy, totalMistakes: totalMistakes, netWords: netWords, isLive: isLive, category: payloadCategory, studentText: studentText }; fetch(GOOGLE_SHEET_WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }).then(res => { if(!isLive) document.getElementById('saveStatus').innerText = "✅ रिज़ल्ट सेव हो गया!"; }); }
 
-function viewLiveCopy(topicName) { let myLiveResult = liveResultsData.find(res => res.email === currentUserData.email && res.topic === topicName); let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive); if(myLiveResult && setting) { isLiveTestActive = false; currentTestSpeed = myLiveResult.speed; document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('testView').classList.add('active'); document.getElementById('studentDetailsBox').style.display = 'none'; document.getElementById('typingSection').style.display = 'none'; calculateDetailedMistakes(setting.text, myLiveResult.studentText || "", 60, myLiveResult.category, true); } else { alert("डेटा लोड नहीं জরিমানা!"); } }
+function viewLiveCopy(topicName) { let myLiveResult = liveResultsData.find(res => res.email === currentUserData.email && res.topic === topicName); let setting = adminSettingsData.find(item => item.topic === topicName && item.isLive); if(myLiveResult && setting) { isLiveTestActive = false; currentTestSpeed = myLiveResult.speed; document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.getElementById('testView').classList.add('active'); document.getElementById('studentDetailsBox').style.display = 'none'; document.getElementById('typingSection').style.display = 'none'; calculateDetailedMistakes(setting.text, myLiveResult.studentText || "", 60, myLiveResult.category, true); } else { alert("डेटा लोड नहीं हुआ!"); } }
 
 function renderLiveTestLogic() {
     let now = getRealTime(); let day = now.getDay(); let hour = now.getHours(); let statusBox = document.getElementById('liveStatusBox');
@@ -499,8 +477,9 @@ function downloadLiveResultPDF(topicName) {
     let opt = { margin: [10, 10, 10, 10], filename: 'Steno_Live_Result_' + topicName.replace(/\s+/g, '_') + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
     html2pdf().set(opt).from(printDiv).save().then(() => { document.body.removeChild(printDiv); });
 }
+
 // ==========================================
-// 🚀 AUDIO -> READING -> TYPING (BLANK SCREEN FIX)
+// 🚀 AUDIO -> READING -> TYPING ENGINE
 // ==========================================
 
 window.skipAudio = function() {
@@ -510,17 +489,11 @@ window.skipAudio = function() {
         audio.currentTime = 0;
     }
 
-    // 1. ऑडियो बॉक्स को छुपाएं
     document.getElementById('audioSection').style.display = 'none';
-
-    // 2. 🚨 ब्लैंक स्क्रीन का पक्का इलाज: मेन डिब्बों को वापस स्क्रीन पर लाएं!
     document.getElementById('testView').style.display = 'block';
-    document.getElementById('studentDetailsBox').style.display = 'none'; // टेस्ट सेटअप को छुपा कर रखें
-    
-    // 3. रीडिंग बॉक्स को दिखाएं
+    document.getElementById('studentDetailsBox').style.display = 'none'; 
     document.getElementById('readingSection').style.display = 'flex';
 
-    // 4. 5 मिनट का टाइमर चालू करें
     var readTime = 300; 
     var readDisplay = document.getElementById('readingTimerDisplay');
     if(window.readTimer) clearInterval(window.readTimer);
@@ -536,18 +509,6 @@ window.skipAudio = function() {
 };
 
 window.skipReading = function() {
-    if(window.readTimer) clearInterval(window.readTimer);
-
-    // 1. रीडिंग बॉक्स को छुपाएं
-    document.getElementById('readingSection').style.display = 'none';
-
-    // 2. टाइपिंग बॉक्स को वापस स्क्रीन पर लाएं
-    document.getElementById('testView').style.display = 'block'; 
-    document.getElementById('typingSection').style.display = 'block';
-    document.getElementById('studentDetailsBox').style.display = 'none';
-
-    // 3. 60 मिनट का टाइपिंग टाइमर चालू करें
-   window.skipReading = function() {
     if (window.readTimer) clearInterval(window.readTimer);
 
     document.getElementById('readingSection').style.display = 'none';
@@ -557,10 +518,12 @@ window.skipReading = function() {
     document.getElementById('testView').style.display = 'block';
     document.getElementById('typingSection').style.display = 'block';
 
-    // 🚨 यहाँ 'var' हटाकर 'window.typeTime' कर दिया ताकि रिजल्ट पेज इसे देख सके
     window.typeTime = 3600; 
     var display = document.getElementById('timerDisplay');
     if (window.typeTimer) clearInterval(window.typeTimer);
+
+    // 🚨 टेस्ट शुरू करने के लिए सुरक्षा नियम लागू करना ज़रूरी है!
+    startTypingTestFromResume();
 
     window.typeTimer = setInterval(function() {
         var m = Math.floor(window.typeTime / 60);
@@ -571,17 +534,17 @@ window.skipReading = function() {
             clearInterval(window.typeTimer);
             if (typeof submitTest === "function") submitTest();
         }
-        window.typeTime--; // टाइम घटता रहेगा
+        window.typeTime--; 
     }, 1000);
 };
 
-// 5. ऑडियो पूरा होने पर अपने-आप स्किप फंक्शन चलाना
 setTimeout(function() {
     var audioEl = document.getElementById('dictationAudio');
     if(audioEl) {
         audioEl.onended = function() { skipAudio(); };
     }
 }, 1000);
+
 // ==========================================
 // 🚫 STRICT CURSOR LOCK (BACKSPACE CONTROLLER)
 // ==========================================
@@ -591,7 +554,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (studentTextArea && backspaceToggle) {
         
-        // कर्सर को ज़बरदस्ती सबसे अंत (End) में धकेलने का फंक्शन
         function forceCursorToEnd() {
             if (backspaceToggle.value === 'off') {
                 var len = studentTextArea.value.length;
@@ -599,24 +561,20 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
-        // 1. माउस से क्लिक करके कर्सर को बीच में ले जाने से रोकना
         studentTextArea.addEventListener('mousedown', function() {
             if (backspaceToggle.value === 'off') {
-                setTimeout(forceCursorToEnd, 10); // क्लिक करते ही कर्सर वापस अंत में आ जाएगा
+                setTimeout(forceCursorToEnd, 10); 
             }
         });
         studentTextArea.addEventListener('click', forceCursorToEnd);
 
-        // 2. कीबोर्ड के Arrow (तीर) बटनों को ब्लॉक करना
         studentTextArea.addEventListener('keydown', function(e) {
             if (backspaceToggle.value === 'off') {
                 var blockedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
                 
-                // अगर बच्चा तीर वाले बटन दबाएगा, तो कुछ नहीं होगा
                 if (blockedKeys.includes(e.key)) {
                     e.preventDefault(); 
                 } 
-                // अगर बच्चा टाइपिंग या बैकस्पेस करता है, तो सुनिश्चित करें कि कर्सर अंत में ही हो
                 else {
                     forceCursorToEnd();
                 }
@@ -624,19 +582,19 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
 // ==========================================
-// ⏱️ TIME FIXER PATCH (0 मिनट 0 सेकंड का इलाज)
+// ⏱️ TIME FIXER PATCH
 // ==========================================
-var oldSubmit = window.submitTest; // पुराने रिजल्ट वाले फंक्शन को सेव किया
+var oldSubmit = window.submitTest; 
 
 window.submitTest = function() {
     if (typeof oldSubmit === 'function') {
-        oldSubmit(); // पहले पुराना काम होने दो (चार्ट और गलतियां निकालने का)
+        oldSubmit(); 
     }
     
-    // 🚨 अब 0 वाले टाइम को सही टाइम से बदल दो
     if (window.typeTime !== undefined) {
-        var totalSecondsTaken = 3600 - window.typeTime; // 60 मिनट (3600) में से बचा हुआ टाइम घटाया
+        var totalSecondsTaken = 3600 - window.typeTime; 
         var finalM = Math.floor(totalSecondsTaken / 60);
         var finalS = totalSecondsTaken % 60;
         
